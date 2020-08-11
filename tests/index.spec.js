@@ -162,7 +162,37 @@ describe('draggable', () => {
 
 	describe('options', () => {
 		describe('axis', () => {
+			it('restricts dragging along the X axis only', () => {
+				draggable(target, {axis: 'X'});
+				expect(target.style.left).to.be.empty;
+				expect(target.style.top).to.be.empty;
 
+				simulateMouseDown(target, 50, 50);
+				simulateMouseMove(target, 50, 50);
+
+				expect(target.style.left).to.equal('0px');
+				expect(target.style.top).to.be.empty;
+
+				simulateMouseMove(target, 150, 150);
+				expect(target.style.left).to.equal('100px');
+				expect(target.style.top).to.be.empty;
+			});
+
+			it('restricts dragging along the Y axis only', () => {
+				draggable(target, {axis: 'Y'});
+				expect(target.style.left).to.be.empty;
+				expect(target.style.top).to.be.empty;
+
+				simulateMouseDown(target, 50, 50);
+				simulateMouseMove(target, 50, 50);
+
+				expect(target.style.left).to.be.empty;
+				expect(target.style.top).to.equal('0px');
+
+				simulateMouseMove(target, 150, 150);
+				expect(target.style.left).to.be.empty;
+				expect(target.style.top).to.equal('100px');
+			});
 		});
 	});
 });

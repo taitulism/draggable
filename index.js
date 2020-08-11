@@ -1,11 +1,19 @@
-// const TPL = require('./src/TPL');
-
 module.exports = function draggable (elm, opts) {
 	return new Draggable(elm, opts);
 };
 
-function Draggable (elm, opts) {
+function Draggable (elm, opts = {}) {
 	this.elm = elm;
+	if (opts.axis) {
+		const axis = opts.axis.toLowerCase();
+		if (axis === 'x') this.xAxis = true;
+		else if (axis === 'y') this.yAxis = true;
+	}
+	else {
+		this.xAxis = true;
+		this.yAxis = true;
+	}
+
 	this.startMouseX = 0;
 	this.startMouseY = 0;
 	this.elmX = 0;
@@ -28,10 +36,16 @@ Draggable.prototype.on = function (eventName, callback) {
 };
 
 Draggable.prototype.onDragStart = function (ev) {
-	this.startMouseX = ev.clientX;
-	this.startMouseY = ev.clientY;
-	this.elmX = extractNumber(this.elm.style.left);
-	this.elmY = extractNumber(this.elm.style.top);
+	if (this.xAxis) {
+		this.startMouseX = ev.clientX;
+		this.elmX = extractNumber(this.elm.style.left);
+	}
+
+	if (this.yAxis) {
+		this.startMouseY = ev.clientY;
+		this.elmY = extractNumber(this.elm.style.top);
+	}
+
 	this.elm.classList.add('grabbed');
 
 	document.addEventListener('mousemove', this.onDragging);
@@ -39,16 +53,21 @@ Draggable.prototype.onDragStart = function (ev) {
 };
 
 Draggable.prototype.onDragging = function (ev) {
-	const mouseMovedX = ev.clientX - this.startMouseX;
-	const mouseMovedY = ev.clientY - this.startMouseY;
+	if (this.xAxis) {
+		const mouseMovedX = ev.clientX - this.startMouseX;
+		this.elm.style.left = this.elmX + mouseMovedX  + 'px';
+	}
+
+	if (this.yAxis) {
+		const mouseMovedY = ev.clientY - this.startMouseY;
+		this.elm.style.top = this.elmY + mouseMovedY  + 'px';
+	}
 
 	this.elm.classList.replace('grabbed', 'dragging');
+	this.events.dragging.forEach(cb => cb(ev));
 
     // eslint-disable-next-line max-len
     // console.log(`${this.elmX} + ${ev.clientX - this.startMouseX} (${ev.clientX} - ${this.startMouseX})`);
-	this.elm.style.left = this.elmX + mouseMovedX  + 'px';
-	this.elm.style.top = this.elmY + mouseMovedY  + 'px';
-	this.events.dragging.forEach(cb => cb(ev));
 };
 
 Draggable.prototype.onDrop = function (ev) {
