@@ -116,11 +116,11 @@ describe('draggable', () => {
 	});
 
 	describe('events', () => {
-		it('emits onDragStart', () => {
+		it('emits `grab` event', () => {
 			const drg = draggable(target);
 			let fired = false;
 
-			drg.on('dragStart', (ev) => {
+			drg.on('grab', (ev) => {
 				fired = true;
 			});
 
@@ -129,7 +129,7 @@ describe('draggable', () => {
 			expect(fired).to.be.true;
 		});
 
-		it('emits onDrop', () => {
+		it('emits `drop` event', () => {
 			const drg = draggable(target);
 			let fired = false;
 
@@ -143,7 +143,7 @@ describe('draggable', () => {
 			expect(fired).to.be.true;
 		});
 
-		it('emits dragging', () => {
+		it('emits `dragging` event', () => {
 			const drg = draggable(target);
 			let fired = false;
 
@@ -219,6 +219,71 @@ describe('draggable', () => {
 				expect(target.style.left).to.be.empty;
 				expect(target.style.top).to.equal('100px');
 			});
+		});
+	});
+
+	describe('destruction', () => {
+		it('removes all listeners', () => {
+			target.style.position = 'static';
+			const drg = draggable(target);
+
+			expect(target.style.position).to.equal('relative');
+
+			let grabCount = 0;
+			let moveCount = 0;
+			let dropCount = 0;
+
+			drg.on('grab', () => { grabCount++; });
+			drg.on('dragging', () => { moveCount++; });
+			drg.on('drop', () => { dropCount++; });
+
+			simulateMouseDown(target, 50, 50);
+			expect(grabCount).to.equal(1);
+
+			simulateMouseMove(target, 50, 50);
+			expect(moveCount).to.equal(1);
+
+			simulateMouseMove(target, 150, 150);
+			expect(moveCount).to.equal(2);
+
+			simulateMouseUp(target, 150, 150);
+			expect(dropCount).to.equal(1);
+
+			simulateMouseMove(target, 160, 160);
+			expect(moveCount).to.equal(2);
+
+			expect(drg.elm).to.deep.equal(target);
+
+			drg.destroy();
+
+			expect(drg.elm).to.be.null;
+
+			expect(target.style.position).to.equal('static');
+
+			expect(target.classList.contains('draggable')).to.be.false;
+
+			simulateMouseDown(target, 160, 160);
+			expect(target.classList.contains('grabbed')).to.be.false;
+			expect(grabCount).to.equal(1);
+
+			simulateMouseMove(target, 160, 160);
+			expect(target.classList.contains('dragging')).to.be.false;
+			expect(moveCount).to.equal(2);
+
+			simulateMouseUp(target, 160, 160);
+			expect(dropCount).to.equal(1);
+		});
+
+		it.skip('removes all classnames', () => {
+
+		});
+
+		it.skip('resets original position', () => {
+
+		});
+
+		it.skip('releases the target element', () => {
+
 		});
 	});
 });
