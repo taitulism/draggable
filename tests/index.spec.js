@@ -20,6 +20,8 @@ function simulateMouseDown (elm, x, y) {
 	const event = createEvent('mousedown', {
 		clientX: x || 0,
 		clientY: y || 0,
+		offsetX: x || 0,
+		offsetY: y || 0,
 	});
 	elm.dispatchEvent(event);
 }
@@ -28,6 +30,8 @@ function simulateMouseMove (elm, x, y) {
 	const event = createEvent('mousemove', {
 		clientX: x || 0,
 		clientY: y || 0,
+		offsetX: x || 0,
+		offsetY: y || 0,
 	});
 
 	elm.dispatchEvent(event);
@@ -37,6 +41,8 @@ function simulateMouseUp (elm, x, y) {
 	const event = createEvent('mouseup', {
 		clientX: x || 0,
 		clientY: y || 0,
+		offsetX: x || 0,
+		offsetY: y || 0,
 	});
 
 	elm.dispatchEvent(event);
@@ -186,6 +192,24 @@ describe('draggable', () => {
 		});
 	});
 
+	describe('behavior', () => {
+		it('sets position: absolute on the target element', () => {
+			target.style.position = 'static';
+
+			expect(target.style.position).to.equal('static');
+			draggable(target);
+			simulateMouseDown(target, 50, 50);
+			expect(target.style.position).to.equal('absolute');
+		});
+
+		it('puts the target element in the <body>', () => {
+			expect(target.parentNode.nodeName).to.equal('DIV');
+			draggable(target);
+			simulateMouseDown(target, 50, 50);
+			expect(target.parentNode.nodeName).to.equal('BODY');
+		});
+	});
+
 	describe('options', () => {
 		describe('axis', () => {
 			it('restricts dragging along the X axis only', () => {
@@ -285,7 +309,9 @@ describe('draggable', () => {
 
 			expect(target.style.position).to.equal('static');
 			const drg = draggable(target);
-			expect(target.style.position).to.equal('relative');
+
+			simulateMouseDown(target, 50, 50);
+			expect(target.style.position).to.equal('absolute');
 			drg.destroy();
 			expect(target.style.position).to.equal('static');
 		});

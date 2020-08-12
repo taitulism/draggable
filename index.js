@@ -16,13 +16,14 @@ function Draggable (elm, opts = {}) {
 
 	this.startMouseX = 0;
 	this.startMouseY = 0;
+	this.mouseOffsetX = 0;
+	this.mouseOffsetY = 0;
 	this.elmX = 0;
 	this.elmY = 0;
 	this.events = {grab: [], drop: [], dragging: []};
 	this.originalPosition = elm.style.position || null;
 
 	elm.classList.add('draggable');
-	elm.style.position = 'relative';
 
 	this.onDragStart = this.onDragStart.bind(this);
 	this.onDragging = this.onDragging.bind(this);
@@ -37,15 +38,23 @@ Draggable.prototype.on = function (eventName, callback) {
 };
 
 Draggable.prototype.onDragStart = function (ev) {
+	this.elm.style.position = 'absolute';
+
 	if (this.xAxis) {
-		this.startMouseX = ev.clientX;
-		this.elmX = extractNumber(this.elm.style.left);
+		// this.startMouseX = ev.clientX;
+		// this.elmX = extractNumber(this.elm.style.left);
+		this.elm.style.left = ev.clientX - ev.offsetX  + 'px';
+		this.mouseOffsetX = ev.offsetX;
 	}
 
 	if (this.yAxis) {
-		this.startMouseY = ev.clientY;
-		this.elmY = extractNumber(this.elm.style.top);
+		// this.startMouseY = ev.clientY;
+		// this.elmY = extractNumber(this.elm.style.top);
+		this.elm.style.top = ev.clientY - ev.offsetY  + 'px';
+		this.mouseOffsetY = ev.offsetY;
 	}
+
+	document.body.appendChild(this.elm);
 
 	this.elm.classList.add('grabbed');
 
@@ -55,13 +64,15 @@ Draggable.prototype.onDragStart = function (ev) {
 
 Draggable.prototype.onDragging = function (ev) {
 	if (this.xAxis) {
-		const mouseMovedX = ev.clientX - this.startMouseX;
-		this.elm.style.left = this.elmX + mouseMovedX  + 'px';
+		// const mouseMovedX = ev.clientX - this.startMouseX;
+		// this.elm.style.left = this.elmX + mouseMovedX  + 'px';
+		this.elm.style.left = ev.clientX - this.mouseOffsetX  + 'px';
 	}
 
 	if (this.yAxis) {
-		const mouseMovedY = ev.clientY - this.startMouseY;
-		this.elm.style.top = this.elmY + mouseMovedY  + 'px';
+		// const mouseMovedY = ev.clientY - this.startMouseY;
+		// this.elm.style.top = this.elmY + mouseMovedY  + 'px';
+		this.elm.style.top = ev.clientY - this.mouseOffsetY  + 'px';
 	}
 
 	this.elm.classList.replace('grabbed', 'dragging');
