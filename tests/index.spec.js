@@ -224,10 +224,7 @@ describe('draggable', () => {
 
 	describe('destruction', () => {
 		it('removes all listeners', () => {
-			target.style.position = 'static';
 			const drg = draggable(target);
-
-			expect(target.style.position).to.equal('relative');
 
 			let grabCount = 0;
 			let moveCount = 0;
@@ -252,38 +249,58 @@ describe('draggable', () => {
 			simulateMouseMove(target, 160, 160);
 			expect(moveCount).to.equal(2);
 
-			expect(drg.elm).to.deep.equal(target);
-
 			drg.destroy();
 
-			expect(drg.elm).to.be.null;
-
-			expect(target.style.position).to.equal('static');
-
-			expect(target.classList.contains('draggable')).to.be.false;
-
 			simulateMouseDown(target, 160, 160);
-			expect(target.classList.contains('grabbed')).to.be.false;
 			expect(grabCount).to.equal(1);
 
 			simulateMouseMove(target, 160, 160);
-			expect(target.classList.contains('dragging')).to.be.false;
 			expect(moveCount).to.equal(2);
 
 			simulateMouseUp(target, 160, 160);
 			expect(dropCount).to.equal(1);
 		});
 
-		it.skip('removes all classnames', () => {
+		it('removes all classnames', () => {
+			const drg = draggable(target);
 
+			simulateMouseDown(target, 50, 50);
+			simulateMouseMove(target, 50, 50);
+			simulateMouseMove(target, 150, 150);
+			simulateMouseUp(target, 150, 150);
+			simulateMouseMove(target, 160, 160);
+
+			drg.destroy();
+			expect(target.classList.contains('draggable')).to.be.false;
+
+			simulateMouseDown(target, 160, 160);
+			expect(target.classList.contains('grabbed')).to.be.false;
+
+			simulateMouseMove(target, 160, 160);
+			expect(target.classList.contains('dragging')).to.be.false;
 		});
 
-		it.skip('resets original position', () => {
+		it('resets original position', () => {
+			target.style.position = 'static';
 
+			expect(target.style.position).to.equal('static');
+			const drg = draggable(target);
+			expect(target.style.position).to.equal('relative');
+			drg.destroy();
+			expect(target.style.position).to.equal('static');
 		});
 
-		it.skip('releases the target element', () => {
+		it('releases the target element', () => {
+			const drg = draggable(target);
 
+			simulateMouseDown(target, 50, 50);
+			simulateMouseMove(target, 50, 50);
+			simulateMouseMove(target, 150, 150);
+			simulateMouseUp(target, 150, 150);
+
+			expect(drg.elm).to.deep.equal(target);
+			drg.destroy();
+			expect(drg.elm).to.be.null;
 		});
 	});
 });
