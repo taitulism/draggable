@@ -81,7 +81,6 @@ module.exports = {
 			'error',
 			'unix'
 		],
-		'lines-around-comment': 'error',
 		'lines-around-directive': 'error',
 		'lines-between-class-members': 'error',
 		'max-classes-per-file': 'error',
@@ -309,6 +308,7 @@ module.exports = {
 //		"max-statements": ["off", { "max": 20 }],
 //		"max-lines": "off",
 //		"line-comment-position": "off",
+//		'lines-around-comment': 'off',
 //		"key-spacing": ["off", { "align": "value" }],
 //		"indent-legacy": "off",
 //		"id-length": ["off", {"exceptions": ["i"]}],

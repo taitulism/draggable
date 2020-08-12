@@ -3,17 +3,11 @@ module.exports = function draggable (elm, opts) {
 };
 
 function Draggable (elm, opts = {}) {
-	this.elm = elm;
-	if (opts.axis) {
-		const axis = opts.axis.toLowerCase();
-		if (axis === 'x') this.xAxis = true;
-		else if (axis === 'y') this.yAxis = true;
-	}
-	else {
-		this.xAxis = true;
-		this.yAxis = true;
-	}
+	this.onDragStart = this.onDragStart.bind(this);
+	this.onDragging = this.onDragging.bind(this);
+	this.onDrop = this.onDrop.bind(this);
 
+	this.elm = elm;
 	this.startMouseX = 0;
 	this.startMouseY = 0;
 	this.mouseOffsetX = 0;
@@ -25,12 +19,20 @@ function Draggable (elm, opts = {}) {
 
 	elm.classList.add('draggable');
 
-	this.onDragStart = this.onDragStart.bind(this);
-	this.onDragging = this.onDragging.bind(this);
-	this.onDrop = this.onDrop.bind(this);
-
 	elm.addEventListener('mousedown', this.onDragStart);
-	elm.addEventListener('mouseup', this.onDrop);
+
+	if (opts.axis) {
+		this.singleAxis = true;
+		const axis = opts.axis.toLowerCase();
+		if (axis === 'x') this.xAxis = true;
+		else if (axis === 'y') this.yAxis = true;
+		document.addEventListener('mouseup', this.onDrop);
+	}
+	else {
+		this.xAxis = true;
+		this.yAxis = true;
+		elm.addEventListener('mouseup', this.onDrop);
+	}
 }
 
 Draggable.prototype.on = function (eventName, callback) {
@@ -92,7 +94,12 @@ Draggable.prototype.onDrop = function (ev) {
 Draggable.prototype.destroy = function () {
 	this.elm.removeEventListener('mousedown', this.onDragStart);
 	document.removeEventListener('mousemove', this.onDragging);
-	this.elm.removeEventListener('mouseup', this.onDrop);
+	if (this.singleAxis) {
+		document.removeEventListener('mouseup', this.onDrop);
+	}
+	else {
+		this.elm.removeEventListener('mouseup', this.onDrop);
+	}
 
 	this.elm.classList.remove('draggable', 'grabbed', 'dragging');
 

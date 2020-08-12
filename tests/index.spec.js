@@ -243,6 +243,34 @@ describe('draggable', () => {
 				expect(target.style.left).to.be.empty;
 				expect(target.style.top).to.equal('100px');
 			});
+
+			it('opt:axis bug', () => {
+				/*
+					When restricting to an axis, moving the mouse in the other
+					axis misses the mouseup event (mouse is outside of target).
+					The event is bound to target but the mouseup event occures outside.
+					Fixed by binding the mouseup to the document.
+					Test by keep moving the mouse after the drop and verify target is not moving.
+				*/
+
+				draggable(target, {axis: 'X'});
+				expect(target.style.left).to.be.empty;
+				expect(target.style.top).to.be.empty;
+
+				simulateMouseDown(target, 50, 50);
+				simulateMouseMove(target, 50, 50);
+
+				expect(target.style.left).to.equal('0px');
+				expect(target.style.top).to.be.empty;
+
+				simulateMouseMove(target, 180, 180);
+				expect(target.style.left).to.equal('130px');
+				expect(target.style.top).to.be.empty;
+
+				simulateMouseUp(document, 180, 180);
+				simulateMouseMove(target, 400, 400);
+				expect(target.style.left).to.equal('130px');
+			});
 		});
 	});
 
