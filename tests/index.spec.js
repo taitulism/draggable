@@ -67,97 +67,123 @@ describe('draggable', () => {
 		expect(ctor.name).to.equal('Draggable');
 	});
 
-	it('emits onDragStart', () => {
-		const drg = draggable(target);
-		let fired = false;
+	describe('dragging arround', () => {
+		it('moves the elm on the X axis', () => {
+			draggable(target);
+			expect(target.style.left).to.be.empty;
 
-		drg.on('dragStart', (ev) => {
-			fired = true;
+			simulateMouseDown(target, 50, 50);
+
+			simulateMouseMove(target, 50, 50);
+			expect(target.style.left).to.equal('0px');
+
+			simulateMouseMove(target, 150, 50);
+			expect(target.style.left).to.equal('100px');
 		});
 
-		simulateMouseDown(target, 50, 50);
+		it('moves the elm on the Y axis', () => {
+			draggable(target);
+			expect(target.style.top).to.be.empty;
 
-		expect(fired).to.be.true;
-	});
+			simulateMouseDown(target, 50, 50);
 
-	it('emits onDrop', () => {
-		const drg = draggable(target);
-		let fired = false;
+			simulateMouseMove(target, 50, 50);
+			expect(target.style.left).to.equal('0px');
 
-		drg.on('drop', (ev) => {
-			fired = true;
+			simulateMouseMove(target, 50, 150);
+			expect(target.style.top).to.equal('100px');
 		});
 
-		simulateMouseDown(target, 50, 50);
-		simulateMouseUp(target, 50, 50);
+		it('moves the elm freely on both axes', () => {
+			draggable(target);
+			expect(target.style.left).to.be.empty;
+			expect(target.style.top).to.be.empty;
 
-		expect(fired).to.be.true;
+			simulateMouseDown(target, 20, 30);
+
+			simulateMouseMove(target, 20, 30);
+			expect(target.style.left).to.equal('0px');
+			expect(target.style.top).to.equal('0px');
+
+			simulateMouseMove(target, 180, 200);
+			expect(target.style.left).to.equal('160px');
+			expect(target.style.top).to.equal('170px');
+
+			simulateMouseMove(target, 90, 250);
+			expect(target.style.left).to.equal('70px');
+			expect(target.style.top).to.equal('220px');
+		});
 	});
 
-	it('emits dragging', () => {
-		const drg = draggable(target);
-		let fired = false;
+	describe('events', () => {
+		it('emits onDragStart', () => {
+			const drg = draggable(target);
+			let fired = false;
 
-		drg.on('dragging', (ev) => {
-			fired = true;
+			drg.on('dragStart', (ev) => {
+				fired = true;
+			});
+
+			simulateMouseDown(target, 50, 50);
+
+			expect(fired).to.be.true;
 		});
 
-		simulateMouseDown(target, 50, 50);
-		simulateMouseMove(target, 50, 50);
-		simulateMouseUp(target, 50, 50);
+		it('emits onDrop', () => {
+			const drg = draggable(target);
+			let fired = false;
 
-		expect(fired).to.be.true;
+			drg.on('drop', (ev) => {
+				fired = true;
+			});
+
+			simulateMouseDown(target, 50, 50);
+			simulateMouseUp(target, 50, 50);
+
+			expect(fired).to.be.true;
+		});
+
+		it('emits dragging', () => {
+			const drg = draggable(target);
+			let fired = false;
+
+			drg.on('dragging', (ev) => {
+				fired = true;
+			});
+
+			simulateMouseDown(target, 50, 50);
+			simulateMouseMove(target, 50, 50);
+			simulateMouseUp(target, 50, 50);
+
+			expect(fired).to.be.true;
+		});
 	});
 
-	it('moves the elm on the X axis', () => {
-		draggable(target);
-		expect(target.style.left).to.be.empty;
+	describe('classnames', () => {
+		it('sets a `draggable` classname on elm', () => {
+			draggable(target);
+			expect(target.classList.contains('draggable')).to.be.true;
+		});
 
-		simulateMouseDown(target, 50, 50);
+		it('sets a `grabbed` classname on elm when grabbing it', () => {
+			draggable(target);
+			expect(target.classList.contains('grabbed')).to.be.false;
+			simulateMouseDown(target, 50, 50);
+			expect(target.classList.contains('grabbed')).to.be.true;
+			simulateMouseUp(target, 50, 50);
+			expect(target.classList.contains('grabbed')).to.be.false;
+		});
 
-		simulateMouseMove(target, 50, 50);
-		expect(target.style.left).to.equal('0px');
-
-		simulateMouseMove(target, 150, 50);
-		expect(target.style.left).to.equal('100px');
-	});
-
-	it('moves the elm on the Y axis', () => {
-		draggable(target);
-		expect(target.style.top).to.be.empty;
-
-		simulateMouseDown(target, 50, 50);
-
-		simulateMouseMove(target, 50, 50);
-		expect(target.style.left).to.equal('0px');
-
-		simulateMouseMove(target, 50, 150);
-		expect(target.style.top).to.equal('100px');
-	});
-
-	it('sets `draggable` classname on elm', () => {
-		draggable(target);
-		expect(target.classList.contains('draggable')).to.be.true;
-	});
-
-	it('sets `grabbed` classname on elm when grabbing it', () => {
-		draggable(target);
-		expect(target.classList.contains('grabbed')).to.be.false;
-		simulateMouseDown(target, 50, 50);
-		expect(target.classList.contains('grabbed')).to.be.true;
-		simulateMouseUp(target, 50, 50);
-		expect(target.classList.contains('grabbed')).to.be.false;
-	});
-
-	it('sets `dragging` classname on elm when moving it', () => {
-		draggable(target);
-		expect(target.classList.contains('dragging')).to.be.false;
-		simulateMouseDown(target, 50, 50);
-		expect(target.classList.contains('dragging')).to.be.false;
-		simulateMouseMove(target, 50, 50);
-		expect(target.classList.contains('dragging')).to.be.true;
-		simulateMouseUp(target, 50, 50);
-		expect(target.classList.contains('dragging')).to.be.false;
+		it('sets a `dragging` classname on elm when moving it', () => {
+			draggable(target);
+			expect(target.classList.contains('dragging')).to.be.false;
+			simulateMouseDown(target, 50, 50);
+			expect(target.classList.contains('dragging')).to.be.false;
+			simulateMouseMove(target, 50, 50);
+			expect(target.classList.contains('dragging')).to.be.true;
+			simulateMouseUp(target, 50, 50);
+			expect(target.classList.contains('dragging')).to.be.false;
+		});
 	});
 
 	describe('options', () => {
