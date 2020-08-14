@@ -3,7 +3,7 @@ const jsdom = require('jsdom');
 
 const { JSDOM } = jsdom;
 
-const draggable = require('../');
+const draggable = require('../draggable');
 
 const setWinDoc = (dom) => {
 	global.window = dom.window;
