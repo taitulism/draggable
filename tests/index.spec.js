@@ -50,18 +50,53 @@ function simulateMouseUp (elm, x, y) {
 
 describe('draggable', () => {
 	let container, target;
-	beforeEach(() => JSDOM.fromFile('./tests/test.html').then((dom) => {
-		setWinDoc(dom);
+	beforeEach(() => {
+		document.documentElement.innerHTML = `
+			<head>
+				<meta charset="UTF-8">
+				<style>
+					* {
+						box-sizing: border-box;
+						padding: 0;
+						margin: 0;
+					}
+
+					#container {
+						height: 100vh;
+						width: 100vw;
+						position: fixed;
+						top: 0px;
+						left: 0px;
+					}
+
+					#target {
+						width: 100px;
+						height: 100px;
+						background-color: pink;
+					}
+				</style>
+			</head>
+			<body>
+				<div id="container">
+					<div id="target"></div>
+				</div>
+			</body>`
+		;
 		container = document.getElementById('container');
 		target = document.getElementById('target');
-	}));
+	});
+	// beforeEach(() => JSDOM.fromFile('tests/test.html').then((dom) => {
+	// 	setWinDoc(dom);
+	// 	container = document.getElementById('container');
+	// 	target = document.getElementById('target');
+	// }));
 
 	afterEach(() => {
-		global.window.close();
+		// global.window.close();
 		target = null;
 		container = null;
-		global.window = null;
-		global.document = null;
+		// global.window = null;
+		// global.document = null;
 	});
 
 	it('is a function', () => expect(draggable).to.be.a('function'));

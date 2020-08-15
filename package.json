@@ -11,6 +11,7 @@
    "scripts": {
       "dev": "mocha ./tests --watch",
       "test": "mocha ./tests --bail",
+      "test2": "karma start karma.conf.js",
       "lint": "eslint ./index.js ./src ./tests",
       "check": "npm run lint && npm test -- -reporter landing",
       "play": "node ./playground/play.js",
@@ -18,10 +19,18 @@
       "postversion": "git push && git push --tags"
    },
    "devDependencies": {
+      "browserify": "^16.5.2",
       "chai": "*",
       "chai-as-promised": "*",
       "eslint": "*",
       "jsdom": "^16.4.0",
-      "mocha": "*"
+      "karma": "^5.1.1",
+      "karma-browserify": "^7.0.0",
+      "karma-chai": "^0.1.0",
+      "karma-chrome-launcher": "^3.1.0",
+      "karma-mocha": "^2.0.1",
+      "karma-mocha-reporter": "^2.2.5",
+      "mocha": "*",
+      "watchify": "^3.11.1"
    }
 }
