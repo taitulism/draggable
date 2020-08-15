@@ -1,17 +1,9 @@
-const {expect} = require('chai');
-const jsdom = require('jsdom');
+/* global draggable */
 
-const { JSDOM } = jsdom;
-
-const draggable = require('../draggable');
-
-const setWinDoc = (dom) => {
-	global.window = dom.window;
-	global.document = dom.window.document;
-};
+// const draggable = require('../draggable');
 
 const createEvent = (type, props = {}) => {
-	const event = new global.window.Event(type, {bubbles: true});
+	const event = new window.Event(type, {bubbles: true});
 	Object.assign(event, props);
 	return event;
 };
@@ -49,54 +41,33 @@ function simulateMouseUp (elm, x, y) {
 }
 
 describe('draggable', () => {
-	let container, target;
-	beforeEach(() => {
-		document.documentElement.innerHTML = `
-			<head>
-				<meta charset="UTF-8">
-				<style>
-					* {
-						box-sizing: border-box;
-						padding: 0;
-						margin: 0;
-					}
+	let testDOMContainer, container, target;
 
-					#container {
-						height: 100vh;
-						width: 100vw;
-						position: fixed;
-						top: 0px;
-						left: 0px;
-					}
-
-					#target {
-						width: 100px;
-						height: 100px;
-						background-color: pink;
-					}
-				</style>
-			</head>
-			<body>
-				<div id="container">
-					<div id="target"></div>
-				</div>
-			</body>`
-		;
-		container = document.getElementById('container');
-		target = document.getElementById('target');
+	before(() => {
+		testDOMContainer = document.getElementById('test-dom-container');
 	});
-	// beforeEach(() => JSDOM.fromFile('tests/test.html').then((dom) => {
-	// 	setWinDoc(dom);
-	// 	container = document.getElementById('container');
-	// 	target = document.getElementById('target');
-	// }));
+
+	beforeEach(() => {
+		container = document.createElement('div');
+		container.id = 'container';
+
+		target = document.createElement('div');
+		target.id = 'target';
+
+		container.appendChild(target);
+		testDOMContainer.appendChild(container);
+	});
 
 	afterEach(() => {
-		// global.window.close();
+		target.parentNode.removeChild(target);
 		target = null;
+
+		container.parentNode.removeChild(container);
 		container = null;
-		// global.window = null;
-		// global.document = null;
+	});
+
+	after(() => {
+		testDOMContainer = null;
 	});
 
 	it('is a function', () => expect(draggable).to.be.a('function'));

@@ -4,7 +4,8 @@ module.exports = {
 		browser: true,
 		commonjs: true,
 		es6: true,
-		mocha: true
+		mocha: true,
+		chai: true,
 	},
 	extends: 'eslint:recommended',
 	globals: {

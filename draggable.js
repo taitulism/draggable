@@ -1,4 +1,4 @@
-module.exports = function draggable (elm, opts) {
+/* module.exports =  */function draggable (elm, opts) {
 	return new Draggable(elm, opts);
 };
 
