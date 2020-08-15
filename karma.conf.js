@@ -1,15 +1,26 @@
-const resolvePath = require('path').resolve;
+/* env node */
 
 module.exports = function (config) {
 	config.set({
+		autoWatch: true,
+		singleRun: false,
+		reporters: ['mocha'],
+		port: 8181,
+		colors: true,
+		basePath: process.cwd(),
+		concurrency: Infinity,
 		frameworks: ['browserify', 'mocha', 'chai'],
-		browsers: [
-			// 'ChromeNoSandbox',
-			'ChromeHeadlessNoSandbox',
+		plugins: [
+			'karma-browserify',
+			'karma-chrome-launcher',
+			'karma-chai',
+			'karma-mocha',
+			'karma-mocha-reporter',
 		],
-		// customContextFile: 'tests/test.html',
-		browserSocketTimeout: 30000,
-		browserNoActivityTimeout: 30000,
+		browsers: [
+			'ChromeNoSandbox',
+			// 'ChromeHeadlessNoSandbox',
+		],
 		customLaunchers: {
 			ChromeNoSandbox: {
 				base: 'Chrome',
@@ -25,27 +36,23 @@ module.exports = function (config) {
 			},
 		},
 		preprocessors: {
-			'tests/**/*.js': ['browserify']
+			'tests/**/*.js': ['browserify'],
 		},
 		browserify: {
 			debug: true,
-			// transform: [ 'brfs' ]
 		},
-		reporters: ['mocha'],
-		plugins: [
-			'karma-chrome-launcher',
-			'karma-chai',
-			'karma-mocha',
-			'karma-browserify',
-			'karma-mocha-reporter'
-		],
-		basePath: process.cwd(),
-		colors: true,
 		files: [
-			'tests/**/*.js' // or you can put your test bundle here
+			'tests/**/*.js'
 		],
-		port: 8181,
-		singleRun: true,
-		concurrency: Infinity
+		client: {
+			// clearContext: false,
+			mocha: {
+				reporter: 'html',
+				timeout: 2000,
+
+				// require specific files after Mocha is initialized
+				require: [require.resolve('./draggable.js')],
+			},
+		},
 	});
 };

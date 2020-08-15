@@ -1,7 +1,5 @@
 /* global draggable */
 
-// const draggable = require('../draggable');
-
 const createEvent = (type, props = {}) => {
 	const event = new window.Event(type, {bubbles: true});
 	Object.assign(event, props);
@@ -45,6 +43,11 @@ describe('draggable', () => {
 
 	before(() => {
 		testDOMContainer = document.getElementById('test-dom-container');
+		if (!testDOMContainer) {
+			testDOMContainer = document.createElement('div');
+			testDOMContainer.id = 'test-dom-container';
+			document.body.appendChild(testDOMContainer);
+		}
 	});
 
 	beforeEach(() => {
@@ -79,7 +82,7 @@ describe('draggable', () => {
 		expect(ctor.name).to.equal('Draggable');
 	});
 
-	describe('dragging arround', () => {
+	describe('dragging around', () => {
 		it('moves the elm on the X axis', () => {
 			draggable(target);
 			expect(target.style.left).to.be.empty;
