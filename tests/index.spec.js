@@ -1,5 +1,7 @@
 /* global draggable */
 
+// const draggable = require('../draggable');
+
 const createEvent = (type, props = {}) => {
 	const event = new window.Event(type, {bubbles: true});
 	Object.assign(event, props);

@@ -9,9 +9,9 @@ module.exports = function (config) {
 		colors: true,
 		basePath: process.cwd(),
 		concurrency: Infinity,
-		frameworks: ['browserify', 'mocha', 'chai'],
+		frameworks: [/* 'browserify',  */'mocha', 'chai'],
 		plugins: [
-			'karma-browserify',
+			// 'karma-browserify',
 			'karma-chrome-launcher',
 			'karma-chai',
 			'karma-mocha',
@@ -35,14 +35,20 @@ module.exports = function (config) {
 				flags: ['--no-sandbox']
 			},
 		},
-		preprocessors: {
-			'tests/**/*.js': ['browserify'],
-		},
-		browserify: {
-			debug: true,
-		},
+		// preprocessors: {
+		// 	'tests/**/*.js': ['browserify'],
+		// },
+		// browserify: {
+		// 	debug: true,
+		// },
+		// watchify: {
+		// 	poll: true,
+		// 	cache: {},
+		// 	packageCache: {}
+		// },
 		files: [
-			'tests/**/*.js'
+			'draggable.js',
+			'tests/**/*.js',
 		],
 		client: {
 			// clearContext: false,
@@ -50,8 +56,8 @@ module.exports = function (config) {
 				reporter: 'html',
 				timeout: 2000,
 
-				// require specific files after Mocha is initialized
-				require: [require.resolve('./draggable.js')],
+				// require files after Mocha is initialized - but cached - not watched :/
+				// require: [require.resolve('./draggable.js')],
 			},
 		},
 	});

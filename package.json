@@ -24,12 +24,10 @@
       "eslint": "*",
       "jsdom": "^16.4.0",
       "karma": "^5.1.1",
-      "karma-browserify": "^7.0.0",
       "karma-chai": "^0.1.0",
       "karma-chrome-launcher": "^3.1.0",
       "karma-mocha": "^2.0.1",
       "karma-mocha-reporter": "^2.2.5",
-      "mocha": "*",
-      "watchify": "^3.11.1"
+      "mocha": "*"
    }
 }
