@@ -1,0 +1,90 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Draggable Playground</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		.wrapper {
+			padding: 50px;
+			height: 250px;
+			background-color: #979797;
+		}
+
+		#old {
+			background-color: red;
+			width: 150px;
+			height: 150px;
+			padding-top: 15px;
+			position: relative;
+		}
+
+		#draggable-elm {
+			width: 150px;
+			height: 150px;
+			position: relative;
+			text-align: center;
+			background-color: #cecece;
+		}
+
+		#draggable-elm-2 {
+			width: 150px;
+			height: 150px;
+			position: absolute;
+			text-align: center;
+			background-color: #6850d4;
+		}
+
+		.dragging {
+			border: 1px dashed red;
+		}
+
+		.dragging-over {
+			background: #e3b9ff;
+		}
+
+		.hidden {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="wrapper">
+		<div id="old" class="drag"></div>
+	</div>
+
+	<br />
+
+	<div class="wrapper">
+		<div id="draggable-elm"></div>
+	</div>
+
+	<br />
+
+	<div class="wrapper">
+		<div id="draggable-elm-2"></div>
+	</div>
+
+
+
+
+	<script src="old-drag.js"></script>
+	<script src="drag-n-drop.js"></script>
+	<script src="../draggable.js"></script>
+<script>
+//-----------------------------------------
+const drapNdropable = document.getElementById('draggable-elm');
+const newDraggable = document.getElementById('draggable-elm-2');
+draggableNDroppable(drapNdropable);
+draggable(newDraggable);
+
+
+//-----------------------------------------
+</script>
+</body>
+</html>
