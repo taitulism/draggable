@@ -8,6 +8,7 @@ function Draggable (elm, opts = {}) {
 	this.onDrop = this.onDrop.bind(this);
 
 	this.elm = elm;
+	this.box = elm.getBoundingClientRect();
 	this.startMouseX = 0;
 	this.startMouseY = 0;
 	this.mouseOffsetX = 0;
@@ -15,24 +16,33 @@ function Draggable (elm, opts = {}) {
 	this.elmX = 0;
 	this.elmY = 0;
 	this.events = {grab: [], drop: [], dragging: []};
-	this.originalPosition = elm.style.position || null;
+
+	this.originalJsPosition = elm.style.position || null;
+	const position = elm.style.position || window.getComputedStyle(elm).position;
+
+	if (position !== 'absolute') {
+		elm.style.position = 'absolute';
+	}
+	elm.style.top = this.box.top + 'px';
+	elm.style.left = this.box.left + 'px';
+
+	document.body.appendChild(this.elm);
 
 	elm.classList.add('draggable');
 
-	elm.addEventListener('mousedown', this.onDragStart);
-
 	if (opts.axis) {
-		this.singleAxis = true;
+		this.mouseUpContextElm = document;
 		const axis = opts.axis.toLowerCase();
 		if (axis === 'x') this.xAxis = true;
 		else if (axis === 'y') this.yAxis = true;
-		document.addEventListener('mouseup', this.onDrop);
 	}
 	else {
+		this.mouseUpContextElm = elm;
 		this.xAxis = true;
 		this.yAxis = true;
-		elm.addEventListener('mouseup', this.onDrop);
 	}
+
+	elm.addEventListener('mousedown', this.onDragStart);
 }
 
 Draggable.prototype.on = function (eventName, callback) {
@@ -40,27 +50,23 @@ Draggable.prototype.on = function (eventName, callback) {
 };
 
 Draggable.prototype.onDragStart = function (ev) {
-	this.elm.style.position = 'absolute';
-
 	if (this.xAxis) {
 		// this.startMouseX = ev.clientX;
 		// this.elmX = extractNumber(this.elm.style.left);
-		this.elm.style.left = ev.clientX - ev.offsetX  + 'px';
 		this.mouseOffsetX = ev.offsetX;
 	}
 
 	if (this.yAxis) {
 		// this.startMouseY = ev.clientY;
 		// this.elmY = extractNumber(this.elm.style.top);
-		this.elm.style.top = ev.clientY - ev.offsetY  + 'px';
 		this.mouseOffsetY = ev.offsetY;
 	}
 
-	document.body.appendChild(this.elm);
-
 	this.elm.classList.add('grabbed');
 
+	this.mouseUpContextElm.addEventListener('mouseup', this.onDrop);
 	document.addEventListener('mousemove', this.onDragging);
+
 	this.events.grab.forEach(cb => cb(ev));
 };
 
@@ -85,32 +91,28 @@ Draggable.prototype.onDragging = function (ev) {
 };
 
 Draggable.prototype.onDrop = function (ev) {
-	this.elm.classList.remove('grabbed', 'dragging');
-
 	document.removeEventListener('mousemove', this.onDragging);
+	this.mouseUpContextElm.removeEventListener('mouseup', this.onDrop);
+
+	this.elm.classList.remove('grabbed', 'dragging');
 	this.events.drop.forEach(cb => cb(ev));
 };
 
 Draggable.prototype.destroy = function () {
 	this.elm.removeEventListener('mousedown', this.onDragStart);
 	document.removeEventListener('mousemove', this.onDragging);
-	if (this.singleAxis) {
-		document.removeEventListener('mouseup', this.onDrop);
-	}
-	else {
-		this.elm.removeEventListener('mouseup', this.onDrop);
+	this.mouseUpContextElm.removeEventListener('mouseup', this.onDrop);
+
+	if (this.originalJsPosition) {
+		this.elm.style.position = this.originalJsPosition;
 	}
 
 	this.elm.classList.remove('draggable', 'grabbed', 'dragging');
-
-	if (this.originalPosition) {
-		this.elm.style.position = this.originalPosition;
-	}
 
 	this.events = null;
 	this.elm = null;
 };
 
-function extractNumber (rawValue) {
-	return parseInt(rawValue || 0, 10);
-}
+// function extractNumber (rawValue) {
+// 	return parseInt(rawValue || 0, 10);
+// }

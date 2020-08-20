@@ -8,22 +8,25 @@ const createEvent = (type, props = {}) => {
 	return event;
 };
 
+// constant offset of the mouse relative to the elm top-left corner
+const OFFSET = 10;
+
 function simulateMouseDown (elm, x, y) {
 	const event = createEvent('mousedown', {
-		clientX: x || 0,
-		clientY: y || 0,
-		offsetX: x || 0,
-		offsetY: y || 0,
+		clientX: (x || 0) + OFFSET,
+		clientY: (y || 0) + OFFSET,
+		offsetX: OFFSET,
+		offsetY: OFFSET,
 	});
 	elm.dispatchEvent(event);
 }
 
 function simulateMouseMove (elm, x, y) {
 	const event = createEvent('mousemove', {
-		clientX: x || 0,
-		clientY: y || 0,
-		offsetX: x || 0,
-		offsetY: y || 0,
+		clientX: (x || 0) + OFFSET,
+		clientY: (y || 0) + OFFSET,
+		offsetX: OFFSET,
+		offsetY: OFFSET,
 	});
 
 	elm.dispatchEvent(event);
@@ -31,17 +34,19 @@ function simulateMouseMove (elm, x, y) {
 
 function simulateMouseUp (elm, x, y) {
 	const event = createEvent('mouseup', {
-		clientX: x || 0,
-		clientY: y || 0,
-		offsetX: x || 0,
-		offsetY: y || 0,
+		clientX: (x || 0) + OFFSET,
+		clientY: (y || 0) + OFFSET,
+		offsetX: OFFSET,
+		offsetY: OFFSET,
 	});
 
 	elm.dispatchEvent(event);
 }
 
+const px = (num) => num + 'px';
+
 describe('draggable', () => {
-	let testDOMContainer, container, target;
+	let testDOMContainer, container, target, box, move;
 
 	before(() => {
 		testDOMContainer = document.getElementById('test-dom-container');
@@ -61,6 +66,9 @@ describe('draggable', () => {
 
 		container.appendChild(target);
 		testDOMContainer.appendChild(container);
+
+		box = target.getBoundingClientRect();
+		move = (x, y) => [(box.left + x), (box.top + y)];
 	});
 
 	afterEach(() => {
@@ -69,6 +77,9 @@ describe('draggable', () => {
 
 		container.parentNode.removeChild(container);
 		container = null;
+
+		box = null;
+		move = null;
 	});
 
 	after(() => {
@@ -86,49 +97,84 @@ describe('draggable', () => {
 
 	describe('Dragging Around', () => {
 		it('moves the elm on the X axis', () => {
-			draggable(target);
 			expect(target.style.left).to.be.empty;
+			draggable(target);
+			expect(target.style.left).to.equal(px(box.left));
 
-			simulateMouseDown(target, 50, 50);
+			simulateMouseDown(target, ...move(0, 0));
+			expect(target.style.left).to.equal(px(box.left));
+			simulateMouseMove(target, ...move(0, 0));
+			expect(target.style.left).to.equal(px(box.left));
 
-			simulateMouseMove(target, 50, 50);
-			expect(target.style.left).to.equal('0px');
+			simulateMouseMove(target, ...move(150, 0));
+			simulateMouseUp(target, ...move(150, 0));
+			expect(target.style.left).to.equal(px(box.left + 150));
 
-			simulateMouseMove(target, 150, 50);
-			expect(target.style.left).to.equal('100px');
+			simulateMouseDown(target, ...move(150, 0));
+			expect(target.style.left).to.equal(px(box.left + 150));
+			simulateMouseMove(target, ...move(150, 0));
+			expect(target.style.left).to.equal(px(box.left + 150));
+
+			simulateMouseMove(target, ...move(0, 0));
+			simulateMouseUp(target, ...move(0, 0));
+			expect(target.style.left).to.equal(px(box.left));
 		});
 
 		it('moves the elm on the Y axis', () => {
-			draggable(target);
 			expect(target.style.top).to.be.empty;
+			draggable(target);
+			expect(target.style.top).equal(px(box.top));
 
-			simulateMouseDown(target, 50, 50);
+			simulateMouseDown(target, ...move(0, 0));
+			expect(target.style.top).to.equal(px(box.top));
+			simulateMouseMove(target, ...move(0, 0));
+			expect(target.style.top).to.equal(px(box.top));
 
-			simulateMouseMove(target, 50, 50);
-			expect(target.style.left).to.equal('0px');
+			simulateMouseMove(target, ...move(0, 150));
+			simulateMouseUp(target, ...move(0, 150));
+			expect(target.style.top).to.equal(px(box.top + 150));
 
-			simulateMouseMove(target, 50, 150);
-			expect(target.style.top).to.equal('100px');
+			simulateMouseDown(target, ...move(0, 150));
+			expect(target.style.top).to.equal(px(box.top + 150));
+			simulateMouseMove(target, ...move(0, 150));
+			expect(target.style.top).to.equal(px(box.top + 150));
+
+			simulateMouseMove(target, ...move(0, 0));
+			simulateMouseUp(target, ...move(0, 0));
+			expect(target.style.top).to.equal(px(box.top));
 		});
 
 		it('moves the elm freely on both axes', () => {
-			draggable(target);
 			expect(target.style.left).to.be.empty;
 			expect(target.style.top).to.be.empty;
+			draggable(target);
+			expect(target.style.left).equal(px(box.left));
+			expect(target.style.top).equal(px(box.top));
 
-			simulateMouseDown(target, 20, 30);
+			simulateMouseDown(target, ...move(0, 0));
+			expect(target.style.left).to.equal(px(box.left));
+			expect(target.style.top).to.equal(px(box.top));
 
-			simulateMouseMove(target, 20, 30);
-			expect(target.style.left).to.equal('0px');
-			expect(target.style.top).to.equal('0px');
+			simulateMouseMove(target, ...move(0, 0));
+			expect(target.style.left).to.equal(px(box.left));
+			expect(target.style.top).to.equal(px(box.top));
 
-			simulateMouseMove(target, 180, 200);
-			expect(target.style.left).to.equal('160px');
-			expect(target.style.top).to.equal('170px');
+			simulateMouseMove(target, ...move(150, 150));
+			simulateMouseUp(target, ...move(150, 150));
+			expect(target.style.left).to.equal(px(box.left + 150));
+			expect(target.style.top).to.equal(px(box.top + 150));
 
-			simulateMouseMove(target, 90, 250);
-			expect(target.style.left).to.equal('70px');
-			expect(target.style.top).to.equal('220px');
+			simulateMouseDown(target, ...move(150, 150));
+			expect(target.style.left).to.equal(px(box.left + 150));
+			expect(target.style.top).to.equal(px(box.top + 150));
+			simulateMouseMove(target, ...move(150, 150));
+			expect(target.style.left).to.equal(px(box.left + 150));
+			expect(target.style.top).to.equal(px(box.top + 150));
+
+			simulateMouseMove(target, ...move(0, 0));
+			simulateMouseUp(target, ...move(0, 0));
+			expect(target.style.left).to.equal(px(box.left));
+			expect(target.style.top).to.equal(px(box.top));
 		});
 	});
 
@@ -142,8 +188,8 @@ describe('draggable', () => {
 			});
 
 			simulateMouseDown(target, 50, 50);
-
 			expect(fired).to.be.true;
+			simulateMouseUp(target, 50, 50);
 		});
 
 		it('emits `drop` event', () => {
@@ -211,6 +257,7 @@ describe('draggable', () => {
 			draggable(target);
 			simulateMouseDown(target, 50, 50);
 			expect(target.style.position).to.equal('absolute');
+			simulateMouseUp(target, 50, 50);
 		});
 
 		it('puts the target element in the <body>', () => {
@@ -218,69 +265,61 @@ describe('draggable', () => {
 			draggable(target);
 			simulateMouseDown(target, 50, 50);
 			expect(target.parentNode.nodeName).to.equal('BODY');
+			simulateMouseUp(target, 50, 50);
 		});
 	});
 
 	describe('Options', () => {
 		describe('axis', () => {
+			/*
+				Why simulating a mouse move on container?
+				When restricting to an axis, moving the mouse in the other axis (outside of target) misses the mouseup event.
+				In this case, if the event is bound to target, the mouseup event occures outside (hence container).
+				Fixed by binding the mouseup to the document.
+				Test by keep moving the mouse after the drop and verify target is not moving.
+			*/
 			it('restricts dragging along the X axis only', () => {
 				draggable(target, {axis: 'X'});
-				expect(target.style.left).to.be.empty;
-				expect(target.style.top).to.be.empty;
+				expect(target.style.left).to.equal(px(box.left));
+				expect(target.style.top).to.equal(px(box.top));
 
-				simulateMouseDown(target, 50, 50);
-				simulateMouseMove(target, 50, 50);
+				simulateMouseDown(target, ...move(50, 50));
+				simulateMouseMove(target, ...move(50, 50));
 
-				expect(target.style.left).to.equal('0px');
-				expect(target.style.top).to.be.empty;
+				expect(target.style.left).to.equal(px(box.left + 50));
+				expect(target.style.top).to.equal(px(box.top));
 
-				simulateMouseMove(target, 150, 150);
-				expect(target.style.left).to.equal('100px');
-				expect(target.style.top).to.be.empty;
+				// why container? read above
+				simulateMouseMove(container, ...move(150, 150));
+				expect(target.style.left).to.equal(px(box.left + 150));
+				expect(target.style.top).to.equal(px(box.top));
+
+				simulateMouseUp(container, ...move(150, 150));
+				simulateMouseMove(container, ...move(300, 300));
+				expect(target.style.left).to.equal(px(box.left + 150));
+				expect(target.style.top).to.equal(px(box.top));
 			});
 
 			it('restricts dragging along the Y axis only', () => {
 				draggable(target, {axis: 'Y'});
-				expect(target.style.left).to.be.empty;
-				expect(target.style.top).to.be.empty;
+				expect(target.style.left).to.equal(px(box.left));
+				expect(target.style.top).to.equal(px(box.top));
 
-				simulateMouseDown(target, 50, 50);
-				simulateMouseMove(target, 50, 50);
+				simulateMouseDown(target, ...move(50, 50));
+				simulateMouseMove(target, ...move(50, 50));
 
-				expect(target.style.left).to.be.empty;
-				expect(target.style.top).to.equal('0px');
+				expect(target.style.left).to.equal(px(box.left));
+				expect(target.style.top).to.equal(px(box.top + 50));
 
-				simulateMouseMove(target, 150, 150);
-				expect(target.style.left).to.be.empty;
-				expect(target.style.top).to.equal('100px');
-			});
+				// why container? read above
+				simulateMouseMove(container, ...move(150, 150));
+				expect(target.style.left).to.equal(px(box.left));
+				expect(target.style.top).to.equal(px(box.top + 150));
 
-			it('opt:axis bug', () => {
-				/*
-					When restricting to an axis, moving the mouse in the other
-					axis misses the mouseup event (mouse is outside of target).
-					The event is bound to target but the mouseup event occures outside.
-					Fixed by binding the mouseup to the document.
-					Test by keep moving the mouse after the drop and verify target is not moving.
-				*/
-
-				draggable(target, {axis: 'X'});
-				expect(target.style.left).to.be.empty;
-				expect(target.style.top).to.be.empty;
-
-				simulateMouseDown(target, 50, 50);
-				simulateMouseMove(target, 50, 50);
-
-				expect(target.style.left).to.equal('0px');
-				expect(target.style.top).to.be.empty;
-
-				simulateMouseMove(target, 180, 180);
-				expect(target.style.left).to.equal('130px');
-				expect(target.style.top).to.be.empty;
-
-				simulateMouseUp(document, 180, 180);
-				simulateMouseMove(target, 400, 400);
-				expect(target.style.left).to.equal('130px');
+				simulateMouseUp(container, ...move(150, 150));
+				simulateMouseMove(container, ...move(300, 300));
+				expect(target.style.left).to.equal(px(box.left));
+				expect(target.style.top).to.equal(px(box.top + 150));
 			});
 		});
 	});
