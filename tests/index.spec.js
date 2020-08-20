@@ -84,7 +84,7 @@ describe('draggable', () => {
 		expect(ctor.name).to.equal('Draggable');
 	});
 
-	describe('dragging around', () => {
+	describe('Dragging Around', () => {
 		it('moves the elm on the X axis', () => {
 			draggable(target);
 			expect(target.style.left).to.be.empty;
@@ -132,7 +132,7 @@ describe('draggable', () => {
 		});
 	});
 
-	describe('events', () => {
+	describe('Events', () => {
 		it('emits `grab` event', () => {
 			const drg = draggable(target);
 			let fired = false;
@@ -176,7 +176,7 @@ describe('draggable', () => {
 		});
 	});
 
-	describe('classnames', () => {
+	describe('Classnames', () => {
 		it('sets a `draggable` classname on elm', () => {
 			draggable(target);
 			expect(target.classList.contains('draggable')).to.be.true;
@@ -203,8 +203,8 @@ describe('draggable', () => {
 		});
 	});
 
-	describe('behavior', () => {
-		it('sets position: absolute on the target element', () => {
+	describe('Behavior', () => {
+		it('sets `position:absolute` on the target element', () => {
 			target.style.position = 'static';
 
 			expect(target.style.position).to.equal('static');
@@ -221,7 +221,7 @@ describe('draggable', () => {
 		});
 	});
 
-	describe('options', () => {
+	describe('Options', () => {
 		describe('axis', () => {
 			it('restricts dragging along the X axis only', () => {
 				draggable(target, {axis: 'X'});
@@ -285,7 +285,7 @@ describe('draggable', () => {
 		});
 	});
 
-	describe('destruction', () => {
+	describe('Destruction', () => {
 		it('removes all listeners', () => {
 			const drg = draggable(target);
 
@@ -297,29 +297,36 @@ describe('draggable', () => {
 			drg.on('dragging', () => { moveCount++; });
 			drg.on('drop', () => { dropCount++; });
 
+			expect(grabCount).to.equal(0);
 			simulateMouseDown(target, 50, 50);
 			expect(grabCount).to.equal(1);
 
+			expect(moveCount).to.equal(0);
 			simulateMouseMove(target, 50, 50);
 			expect(moveCount).to.equal(1);
 
 			simulateMouseMove(target, 150, 150);
 			expect(moveCount).to.equal(2);
 
+			expect(dropCount).to.equal(0);
 			simulateMouseUp(target, 150, 150);
 			expect(dropCount).to.equal(1);
 
+			expect(moveCount).to.equal(2);
 			simulateMouseMove(target, 160, 160);
 			expect(moveCount).to.equal(2);
 
 			drg.destroy();
 
+			expect(grabCount).to.equal(1);
 			simulateMouseDown(target, 160, 160);
 			expect(grabCount).to.equal(1);
 
+			expect(moveCount).to.equal(2);
 			simulateMouseMove(target, 160, 160);
 			expect(moveCount).to.equal(2);
 
+			expect(dropCount).to.equal(1);
 			simulateMouseUp(target, 160, 160);
 			expect(dropCount).to.equal(1);
 		});
@@ -358,15 +365,9 @@ describe('draggable', () => {
 		it('releases the target element', () => {
 			const drg = draggable(target);
 
-			simulateMouseDown(target, 50, 50);
-			simulateMouseMove(target, 50, 50);
-			simulateMouseMove(target, 150, 150);
-			simulateMouseUp(target, 150, 150);
-
 			expect(drg.elm).to.deep.equal(target);
 			drg.destroy();
 			expect(drg.elm).to.be.null;
 		});
 	});
 });
-
