@@ -331,46 +331,46 @@ describe('draggable', () => {
 		it('removes all listeners', () => {
 			const drg = draggable(target);
 
-			let grabCount = 0;
-			let moveCount = 0;
-			let dropCount = 0;
+			let grabs = 0;
+			let moves = 0;
+			let drops = 0;
 
-			drg.on('grab', () => { grabCount++; });
-			drg.on('dragging', () => { moveCount++; });
-			drg.on('drop', () => { dropCount++; });
+			drg.on('grab', () => { grabs++; });
+			drg.on('dragging', () => { moves++; });
+			drg.on('drop', () => { drops++; });
 
-			expect(grabCount).to.equal(0);
+			expect(grabs).to.equal(0);
 			simulateMouseDown(target, 50, 50);
-			expect(grabCount).to.equal(1);
+			expect(grabs).to.equal(1);
 
-			expect(moveCount).to.equal(0);
+			expect(moves).to.equal(0);
 			simulateMouseMove(target, 50, 50);
-			expect(moveCount).to.equal(1);
+			expect(moves).to.equal(1);
 
 			simulateMouseMove(target, 150, 150);
-			expect(moveCount).to.equal(2);
+			expect(moves).to.equal(2);
 
-			expect(dropCount).to.equal(0);
+			expect(drops).to.equal(0);
 			simulateMouseUp(target, 150, 150);
-			expect(dropCount).to.equal(1);
+			expect(drops).to.equal(1);
 
-			expect(moveCount).to.equal(2);
+			expect(moves).to.equal(2);
 			simulateMouseMove(target, 160, 160);
-			expect(moveCount).to.equal(2);
+			expect(moves).to.equal(2);
 
 			drg.destroy();
 
-			expect(grabCount).to.equal(1);
+			expect(grabs).to.equal(1);
 			simulateMouseDown(target, 160, 160);
-			expect(grabCount).to.equal(1);
+			expect(grabs).to.equal(1);
 
-			expect(moveCount).to.equal(2);
+			expect(moves).to.equal(2);
 			simulateMouseMove(target, 160, 160);
-			expect(moveCount).to.equal(2);
+			expect(moves).to.equal(2);
 
-			expect(dropCount).to.equal(1);
+			expect(drops).to.equal(1);
 			simulateMouseUp(target, 160, 160);
-			expect(dropCount).to.equal(1);
+			expect(drops).to.equal(1);
 		});
 
 		it('removes all classnames', () => {

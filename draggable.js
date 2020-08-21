@@ -34,9 +34,13 @@ function Draggable (elm, opts = {}) {
 
 	if (opts.axis) {
 		this.mouseUpContextElm = document;
+		
 		const axis = opts.axis.toLowerCase();
-		if (axis === 'x') this.xAxis = true;
-		else if (axis === 'y') this.yAxis = true;
+
+		if (axis === 'x')
+			this.xAxis = true;
+		else if (axis === 'y')
+			this.yAxis = true;
 	}
 	else {
 		this.mouseUpContextElm = elm;
