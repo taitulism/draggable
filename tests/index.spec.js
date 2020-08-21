@@ -183,9 +183,7 @@ describe('draggable', () => {
 			const drg = draggable(target);
 			let fired = false;
 
-			drg.on('grab', (ev) => {
-				fired = true;
-			});
+			drg.on('grab', (ev) => { fired = true; });
 
 			simulateMouseDown(target, 50, 50);
 			expect(fired).to.be.true;
@@ -196,29 +194,28 @@ describe('draggable', () => {
 			const drg = draggable(target);
 			let fired = false;
 
-			drg.on('drop', (ev) => {
-				fired = true;
-			});
+			drg.on('drop', (ev) => { fired = true; });
 
 			simulateMouseDown(target, 50, 50);
+			expect(fired).to.be.false;
 			simulateMouseUp(target, 50, 50);
-
 			expect(fired).to.be.true;
+
 		});
 
 		it('emits `dragging` event', () => {
 			const drg = draggable(target);
 			let fired = false;
 
-			drg.on('dragging', (ev) => {
-				fired = true;
-			});
+			drg.on('dragging', (ev) => { fired = true; });
 
 			simulateMouseDown(target, 50, 50);
-			simulateMouseMove(target, 50, 50);
-			simulateMouseUp(target, 50, 50);
 
+			expect(fired).to.be.false;
+			simulateMouseMove(target, 50, 50);
 			expect(fired).to.be.true;
+
+			simulateMouseUp(target, 50, 50);
 		});
 	});
 
@@ -253,9 +250,7 @@ describe('draggable', () => {
 		it('places the target element in the <body>', () => {
 			expect(target.parentNode.nodeName).to.equal('DIV');
 			draggable(target);
-			simulateMouseDown(target, 50, 50);
 			expect(target.parentNode.nodeName).to.equal('BODY');
-			simulateMouseUp(target, 50, 50);
 		});
 
 		describe('Position Elevation', () => {
@@ -403,7 +398,6 @@ describe('draggable', () => {
 			expect(target.style.position).to.equal('static');
 			const drg = draggable(target);
 
-			simulateMouseDown(target, 50, 50);
 			expect(target.style.position).to.equal('absolute');
 			drg.destroy();
 			expect(target.style.position).to.equal('static');
