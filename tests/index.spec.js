@@ -289,7 +289,7 @@ describe('draggable', () => {
 				expect(target.style.left).to.equal(px(box.left + 50));
 				expect(target.style.top).to.equal(px(box.top));
 
-				// why container? read above
+				// why container? see comment above
 				simulateMouseMove(container, ...move(150, 150));
 				expect(target.style.left).to.equal(px(box.left + 150));
 				expect(target.style.top).to.equal(px(box.top));
@@ -311,7 +311,7 @@ describe('draggable', () => {
 				expect(target.style.left).to.equal(px(box.left));
 				expect(target.style.top).to.equal(px(box.top + 50));
 
-				// why container? read above
+				// why container? see comment above
 				simulateMouseMove(container, ...move(150, 150));
 				expect(target.style.left).to.equal(px(box.left));
 				expect(target.style.top).to.equal(px(box.top + 150));
