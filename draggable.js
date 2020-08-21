@@ -8,7 +8,6 @@ function Draggable (elm, opts = {}) {
 	this.onDrop = this.onDrop.bind(this);
 
 	this.elm = elm;
-	this.box = elm.getBoundingClientRect();
 	this.startMouseX = 0;
 	this.startMouseY = 0;
 	this.mouseOffsetX = 0;
@@ -23,8 +22,11 @@ function Draggable (elm, opts = {}) {
 	if (position !== 'absolute') {
 		elm.style.position = 'absolute';
 	}
-	elm.style.top = this.box.top + 'px';
-	elm.style.left = this.box.left + 'px';
+
+	const {top, left} = elm.getBoundingClientRect();
+
+	elm.style.top = top + 'px';
+	elm.style.left = left + 'px';
 
 	document.body.appendChild(this.elm);
 

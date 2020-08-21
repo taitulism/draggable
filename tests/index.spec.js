@@ -250,22 +250,30 @@ describe('draggable', () => {
 	});
 
 	describe('Behavior', () => {
-		it('sets `position:absolute` on the target element', () => {
-			target.style.position = 'static';
-
-			expect(target.style.position).to.equal('static');
-			draggable(target);
-			simulateMouseDown(target, 50, 50);
-			expect(target.style.position).to.equal('absolute');
-			simulateMouseUp(target, 50, 50);
-		});
-
-		it('puts the target element in the <body>', () => {
+		it('places the target element in the <body>', () => {
 			expect(target.parentNode.nodeName).to.equal('DIV');
 			draggable(target);
 			simulateMouseDown(target, 50, 50);
 			expect(target.parentNode.nodeName).to.equal('BODY');
 			simulateMouseUp(target, 50, 50);
+		});
+
+		describe('Position Elevation', () => {
+			it('if element position is `absolute` - keep it like that', () => {
+				target.style.position = 'absolute';
+
+				expect(target.style.position).to.equal('absolute');
+				draggable(target);
+				expect(target.style.position).to.equal('absolute');
+			});
+
+			it('if element position is not `absolute` - sets `position:absolute`', () => {
+				target.style.position = 'static';
+
+				expect(target.style.position).to.equal('static');
+				draggable(target);
+				expect(target.style.position).to.equal('absolute');
+			});
 		});
 	});
 
