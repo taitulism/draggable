@@ -12,10 +12,17 @@
 		.wrapper {
 			padding: 50px;
 			height: 250px;
-			background-color: #979797;
+			background-color: #c9c9c9;
 		}
 
-		#old {
+		.drag-box {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 20px;
+		}
+
+		#old-drag {
 			background-color: red;
 			width: 150px;
 			height: 150px;
@@ -23,15 +30,15 @@
 			position: relative;
 		}
 
-		#draggable-elm {
+		#drag-n-drop {
 			width: 150px;
 			height: 150px;
 			position: relative;
 			text-align: center;
-			background-color: #cecece;
+			background-color: #858585;
 		}
 
-		#draggable-elm-2 {
+		#new-draggable {
 			width: 150px;
 			height: 150px;
 			position: absolute;
@@ -53,35 +60,35 @@
 	</style>
 </head>
 <body>
-
 	<div class="wrapper">
-		<div id="old" class="drag"></div>
+		<div id="new-draggable" class="drag-box">draggable</div>
 	</div>
 
 	<br />
 
 	<div class="wrapper">
-		<div id="draggable-elm"></div>
+		<div id="drag-n-drop" class="drag-box">DragNDrop API</div>
 	</div>
 
 	<br />
 
 	<div class="wrapper">
-		<div id="draggable-elm-2"></div>
+		<div id="old-drag" class="drag drag-box">Old Draft</div>
 	</div>
 
 
 
-
-	<script src="old-drag.js"></script>
-	<script src="drag-n-drop.js"></script>
 	<script src="../draggable.js"></script>
+	<script src="drag-n-drop.js"></script>
+	<script src="old-drag.js"></script>
 <script>
 //-----------------------------------------
-const drapNdropable = document.getElementById('draggable-elm');
-const newDraggable = document.getElementById('draggable-elm-2');
+const newDraggable = document.getElementById('new-draggable');
+draggable(newDraggable);
+// draggable(newDraggable, {axis:'x'});
+
+const drapNdropable = document.getElementById('drag-n-drop');
 draggableNDroppable(drapNdropable);
-draggable(newDraggable, {axis:'x'});
 
 
 //-----------------------------------------
