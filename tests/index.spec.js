@@ -72,6 +72,8 @@ describe('draggable', () => {
 	});
 
 	afterEach(() => {
+		if (drg && drg.elm) drg.destroy();
+
 		target.parentNode.removeChild(target);
 		target = null;
 
@@ -80,8 +82,6 @@ describe('draggable', () => {
 
 		box = null;
 		move = null;
-
-		if (drg && drg.elm) drg.destroy();
 	});
 
 	after(() => {
@@ -328,6 +328,95 @@ describe('draggable', () => {
 				expect(target.style.top).to.equal(px(box.top + 150));
 			});
 		});
+
+		describe('grip', () => {
+			let gripsContainer, gripA, gripB
+
+			beforeEach(() => {
+				gripsContainer = document.createElement('div');
+				gripsContainer.id = 'grips-container';
+
+				gripA = document.createElement('div');
+				gripA.id = 'grip-A';
+
+				gripB = document.createElement('div');
+				gripB.id = 'grip-B';
+
+				gripsContainer.appendChild(gripA);
+				gripsContainer.appendChild(gripB);
+				target.appendChild(gripsContainer);
+			});
+
+			afterEach(() => {
+				gripB && gripB.parentNode.removeChild(gripB);
+				gripA && gripA.parentNode.removeChild(gripA);
+				gripsContainer && gripsContainer.parentNode.removeChild(gripsContainer);
+				gripsContainer = null;
+				gripA = null;
+				gripB = null;
+			});
+
+			it('drags the elm only if grabbed by a `grip` element', () => {
+				draggable(target, {grip: gripA});
+
+				simulateMouseDown(target, ...move(0, 0));
+				simulateMouseMove(target, ...move(150, 0));
+				simulateMouseUp(target, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left));
+
+				simulateMouseDown(gripA, ...move(0, 0));
+				simulateMouseMove(gripA, ...move(150, 0));
+				simulateMouseUp(gripA, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
+			});
+
+			it('drags the elm only if grabbed by a `grip` element selector', () => {
+				draggable(target, {grip: '#grip-B'});
+
+				simulateMouseDown(target, ...move(0, 0));
+				simulateMouseMove(target, ...move(150, 0));
+				simulateMouseUp(target, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left));
+
+				simulateMouseDown(gripB, ...move(0, 0));
+				simulateMouseMove(gripB, ...move(150, 0));
+				simulateMouseUp(gripB, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
+			});
+
+			it('drags the elm only if grabbed by a `grip` descendent element', () => {
+				draggable(target, {grip: gripsContainer});
+
+				simulateMouseDown(target, ...move(0, 0));
+				simulateMouseMove(target, ...move(150, 0));
+				simulateMouseUp(target, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left));
+
+				simulateMouseDown(gripA, ...move(0, 0));
+				simulateMouseMove(gripA, ...move(150, 0));
+				simulateMouseUp(gripA, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
+			});
+
+			it('drags the elm only if grabbed by a `grip` selector descendent element', () => {
+				draggable(target, {grip: '#grips-container'});
+
+				simulateMouseDown(target, ...move(0, 0));
+				simulateMouseMove(target, ...move(150, 0));
+				simulateMouseUp(target, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left));
+
+				simulateMouseDown(gripB, ...move(0, 0));
+				simulateMouseMove(gripB, ...move(150, 0));
+				simulateMouseUp(gripB, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
+			});
+
+			// ? :/
+			it.skip('sets a classname on the grip element', () => {
+
+			});
+		});
 	});
 
 	describe('API', () => {
@@ -360,6 +449,10 @@ describe('draggable', () => {
 				simulateMouseUp(target, ...move(450, 0));
 				expect(target.style.left).to.equal(px(box.left + 450));
 			});
+		});
+
+		describe.skip('.setGrip()', () => {
+
 		});
 
 		describe('.destroy()', () => {

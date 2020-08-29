@@ -8,6 +8,8 @@ function Draggable (elm, opts = {}) {
 	this.onDrop = this.onDrop.bind(this);
 
 	this.elm = elm;
+	this.useGrip = false;
+	this.gripHandle = null;
 	this.isDraggable = true;
 	this.startMouseX = 0;
 	this.startMouseY = 0;
@@ -49,8 +51,24 @@ function Draggable (elm, opts = {}) {
 		this.yAxis = true;
 	}
 
+	this.initGrip(opts.grip);
+
 	elm.addEventListener('mousedown', this.onDragStart);
 }
+
+Draggable.prototype.initGrip = function (grip) {
+	if (!grip) return;
+
+	this.useGrip = true;
+	this.gripHandle = grip;
+
+	if (typeof grip == 'string') {
+		this.matchesGrip = createGripMatcher(grip, true);
+	}
+	else if (grip instanceof HTMLElement) {
+		this.matchesGrip = createGripMatcher(grip, false);
+	}
+};
 
 Draggable.prototype.on = function (eventName, callback) {
 	this.events[eventName].push(callback);
@@ -58,21 +76,22 @@ Draggable.prototype.on = function (eventName, callback) {
 
 Draggable.prototype.onDragStart = function (ev) {
 	if (!this.isDraggable) return;
+	if (this.useGrip && !this.matchesGrip(ev.target)) return;
 
 	if (this.xAxis) {
 		// this.startMouseX = ev.clientX;
 		// this.elmX = extractNumber(this.elm.style.left);
 
-		this.mouseOffsetX = ev.offsetX; // ev.offsetX is experimental
-		// this.mouseOffsetX = ev.clientX - extractNumber(this.elm.style.left);
+		// this.mouseOffsetX = ev.offsetX; // ev.offsetX is experimental
+		this.mouseOffsetX = ev.clientX - extractNumber(this.elm.style.left);
 	}
 
 	if (this.yAxis) {
 		// this.startMouseY = ev.clientY;
 		// this.elmY = extractNumber(this.elm.style.top);
 
-		this.mouseOffsetY = ev.offsetY;  // ev.offsetY is experimental
-		// this.mouseOffsetY = ev.clientY - extractNumber(this.elm.style.top);
+		// this.mouseOffsetY = ev.offsetY;  // ev.offsetY is experimental
+		this.mouseOffsetY = ev.clientY - extractNumber(this.elm.style.top);
 	}
 
 	this.elm.classList.add('grabbed');
@@ -140,4 +159,24 @@ Draggable.prototype.destroy = function () {
 
 function extractNumber (rawValue) {
 	return parseInt(rawValue || 0, 10);
+}
+
+function isInside (child, parent) {
+	const actualParentNode = child.parentNode;
+	if (actualParentNode === parent) return true;
+	if (actualParentNode === document.body || actualParentNode == null) return false;
+	return isInside(actualParentNode, parent);
+}
+
+function createGripMatcher (grip, isSelector) {
+	if (isSelector) { // grip is string
+		return function (eventTarget) {
+			return eventTarget.matches(grip) || eventTarget.closest(grip) != null;
+		};
+	}
+	else { // grip is HTMLElement
+		return function (eventTarget) {
+			return grip == eventTarget || isInside(eventTarget, grip);
+		};
+	}
 }

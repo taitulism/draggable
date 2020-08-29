@@ -61,7 +61,14 @@
 </head>
 <body>
 	<div class="wrapper">
-		<div id="new-draggable" class="drag-box">draggable</div>
+		<div id="new-draggable" class="drag-box">
+			<div id="grips-container">
+				<span>grip A</span>
+				<br /><br />
+				<span>grip B</span>
+			</div><br />
+			draggable
+		</div>
 	</div>
 
 	<br />
@@ -84,8 +91,13 @@
 <script>
 //-----------------------------------------
 const newDraggable = document.getElementById('new-draggable');
-const drg = draggable(newDraggable);
-// draggable(newDraggable, {axis:'x'});
+const gripHandle = document.getElementById('grips-container');
+
+// const drg = draggable(newDraggable);
+const drg = draggable(newDraggable, {
+	// axis:'x',
+	grip: gripHandle,
+});
 
 const drapNdropable = document.getElementById('drag-n-drop');
 draggableNDroppable(drapNdropable);
