@@ -34,7 +34,7 @@ function Draggable (elm, opts = {}) {
 
 	if (opts.axis) {
 		this.mouseUpContextElm = document;
-		
+
 		const axis = opts.axis.toLowerCase();
 
 		if (axis === 'x')
@@ -59,13 +59,17 @@ Draggable.prototype.onDragStart = function (ev) {
 	if (this.xAxis) {
 		// this.startMouseX = ev.clientX;
 		// this.elmX = extractNumber(this.elm.style.left);
-		this.mouseOffsetX = ev.offsetX;
+
+		this.mouseOffsetX = ev.offsetX; // ev.offsetX is experimental
+		// this.mouseOffsetX = ev.clientX - extractNumber(this.elm.style.left);
 	}
 
 	if (this.yAxis) {
 		// this.startMouseY = ev.clientY;
 		// this.elmY = extractNumber(this.elm.style.top);
-		this.mouseOffsetY = ev.offsetY;
+
+		this.mouseOffsetY = ev.offsetY;  // ev.offsetY is experimental
+		// this.mouseOffsetY = ev.clientY - extractNumber(this.elm.style.top);
 	}
 
 	this.elm.classList.add('grabbed');
@@ -91,6 +95,9 @@ Draggable.prototype.onDragging = function (ev) {
 
 	this.elm.classList.replace('grabbed', 'dragging');
 	this.events.dragging.forEach(cb => cb(ev));
+
+	// prevent text selection while draging
+	ev.preventDefault();
 
     // eslint-disable-next-line max-len
     // console.log(`${this.elmX} + ${ev.clientX - this.startMouseX} (${ev.clientX} - ${this.startMouseX})`);
@@ -119,6 +126,6 @@ Draggable.prototype.destroy = function () {
 	this.elm = null;
 };
 
-// function extractNumber (rawValue) {
-// 	return parseInt(rawValue || 0, 10);
-// }
+function extractNumber (rawValue) {
+	return parseInt(rawValue || 0, 10);
+}
