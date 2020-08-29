@@ -46,7 +46,7 @@ function simulateMouseUp (elm, x, y) {
 const px = (num) => num + 'px';
 
 describe('draggable', () => {
-	let testDOMContainer, container, target, box, move;
+	let testDOMContainer, container, target, box, move, drg;
 
 	before(() => {
 		testDOMContainer = document.getElementById('test-dom-container');
@@ -80,6 +80,8 @@ describe('draggable', () => {
 
 		box = null;
 		move = null;
+
+		if (drg && drg.elm) drg.destroy();
 	});
 
 	after(() => {
@@ -103,8 +105,6 @@ describe('draggable', () => {
 
 			simulateMouseDown(target, ...move(0, 0));
 			expect(target.style.left).to.equal(px(box.left));
-			simulateMouseMove(target, ...move(0, 0));
-			expect(target.style.left).to.equal(px(box.left));
 
 			simulateMouseMove(target, ...move(150, 0));
 			simulateMouseUp(target, ...move(150, 0));
@@ -126,8 +126,6 @@ describe('draggable', () => {
 			expect(target.style.top).equal(px(box.top));
 
 			simulateMouseDown(target, ...move(0, 0));
-			expect(target.style.top).to.equal(px(box.top));
-			simulateMouseMove(target, ...move(0, 0));
 			expect(target.style.top).to.equal(px(box.top));
 
 			simulateMouseMove(target, ...move(0, 150));
@@ -155,10 +153,6 @@ describe('draggable', () => {
 			expect(target.style.left).to.equal(px(box.left));
 			expect(target.style.top).to.equal(px(box.top));
 
-			simulateMouseMove(target, ...move(0, 0));
-			expect(target.style.left).to.equal(px(box.left));
-			expect(target.style.top).to.equal(px(box.top));
-
 			simulateMouseMove(target, ...move(150, 150));
 			simulateMouseUp(target, ...move(150, 150));
 			expect(target.style.left).to.equal(px(box.left + 150));
@@ -180,7 +174,7 @@ describe('draggable', () => {
 
 	describe('Events', () => {
 		it('emits `grab` event', () => {
-			const drg = draggable(target);
+			drg = draggable(target);
 			let fired = false;
 
 			drg.on('grab', (ev) => { fired = true; });
@@ -191,7 +185,7 @@ describe('draggable', () => {
 		});
 
 		it('emits `drop` event', () => {
-			const drg = draggable(target);
+			drg = draggable(target);
 			let fired = false;
 
 			drg.on('drop', (ev) => { fired = true; });
@@ -204,7 +198,7 @@ describe('draggable', () => {
 		});
 
 		it('emits `dragging` event', () => {
-			const drg = draggable(target);
+			drg = draggable(target);
 			let fired = false;
 
 			drg.on('dragging', (ev) => { fired = true; });
@@ -327,88 +321,122 @@ describe('draggable', () => {
 		});
 	});
 
-	describe('Destruction', () => {
-		it('removes all listeners', () => {
-			const drg = draggable(target);
+	describe('API', () => {
+		describe('.enable() / .disable()', () => {
+			it('toggles draggability', () => {
+				expect(target.style.left).to.be.empty;
+				drg = draggable(target);
 
-			let grabs = 0;
-			let moves = 0;
-			let drops = 0;
+				simulateMouseDown(target, ...move(0, 0));
+				simulateMouseMove(target, ...move(150, 0));
+				simulateMouseUp(target, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
 
-			drg.on('grab', () => { grabs++; });
-			drg.on('dragging', () => { moves++; });
-			drg.on('drop', () => { drops++; });
+				simulateMouseDown(target, ...move(150, 0));
+				simulateMouseMove(target, ...move(300, 0));
+				simulateMouseUp(target, ...move(300, 0));
+				expect(target.style.left).to.equal(px(box.left + 300));
 
-			expect(grabs).to.equal(0);
-			simulateMouseDown(target, 50, 50);
-			expect(grabs).to.equal(1);
+				drg.disable();
 
-			expect(moves).to.equal(0);
-			simulateMouseMove(target, 50, 50);
-			expect(moves).to.equal(1);
+				simulateMouseDown(target, ...move(300, 0));
+				simulateMouseMove(target, ...move(450, 0));
+				simulateMouseUp(target, ...move(450, 0));
+				expect(target.style.left).to.equal(px(box.left + 300));
 
-			simulateMouseMove(target, 150, 150);
-			expect(moves).to.equal(2);
+				drg.enable();
 
-			expect(drops).to.equal(0);
-			simulateMouseUp(target, 150, 150);
-			expect(drops).to.equal(1);
-
-			expect(moves).to.equal(2);
-			simulateMouseMove(target, 160, 160);
-			expect(moves).to.equal(2);
-
-			drg.destroy();
-
-			expect(grabs).to.equal(1);
-			simulateMouseDown(target, 160, 160);
-			expect(grabs).to.equal(1);
-
-			expect(moves).to.equal(2);
-			simulateMouseMove(target, 160, 160);
-			expect(moves).to.equal(2);
-
-			expect(drops).to.equal(1);
-			simulateMouseUp(target, 160, 160);
-			expect(drops).to.equal(1);
+				simulateMouseDown(target, ...move(300, 0));
+				simulateMouseMove(target, ...move(450, 0));
+				simulateMouseUp(target, ...move(450, 0));
+				expect(target.style.left).to.equal(px(box.left + 450));
+			});
 		});
 
-		it('removes all classnames', () => {
-			const drg = draggable(target);
+		describe('.destroy()', () => {
+			it('removes all listeners', () => {
+				drg = draggable(target);
 
-			simulateMouseDown(target, 50, 50);
-			simulateMouseMove(target, 50, 50);
-			simulateMouseMove(target, 150, 150);
-			simulateMouseUp(target, 150, 150);
-			simulateMouseMove(target, 160, 160);
+				let grabs = 0;
+				let moves = 0;
+				let drops = 0;
 
-			drg.destroy();
-			expect(target.classList.contains('draggable')).to.be.false;
+				drg.on('grab', () => { grabs++; });
+				drg.on('dragging', () => { moves++; });
+				drg.on('drop', () => { drops++; });
 
-			simulateMouseDown(target, 160, 160);
-			expect(target.classList.contains('grabbed')).to.be.false;
+				expect(grabs).to.equal(0);
+				simulateMouseDown(target, 50, 50);
+				expect(grabs).to.equal(1);
 
-			simulateMouseMove(target, 160, 160);
-			expect(target.classList.contains('dragging')).to.be.false;
-		});
+				expect(moves).to.equal(0);
+				simulateMouseMove(target, 50, 50);
+				expect(moves).to.equal(1);
 
-		it('resets original position', () => {
-			target.style.position = 'static';
+				simulateMouseMove(target, 150, 150);
+				expect(moves).to.equal(2);
 
-			expect(target.style.position).to.equal('static');
-			const drg = draggable(target);
+				expect(drops).to.equal(0);
+				simulateMouseUp(target, 150, 150);
+				expect(drops).to.equal(1);
 
-			expect(target.style.position).to.equal('absolute');
-			drg.destroy();
-			expect(target.style.position).to.equal('static');
-		});
+				expect(moves).to.equal(2);
+				simulateMouseMove(target, 160, 160);
+				expect(moves).to.equal(2);
 
-		it('releases the target element', () => {
-			const drg = draggable(target);
+				drg.destroy();
 
-			expect(drg.elm).to.deep.equal(target);
-			drg.destroy();
-			expect(drg.elm).to.be.null;
+				expect(grabs).to.equal(1);
+				simulateMouseDown(target, 160, 160);
+				expect(grabs).to.equal(1);
+
+				expect(moves).to.equal(2);
+				simulateMouseMove(target, 160, 160);
+				expect(moves).to.equal(2);
+
+				expect(drops).to.equal(1);
+				simulateMouseUp(target, 160, 160);
+				expect(drops).to.equal(1);
+			});
+
+			it('removes all classnames', () => {
+				drg = draggable(target);
+
+				simulateMouseDown(target, 50, 50);
+				simulateMouseMove(target, 50, 50);
+				simulateMouseMove(target, 150, 150);
+				simulateMouseUp(target, 150, 150);
+				simulateMouseMove(target, 160, 160);
+
+				drg.destroy();
+				expect(target.classList.contains('draggable')).to.be.false;
+
+				simulateMouseDown(target, 160, 160);
+				expect(target.classList.contains('grabbed')).to.be.false;
+
+				simulateMouseMove(target, 160, 160);
+				expect(target.classList.contains('dragging')).to.be.false;
+			});
+
+			it('resets original position', () => {
+				target.style.position = 'static';
+
+				expect(target.style.position).to.equal('static');
+				drg = draggable(target);
+
+				expect(target.style.position).to.equal('absolute');
+				drg.destroy();
+				expect(target.style.position).to.equal('static');
+			});
+
+			it('releases the target element', () => {
+				drg = draggable(target);
+
+				expect(drg.elm).to.deep.equal(target);
+				drg.destroy();
+				expect(drg.elm).to.be.null;
+			});
 		});
 	});
+
 });

@@ -8,6 +8,7 @@ function Draggable (elm, opts = {}) {
 	this.onDrop = this.onDrop.bind(this);
 
 	this.elm = elm;
+	this.isDraggable = true;
 	this.startMouseX = 0;
 	this.startMouseY = 0;
 	this.mouseOffsetX = 0;
@@ -56,6 +57,8 @@ Draggable.prototype.on = function (eventName, callback) {
 };
 
 Draggable.prototype.onDragStart = function (ev) {
+	if (!this.isDraggable) return;
+
 	if (this.xAxis) {
 		// this.startMouseX = ev.clientX;
 		// this.elmX = extractNumber(this.elm.style.left);
@@ -74,8 +77,8 @@ Draggable.prototype.onDragStart = function (ev) {
 
 	this.elm.classList.add('grabbed');
 
-	this.mouseUpContextElm.addEventListener('mouseup', this.onDrop);
 	document.addEventListener('mousemove', this.onDragging);
+	this.mouseUpContextElm.addEventListener('mouseup', this.onDrop);
 
 	this.events.grab.forEach(cb => cb(ev));
 };
@@ -110,6 +113,15 @@ Draggable.prototype.onDrop = function (ev) {
 	this.elm.classList.remove('grabbed', 'dragging');
 	this.events.drop.forEach(cb => cb(ev));
 };
+
+Draggable.prototype.disable = function () {
+	this.isDraggable = false;
+};
+
+Draggable.prototype.enable = function () {
+	this.isDraggable = true;
+};
+
 
 Draggable.prototype.destroy = function () {
 	this.elm.removeEventListener('mousedown', this.onDragStart);
