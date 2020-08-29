@@ -13,10 +13,6 @@ function Draggable (elm, opts = {}) {
 	this.isDraggable = true;
 	this.startMouseX = 0;
 	this.startMouseY = 0;
-	this.mouseOffsetX = 0;
-	this.mouseOffsetY = 0;
-	this.elmX = 0;
-	this.elmY = 0;
 	this.events = {grab: [], drop: [], dragging: []};
 
 	this.originalJsPosition = elm.style.position || null;
@@ -26,10 +22,10 @@ function Draggable (elm, opts = {}) {
 		elm.style.position = 'absolute';
 	}
 
-	const {top, left} = elm.getBoundingClientRect();
+	this.box = elm.getBoundingClientRect();
 
-	elm.style.top = top + 'px';
-	elm.style.left = left + 'px';
+	elm.style.top = this.box.top + 'px';
+	elm.style.left = this.box.left + 'px';
 
 	document.body.appendChild(this.elm);
 
@@ -78,20 +74,14 @@ Draggable.prototype.onDragStart = function (ev) {
 	if (!this.isDraggable) return;
 	if (this.useGrip && !this.matchesGrip(ev.target)) return;
 
-	if (this.xAxis) {
-		// this.startMouseX = ev.clientX;
-		// this.elmX = extractNumber(this.elm.style.left);
+	this.box = this.box || this.elm.getBoundingClientRect();
 
-		// this.mouseOffsetX = ev.offsetX; // ev.offsetX is experimental
-		this.mouseOffsetX = ev.clientX - extractNumber(this.elm.style.left);
+	if (this.xAxis) {
+		this.startMouseX = ev.clientX;
 	}
 
 	if (this.yAxis) {
-		// this.startMouseY = ev.clientY;
-		// this.elmY = extractNumber(this.elm.style.top);
-
-		// this.mouseOffsetY = ev.offsetY;  // ev.offsetY is experimental
-		this.mouseOffsetY = ev.clientY - extractNumber(this.elm.style.top);
+		this.startMouseY = ev.clientY;
 	}
 
 	this.elm.classList.add('grabbed');
@@ -104,15 +94,13 @@ Draggable.prototype.onDragStart = function (ev) {
 
 Draggable.prototype.onDragging = function (ev) {
 	if (this.xAxis) {
-		// const mouseMovedX = ev.clientX - this.startMouseX;
-		// this.elm.style.left = this.elmX + mouseMovedX  + 'px';
-		this.elm.style.left = ev.clientX - this.mouseOffsetX  + 'px';
+		const mouseMovedX = ev.clientX - this.startMouseX;
+		this.elm.style.left = this.box.x + mouseMovedX  + 'px';
 	}
 
 	if (this.yAxis) {
-		// const mouseMovedY = ev.clientY - this.startMouseY;
-		// this.elm.style.top = this.elmY + mouseMovedY  + 'px';
-		this.elm.style.top = ev.clientY - this.mouseOffsetY  + 'px';
+		const mouseMovedY = ev.clientY - this.startMouseY;
+		this.elm.style.top = this.box.y + mouseMovedY  + 'px';
 	}
 
 	this.elm.classList.replace('grabbed', 'dragging');
@@ -120,15 +108,13 @@ Draggable.prototype.onDragging = function (ev) {
 
 	// prevent text selection while draging
 	ev.preventDefault();
-
-    // eslint-disable-next-line max-len
-    // console.log(`${this.elmX} + ${ev.clientX - this.startMouseX} (${ev.clientX} - ${this.startMouseX})`);
 };
 
 Draggable.prototype.onDrop = function (ev) {
 	document.removeEventListener('mousemove', this.onDragging);
 	this.mouseUpContextElm.removeEventListener('mouseup', this.onDrop);
 
+	this.box = null;
 	this.elm.classList.remove('grabbed', 'dragging');
 	this.events.drop.forEach(cb => cb(ev));
 };
