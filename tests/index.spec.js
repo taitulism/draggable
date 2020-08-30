@@ -449,6 +449,16 @@ describe('draggable', () => {
 				simulateMouseUp(target, ...move(450, 0));
 				expect(target.style.left).to.equal(px(box.left + 450));
 			});
+
+			it('toggles classname', () => {
+				drg = draggable(target);
+
+				expect(target.classList.contains('drag-disabled')).to.be.false;
+				drg.disable();
+				expect(target.classList.contains('drag-disabled')).to.be.true;
+				drg.enable();
+				expect(target.classList.contains('drag-disabled')).to.be.false;
+			});
 		});
 
 		describe.skip('.setGrip()', () => {

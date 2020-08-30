@@ -121,12 +121,13 @@ Draggable.prototype.onDrop = function (ev) {
 
 Draggable.prototype.disable = function () {
 	this.isDraggable = false;
+	this.elm.classList.add('drag-disabled');
 };
 
 Draggable.prototype.enable = function () {
 	this.isDraggable = true;
+	this.elm.classList.remove('drag-disabled');
 };
-
 
 Draggable.prototype.destroy = function () {
 	this.elm.removeEventListener('mousedown', this.onDragStart);
