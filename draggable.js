@@ -68,6 +68,7 @@ Draggable.prototype.initGrip = function (grip) {
 
 Draggable.prototype.on = function (eventName, callback) {
 	this.events[eventName].push(callback);
+	return this;
 };
 
 Draggable.prototype.onDragStart = function (ev) {

@@ -15,8 +15,6 @@ function simulateMouseDown (elm, x, y) {
 	const event = createEvent('mousedown', {
 		clientX: (x || 0) + OFFSET,
 		clientY: (y || 0) + OFFSET,
-		offsetX: OFFSET,
-		offsetY: OFFSET,
 	});
 	elm.dispatchEvent(event);
 }
@@ -25,8 +23,6 @@ function simulateMouseMove (elm, x, y) {
 	const event = createEvent('mousemove', {
 		clientX: (x || 0) + OFFSET,
 		clientY: (y || 0) + OFFSET,
-		offsetX: OFFSET,
-		offsetY: OFFSET,
 	});
 
 	elm.dispatchEvent(event);
@@ -36,8 +32,6 @@ function simulateMouseUp (elm, x, y) {
 	const event = createEvent('mouseup', {
 		clientX: (x || 0) + OFFSET,
 		clientY: (y || 0) + OFFSET,
-		offsetX: OFFSET,
-		offsetY: OFFSET,
 	});
 
 	elm.dispatchEvent(event);
@@ -458,6 +452,13 @@ describe('draggable', () => {
 				expect(target.classList.contains('drag-disabled')).to.be.true;
 				drg.enable();
 				expect(target.classList.contains('drag-disabled')).to.be.false;
+			});
+		});
+
+		describe('.on', () => {
+			it('is chainable', () => {
+				drg = draggable(target);
+				expect(drg.on('grab', () => {})).to.deep.equal(drg);
 			});
 		});
 
