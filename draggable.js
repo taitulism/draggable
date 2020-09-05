@@ -22,10 +22,10 @@ function Draggable (elm, opts = {}) {
 		elm.style.position = 'absolute';
 	}
 
-	this.box = elm.getBoundingClientRect();
+	const box = elm.getBoundingClientRect();
 
-	elm.style.top = this.box.top + 'px';
-	elm.style.left = this.box.left + 'px';
+	elm.style.top = box.top + 'px';
+	elm.style.left = box.left + 'px';
 
 	document.body.appendChild(this.elm);
 
@@ -75,7 +75,7 @@ Draggable.prototype.onDragStart = function (ev) {
 	if (!this.isDraggable) return;
 	if (this.useGrip && !this.matchesGrip(ev.target)) return;
 
-	this.box = this.box || this.elm.getBoundingClientRect();
+	this.box = this.elm.getBoundingClientRect();
 
 	if (this.xAxis) {
 		this.startMouseX = ev.clientX;
