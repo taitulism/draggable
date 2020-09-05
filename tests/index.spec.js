@@ -444,6 +444,21 @@ describe('draggable', () => {
 				expect(target.style.left).to.equal(px(box.left + 450));
 			});
 
+			it('toggles draggability while dragging', () => {
+				expect(target.style.left).to.be.empty;
+				drg = draggable(target);
+
+				simulateMouseDown(target, ...move(0, 0));
+				simulateMouseMove(target, ...move(100, 0));
+				expect(target.style.left).to.equal(px(box.left + 100));
+
+				drg.disable();
+
+				simulateMouseMove(target, ...move(200, 0));
+				expect(target.style.left).to.equal(px(box.left + 100));
+				simulateMouseUp(target, ...move(200, 0));
+			});
+
 			it('toggles classname', () => {
 				drg = draggable(target);
 

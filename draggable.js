@@ -94,6 +94,8 @@ Draggable.prototype.onDragStart = function (ev) {
 };
 
 Draggable.prototype.onDragging = function (ev) {
+	if (!this.isDraggable) return;
+
 	if (this.xAxis) {
 		const mouseMovedX = ev.clientX - this.startMouseX;
 		this.elm.style.left = this.box.x + mouseMovedX  + 'px';
