@@ -47,12 +47,12 @@ function Draggable (elm, opts = {}) {
 		this.yAxis = true;
 	}
 
-	this.initGrip(opts.grip);
+	this.setGrip(opts.grip);
 
 	elm.addEventListener('mousedown', this.onDragStart);
 }
 
-Draggable.prototype.initGrip = function (grip) {
+Draggable.prototype.setGrip = function (grip) {
 	if (!grip) return;
 
 	this.useGrip = true;

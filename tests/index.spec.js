@@ -477,8 +477,88 @@ describe('draggable', () => {
 			});
 		});
 
-		describe.skip('.setGrip()', () => {
+		describe('.setGrip()', () => {
+			let gripsContainer, gripA, gripB
 
+			beforeEach(() => {
+				gripsContainer = document.createElement('div');
+				gripsContainer.id = 'grips-container';
+
+				gripA = document.createElement('div');
+				gripA.id = 'grip-A';
+
+				gripB = document.createElement('div');
+				gripB.id = 'grip-B';
+
+				gripsContainer.appendChild(gripA);
+				gripsContainer.appendChild(gripB);
+				target.appendChild(gripsContainer);
+			});
+
+			afterEach(() => {
+				gripB && gripB.parentNode.removeChild(gripB);
+				gripA && gripA.parentNode.removeChild(gripA);
+				gripsContainer && gripsContainer.parentNode.removeChild(gripsContainer);
+				gripsContainer = null;
+				gripA = null;
+				gripB = null;
+			});
+
+			it('sets the drag handle element', () => {
+				drg = draggable(target, {grip: gripA});
+
+				expect(target.style.left).to.equal(px(box.left));
+
+				simulateMouseDown(gripA, ...move(0, 0));
+				simulateMouseMove(gripA, ...move(150, 0));
+				simulateMouseUp(gripA, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
+
+				simulateMouseDown(gripB, ...move(0, 0));
+				simulateMouseMove(gripB, ...move(300, 0));
+				simulateMouseUp(gripB, ...move(300, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
+
+				drg.setGrip(gripB);
+
+				simulateMouseDown(gripA, ...move(0, 0));
+				simulateMouseMove(gripA, ...move(300, 0));
+				simulateMouseUp(gripA, ...move(300, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
+
+				simulateMouseDown(gripB, ...move(0, 0));
+				simulateMouseMove(gripB, ...move(150, 0));
+				simulateMouseUp(gripB, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left + 300));
+			});
+
+			it('sets the drag handle element selector', () => {
+				drg = draggable(target, {grip: '#grip-A'});
+
+				expect(target.style.left).to.equal(px(box.left));
+
+				simulateMouseDown(gripA, ...move(0, 0));
+				simulateMouseMove(gripA, ...move(150, 0));
+				simulateMouseUp(gripA, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
+
+				simulateMouseDown(gripB, ...move(0, 0));
+				simulateMouseMove(gripB, ...move(300, 0));
+				simulateMouseUp(gripB, ...move(300, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
+
+				drg.setGrip('#grip-B');
+
+				simulateMouseDown(gripA, ...move(0, 0));
+				simulateMouseMove(gripA, ...move(300, 0));
+				simulateMouseUp(gripA, ...move(300, 0));
+				expect(target.style.left).to.equal(px(box.left + 150));
+
+				simulateMouseDown(gripB, ...move(0, 0));
+				simulateMouseMove(gripB, ...move(150, 0));
+				simulateMouseUp(gripB, ...move(150, 0));
+				expect(target.style.left).to.equal(px(box.left + 300));
+			});
 		});
 
 		describe('.destroy()', () => {
