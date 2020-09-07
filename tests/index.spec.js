@@ -178,19 +178,6 @@ describe('draggable', () => {
 			simulateMouseUp(target, 50, 50);
 		});
 
-		it('emits `drop` event', () => {
-			drg = draggable(target);
-			let fired = false;
-
-			drg.on('drop', (ev) => { fired = true; });
-
-			simulateMouseDown(target, 50, 50);
-			expect(fired).to.be.false;
-			simulateMouseUp(target, 50, 50);
-			expect(fired).to.be.true;
-
-		});
-
 		it('emits `dragging` event', () => {
 			drg = draggable(target);
 			let fired = false;
@@ -204,6 +191,19 @@ describe('draggable', () => {
 			expect(fired).to.be.true;
 
 			simulateMouseUp(target, 50, 50);
+		});
+
+		it('emits `drop` event', () => {
+			drg = draggable(target);
+			let fired = false;
+
+			drg.on('drop', (ev) => { fired = true; });
+
+			simulateMouseDown(target, 50, 50);
+			expect(fired).to.be.false;
+			simulateMouseUp(target, 50, 50);
+			expect(fired).to.be.true;
+
 		});
 	});
 
