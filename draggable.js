@@ -53,7 +53,10 @@ function Draggable (elm, opts = {}) {
 }
 
 Draggable.prototype.setGrip = function (grip) {
-	if (!grip) return;
+	if (!grip) {
+		this.gripHandle = null;
+		return;
+	}
 
 	this.useGrip = true;
 	this.gripHandle = grip;
