@@ -32,9 +32,7 @@ Toggle draggability.
 Sets a new grip handle. Argument could be either an HTML Element or an element selector string (e.g. `'#my-grip'`). See `grip` option above.
 
 ### **.on(eventName, callback)**
-Listen to drag and drop events.
-
-**Event Names:**
+Listen to drag and drop events:
 * **`'grab'`** - dragging started, on mouse down.
 * **`'dragging'`** - moving around, on mouse move (with mouse down)
 * **`'drop'`** - dragging stopped, on mouse up.
@@ -44,12 +42,12 @@ Kills the `Draggable` instance for good, unbinds events, releases element refere
 
 
 ## ClassNames
-For your convenience, the main element will be given the following classes:
+For styling, the main element will be given the following classes:
 * `'draggable'` - from initialization until destruction.
 * `'grabbed'` - when grabbing the element. On mouse down, before moving.
 * `'dragging'` - when moving the element until mouse up.
 
 &nbsp;
 
->## Position
->The target element will be placed inside the `<body>` element and will be given an inline style of `position: absolute`.
+>### Position:
+>On initialization, the target element will be placed inside the `<body>` element and will be given an inline style of `position: absolute`.
