@@ -1,4 +1,4 @@
-function draggableNDroppable (elm, opts) {
+module.exports = function draggableNDroppable (elm, opts) {
     return new DragNDrop(elm, opts);
 }
 
@@ -17,7 +17,7 @@ function DragNDrop (elm, opts) {
 
 DragNDrop.prototype.onDragStart = function (ev) {
     console.log(ev.clientX);
-    
+
     this.startMouseX = ev.clientX;
     this.elm.classList.add('dragging');
 

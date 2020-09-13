@@ -9,7 +9,7 @@
    "homepage": "https://github.com/taitulism/TPL#readme",
    "repository": "github:taitulism/TPL",
    "scripts": {
-      "dev": "mocha ./tests --watch",
+      "dev": "parcel tests/mocha-test.html playground/playground.html",
       "test": "mocha ./tests --bail",
       "test:karma": "karma start karma.conf.js",
       "lint": "eslint ./draggable.js ./tests",
@@ -28,6 +28,7 @@
       "karma-chrome-launcher": "^3.1.0",
       "karma-mocha": "^2.0.1",
       "karma-mocha-reporter": "^2.2.5",
-      "mocha": "*"
+      "mocha": "*",
+	  "parcel-bundler": "^1.12.4"
    }
 }
