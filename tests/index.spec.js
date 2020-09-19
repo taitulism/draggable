@@ -1,4 +1,4 @@
-/* global draggable */
+/* global expect draggable */
 
 const createEvent = (type, props = {}) => {
 	const event = new window.Event(type, {bubbles: true});
@@ -35,7 +35,7 @@ function simulateMouseUp (elm, x, y) {
 	elm.dispatchEvent(event);
 }
 
-const px = (num) => num + 'px';
+const px = num => num + 'px';
 
 describe('draggable', () => {
 	let testDOMContainer, container, target, box, move, drg;
@@ -169,7 +169,7 @@ describe('draggable', () => {
 			drg = draggable(target);
 			let fired = false;
 
-			drg.on('grab', (ev) => { fired = true; });
+			drg.on('grab', () => { fired = true; });
 
 			simulateMouseDown(target, 50, 50);
 			expect(fired).to.be.true;
@@ -180,7 +180,7 @@ describe('draggable', () => {
 			drg = draggable(target);
 			let fired = false;
 
-			drg.on('dragging', (ev) => { fired = true; });
+			drg.on('dragging', () => { fired = true; });
 
 			simulateMouseDown(target, 50, 50);
 
@@ -195,7 +195,7 @@ describe('draggable', () => {
 			drg = draggable(target);
 			let fired = false;
 
-			drg.on('drop', (ev) => { fired = true; });
+			drg.on('drop', () => { fired = true; });
 
 			simulateMouseDown(target, 50, 50);
 			expect(fired).to.be.false;
@@ -271,8 +271,10 @@ describe('draggable', () => {
 		describe('axis', () => {
 			/*
 				Why simulating a mouse move on container?
-				When restricting to an axis, moving the mouse in the other axis (outside of target) misses the mouseup event.
-				In this case, if the event is bound to target, the mouseup event occures outside (hence container).
+				When restricting to an axis, moving the mouse in the other axis (outside of target)
+				misses the mouseup event.
+				In this case, if the event is bound to target, the mouseup event occures
+				outside (hence the container).
 				Fixed by binding the mouseup to the document.
 				Test by keep moving the mouse after the drop and verify target is not moving.
 			*/
@@ -322,7 +324,7 @@ describe('draggable', () => {
 		});
 
 		describe('grip', () => {
-			let gripsContainer, gripA, gripB
+			let gripsContainer, gripA, gripB;
 
 			beforeEach(() => {
 				gripsContainer = document.createElement('div');
@@ -405,9 +407,7 @@ describe('draggable', () => {
 			});
 
 			// ? :/
-			it.skip('sets a classname on the grip element', () => {
-
-			});
+			it.skip('sets a classname on the grip element');
 		});
 	});
 
@@ -471,12 +471,12 @@ describe('draggable', () => {
 		describe('.on', () => {
 			it('is chainable', () => {
 				drg = draggable(target);
-				expect(drg.on('grab', () => {})).to.deep.equal(drg);
+				expect(drg.on('grab', () => null)).to.deep.equal(drg);
 			});
 		});
 
 		describe('.setGrip()', () => {
-			let gripsContainer, gripA, gripB
+			let gripsContainer, gripA, gripB;
 
 			beforeEach(() => {
 				gripsContainer = document.createElement('div');

@@ -1,6 +1,6 @@
 export default function draggable (elm, opts) {
 	return new Draggable(elm, opts);
-};
+}
 
 function Draggable (elm, opts = {}) {
 	this.onDragStart = this.onDragStart.bind(this);
@@ -13,7 +13,11 @@ function Draggable (elm, opts = {}) {
 	this.isDraggable = true;
 	this.startMouseX = 0;
 	this.startMouseY = 0;
-	this.events = {grab: [], drop: [], dragging: []};
+	this.events = {
+		grab: [],
+		drop: [],
+		dragging: []
+	};
 
 	this.originalJsPosition = elm.style.position || null;
 	const position = elm.style.position || window.getComputedStyle(elm).position;
@@ -36,10 +40,8 @@ function Draggable (elm, opts = {}) {
 
 		const axis = opts.axis.toLowerCase();
 
-		if (axis === 'x')
-			this.xAxis = true;
-		else if (axis === 'y')
-			this.yAxis = true;
+		if (axis === 'x') this.xAxis = true;
+		else if (axis === 'y') this.yAxis = true;
 	}
 	else {
 		this.mouseUpContextElm = elm;
@@ -52,7 +54,7 @@ function Draggable (elm, opts = {}) {
 	elm.addEventListener('mousedown', this.onDragStart);
 }
 
-Draggable.prototype.setGrip = function (grip) {
+Draggable.prototype.setGrip = function setGrip (grip) {
 	if (!grip) {
 		this.gripHandle = null;
 		return;
@@ -69,12 +71,12 @@ Draggable.prototype.setGrip = function (grip) {
 	}
 };
 
-Draggable.prototype.on = function (eventName, callback) {
+Draggable.prototype.on = function on (eventName, callback) {
 	this.events[eventName].push(callback);
 	return this;
 };
 
-Draggable.prototype.onDragStart = function (ev) {
+Draggable.prototype.onDragStart = function onDragStart (ev) {
 	if (!this.isDraggable) return;
 	if (this.useGrip && !this.matchesGrip(ev.target)) return;
 
@@ -96,7 +98,7 @@ Draggable.prototype.onDragStart = function (ev) {
 	this.events.grab.forEach(cb => cb(ev));
 };
 
-Draggable.prototype.onDragging = function (ev) {
+Draggable.prototype.onDragging = function onDragging (ev) {
 	if (!this.isDraggable) return;
 
 	if (this.xAxis) {
@@ -116,7 +118,7 @@ Draggable.prototype.onDragging = function (ev) {
 	ev.preventDefault();
 };
 
-Draggable.prototype.onDrop = function (ev) {
+Draggable.prototype.onDrop = function onDrop (ev) {
 	document.removeEventListener('mousemove', this.onDragging);
 	this.mouseUpContextElm.removeEventListener('mouseup', this.onDrop);
 
@@ -125,17 +127,17 @@ Draggable.prototype.onDrop = function (ev) {
 	this.events.drop.forEach(cb => cb(ev));
 };
 
-Draggable.prototype.disable = function () {
+Draggable.prototype.disable = function disable () {
 	this.isDraggable = false;
 	this.elm.classList.add('drag-disabled');
 };
 
-Draggable.prototype.enable = function () {
+Draggable.prototype.enable = function enable () {
 	this.isDraggable = true;
 	this.elm.classList.remove('drag-disabled');
 };
 
-Draggable.prototype.destroy = function () {
+Draggable.prototype.destroy = function destroy () {
 	this.elm.removeEventListener('mousedown', this.onDragStart);
 	document.removeEventListener('mousemove', this.onDragging);
 	this.mouseUpContextElm.removeEventListener('mouseup', this.onDrop);
@@ -150,10 +152,6 @@ Draggable.prototype.destroy = function () {
 	this.elm = null;
 };
 
-function extractNumber (rawValue) {
-	return parseInt(rawValue || 0, 10);
-}
-
 function isInside (child, parent) {
 	const actualParentNode = child.parentNode;
 	if (actualParentNode === parent) return true;
@@ -162,14 +160,14 @@ function isInside (child, parent) {
 }
 
 function createGripMatcher (grip, isSelector) {
-	if (isSelector) { // grip is string
-		return function (eventTarget) {
+	if (isSelector) { // `grip` is a string
+		return function gripMatcher (eventTarget) {
 			return eventTarget.matches(grip) || eventTarget.closest(grip) != null;
 		};
 	}
-	else { // grip is HTMLElement
-		return function (eventTarget) {
-			return grip == eventTarget || isInside(eventTarget, grip);
-		};
-	}
+
+	// `grip` is an HTMLElement
+	return function gripMatcher (eventTarget) {
+		return grip === eventTarget || isInside(eventTarget, grip);
+	};
 }

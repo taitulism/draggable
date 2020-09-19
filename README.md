@@ -15,8 +15,8 @@ draggable(myElm, {options});
 
 ## Options
 
-* `axis` - String. Restrict movement along a single axis, `'x'` or `'y'`.
-* `grip` - Element | String (element selector). A grip handle element to activate draggability upon mouse down. By default you can start dragging from anywhere within the main element.
+* **`axis`** - String. Restrict movement along a single axis, `'x'` or `'y'`.
+* **`grip`** - Element | String (element selector). A grip handle element to activate draggability upon mouse down. By default you can start dragging from anywhere within the main element.
 
 ## API
 Calling the `draggable()` function returns a `Draggable` instance: 
@@ -26,10 +26,10 @@ const d = draggable(elm);
 It has the following methods:
 
 ### **.enable() / .disable()**
-Toggle draggability.
+Toggle draggability. When disabled, the main element gets a `'drag-disabled'` classname.
 
 ### **.setGrip(newGrip)**
-Sets a new grip handle. Argument could be either an HTML Element or an element selector string (e.g. `'#my-grip'`). See `grip` option above.
+Sets a new grip handle. Argument could be either an HTML Element or an element selector string (e.g. `'#my-grip'`). See the `grip` option above.
 
 ### **.on(eventName, callback)**
 Listen to drag and drop events:
@@ -41,7 +41,7 @@ Listen to drag and drop events:
 Kills the `Draggable` instance for good, unbinds events, releases element references.
 
 
-## ClassNames
+## Classnames
 For styling, the main element will be given the following classes:
 * `'draggable'` - from initialization until destruction.
 * `'grabbed'` - when grabbing the element. On mouse down, before moving.

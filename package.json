@@ -3,32 +3,41 @@
    "description": "Makes elements draggable. Vanilla style.",
    "version": "0.0.0",
    "license": "MIT",
-   "private": true,
-   "main": "./draggable.js",
+   "browser": "./dist/draggable.browser.js",
+   "module": "./dist/draggable.esm-bundle.js",
    "author": "Taitu Lizenbaum <taitu.dev@gmail.com>",
-   "homepage": "https://github.com/taitulism/TPL#readme",
-   "repository": "github:taitulism/TPL",
+   "homepage": "https://github.com/taitulism/draggable#readme",
+   "repository": "github:taitulism/draggable",
    "scripts": {
       "dev": "rollup --config rollup.dev.config.js --watch",
       "build": "rollup --config rollup.prod.config.js",
       "test": "karma start karma.conf.js",
       "karma": "npm run test -- --no-single-run --auto-watch",
       "lint": "eslint ./draggable.js ./tests",
-      "check": "npm run lint && npm test -- -reporter landing",
+      "check": "npm run lint && npm test",
       "play": "node ./playground/play.js",
       "preversion": "npm run check",
       "postversion": "git push && git push --tags"
    },
    "devDependencies": {
-      "chai": "*",
-      "eslint": "*",
-      "karma": "^5.1.1",
-      "karma-chai": "^0.1.0",
-      "karma-chrome-launcher": "^3.1.0",
-      "karma-mocha": "^2.0.1",
-      "karma-mocha-reporter": "^2.2.5",
-      "karma-rollup-preprocessor": "^7.0.5",
-      "mocha": "*",
-      "rollup": "^2.27.1"
-   }
+      "chai": "4.2.0",
+      "eslint": "7.9.0",
+      "karma": "5.1.1",
+      "karma-chai": "0.1.0",
+      "karma-chrome-launcher": "3.1.0",
+      "karma-mocha": "2.0.1",
+      "karma-mocha-reporter": "2.2.5",
+      "karma-rollup-preprocessor": "7.0.5",
+      "mocha": "8.1.3",
+      "rollup": "2.27.1"
+   },
+   "keywords": [
+      "draggable",
+      "element",
+      "drag",
+      "drop",
+      "html",
+      "vanilla",
+      "js"
+    ]
 }

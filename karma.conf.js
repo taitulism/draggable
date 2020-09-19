@@ -1,9 +1,12 @@
-// Karma configuration
-// Generated on Fri Sep 18 2020 18:49:15 GMT+0300 (Israel Daylight Time)
-
+/* possible `logLevel` values:
+ 	* config.LOG_DISABLE
+ 	* config.LOG_ERROR
+ 	* config.LOG_WARN
+ 	* config.LOG_INFO
+ 	* config.LOG_DEBUG
+*/
 module.exports = function (config) {
 	config.set({
-		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
 		logLevel: config.LOG_INFO,
 		basePath: '',
 		port: 9876,
@@ -53,5 +56,5 @@ module.exports = function (config) {
 				]
 			},
 		},
-	})
-}
+	});
+};

@@ -5,7 +5,6 @@ module.exports = {
 		commonjs: true,
 		es6: true,
 		mocha: true,
-		chai: true,
 	},
 	extends: 'eslint:recommended',
 	globals: {
@@ -14,7 +13,7 @@ module.exports = {
 	},
 	parserOptions: {
 		ecmaVersion: 2018,
-		// "sourceType": "module"
+		sourceType: 'module'
 	},
 	overrides: [
 		{
@@ -122,7 +121,6 @@ module.exports = {
 		'no-duplicate-imports': 'error',
 		'no-else-return': 'error',
 		'no-empty-function': 'error',
-		'no-eq-null': 'error',
 		'no-eval': 'error',
 		'no-extend-native': 'error',
 		'no-extra-bind': 'error',
@@ -212,7 +210,7 @@ module.exports = {
 		'no-with': 'error',
 		'nonblock-statement-body-position': 'error',
 		'object-curly-newline': 'error',
-		'object-property-newline': 'error',
+		'object-property-newline': ['error', {allowAllPropertiesOnSameLine: true}],
 		'object-shorthand': 'error',
 		'one-var-declaration-per-line': 'error',
 		'operator-assignment': 'error',
@@ -226,7 +224,6 @@ module.exports = {
 		'prefer-promise-reject-errors': 'error',
 		'prefer-rest-params': 'error',
 		'prefer-spread': 'error',
-		'prefer-template': 'error',
 		'quote-props': ['error', 'as-needed'],
 		quotes: [
 			'error',
@@ -303,6 +300,7 @@ module.exports = {
 //		"no-param-reassign": "off",
 //		"no-multi-spaces": ["off", { "exceptions": { "VariableDeclarator": true, "ImportDeclaration": true, "Property": true } }],
 //		"no-inline-comments": "off",
+//		'no-eq-null': 'off',
 //		"no-extra-parens": "off",
 //		"newline-after-var": [ "off", "always" ],
 //		"multiline-comment-style": "off",
@@ -319,6 +317,7 @@ module.exports = {
 //		"comma-dangle": ["off", "always-multiline"],
 //		"capitalized-comments": "off",
 //		"array-element-newline": ["off", { "minItems": 4, "multiline": true, }],
+//		'prefer-template': 'off',
 //		"sort-vars": "off",
 //		"no-tabs": "off",
 //		"newline-before-return": "off",
