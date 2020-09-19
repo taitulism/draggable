@@ -1,6 +1,9 @@
-module.exports = function draggable (elm, opts) {
+export default function draggable (elm, opts) {
 	return new Draggable(elm, opts);
 };
+
+// module.exports = draggable;
+// export draggable = draggable;
 
 function Draggable (elm, opts = {}) {
 	this.onDragStart = this.onDragStart.bind(this);

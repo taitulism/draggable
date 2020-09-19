@@ -1,6 +1,6 @@
 {
-   "name": "TPL",
-   "description": "Doing stuff.",
+   "name": "draggable-elm",
+   "description": "Makes elements draggable. Vanilla style.",
    "version": "0.0.0",
    "license": "MIT",
    "private": true,
@@ -11,7 +11,7 @@
    "scripts": {
       "dev": "parcel tests/mocha-test.html playground/playground.html ./draggable.global.js",
       "test": "mocha ./tests --bail",
-      "test:karma": "karma start karma.conf.js",
+      "test:karma": "karma start my.conf.js",
       "lint": "eslint ./draggable.js ./tests",
       "check": "npm run lint && npm test -- -reporter landing",
       "play": "node ./playground/play.js",
@@ -22,14 +22,16 @@
       "browserify": "^16.5.2",
       "chai": "*",
       "eslint": "*",
-      "jsdom": "^16.4.0",
       "karma": "^5.1.1",
       "karma-chai": "^0.1.0",
       "karma-chrome-launcher": "^3.1.0",
       "karma-mocha": "^2.0.1",
       "karma-mocha-reporter": "^2.2.5",
+      "karma-rollup-preprocessor": "^7.0.5",
       "karma-sourcemap-loader": "^0.3.8",
       "mocha": "*",
-      "parcel-bundler": "^1.12.4"
+      "parcel-bundler": "^1.12.4",
+      "rollup": "^2.27.1",
+      "rollup-plugin-buble": "^0.19.8"
    }
 }
