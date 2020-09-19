@@ -13,6 +13,7 @@
 			padding: 50px;
 			height: 250px;
 			background-color: #c9c9c9;
+			margin-top: 200px;
 		}
 
 		.drag-box {
@@ -22,23 +23,7 @@
 			font-size: 20px;
 		}
 
-		#old-drag {
-			background-color: red;
-			width: 150px;
-			height: 150px;
-			padding-top: 15px;
-			position: relative;
-		}
-
-		#drag-n-drop {
-			width: 150px;
-			height: 150px;
-			position: relative;
-			text-align: center;
-			background-color: #858585;
-		}
-
-		#new-draggable {
+		#drag-target {
 			width: 150px;
 			height: 150px;
 			position: absolute;
@@ -46,65 +31,34 @@
 			background-color: #6850d4;
 		}
 
-		.dragging {
-			border: 1px dashed red;
+		#grip-A {
+			width: 30px;
+			height: 30px;
+			background-color: yellow;
 		}
 
-		.dragging-over {
-			background: #e3b9ff;
+		#grip-B {
+			width: 30px;
+			height: 30px;
+			background-color: green;
 		}
 
-		.hidden {
-			display: none;
-		}
 	</style>
 </head>
 <body>
 	<div class="wrapper">
-		<div id="new-draggable" class="drag-box">
+		<div id="drag-target" class="drag-box">
 			<div id="grips-container">
-				<span>grip A</span>
+				<div id="grip-A">A</div>
 				<br /><br />
-				<span>grip B</span>
+				<div id="grip-B">B</div>
 			</div><br />
 			draggable
 		</div>
 	</div>
 
-	<br />
-
-	<div class="wrapper">
-		<div id="drag-n-drop" class="drag-box">DragNDrop API</div>
-	</div>
-
-	<br />
-
-	<div class="wrapper">
-		<div id="old-drag" class="drag drag-box">Old Draft</div>
-	</div>
-
-
-
+	<script src="../draggable-dev-bundle.js"></script>
 	<script src="./playground.js"></script>
-	<!-- <script src="../draggable.js"></script> -->
-	<!-- <script src="drag-n-drop.js"></script> -->
-	<!-- <script src="old-drag.js"></script> -->
-<script>
-//-----------------------------------------
-// const newDraggable = document.getElementById('new-draggable');
-// const gripHandle = document.getElementById('grips-container');
-
-// // const drg = draggable(newDraggable);
-// const drg = draggable(newDraggable, {
-// 	// axis:'x',
-// 	grip: gripHandle,
-// });
-
-// const drapNdropable = document.getElementById('drag-n-drop');
-// draggableNDroppable(drapNdropable);
-
-
-//-----------------------------------------
 </script>
 </body>
 </html>

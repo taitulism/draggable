@@ -1,8 +1,5 @@
 /* global draggable */
 
-// const draggable = require('../draggable');
-import draggable from '../draggable';
-
 const createEvent = (type, props = {}) => {
 	const event = new window.Event(type, {bubbles: true});
 	Object.assign(event, props);
@@ -638,15 +635,12 @@ describe('draggable', () => {
 				expect(target.style.position).to.equal('static');
 			});
 
-			it('releases the target element', (done) => {
+			it('releases the target element', () => {
 				drg = draggable(target);
 
 				expect(drg.elm).to.deep.equal(target);
 				drg.destroy();
 				expect(drg.elm).to.be.null;
-				setTimeout(() => {
-					done()
-				}, 1950);
 			});
 		});
 	});

@@ -1,5 +1,5 @@
 node_modules
 playground
-dist
+draggable-dev-bundle.js
 .vscode
-.cache
+

@@ -1,6 +1,8 @@
-export default function draggable (elm, opts) {
+function draggable (elm, opts) {
 	return new Draggable(elm, opts);
-};
+}
+// module.exports = draggable;
+// export draggable = draggable;
 
 function Draggable (elm, opts = {}) {
 	this.onDragStart = this.onDragStart.bind(this);
@@ -150,10 +152,6 @@ Draggable.prototype.destroy = function () {
 	this.elm = null;
 };
 
-function extractNumber (rawValue) {
-	return parseInt(rawValue || 0, 10);
-}
-
 function isInside (child, parent) {
 	const actualParentNode = child.parentNode;
 	if (actualParentNode === parent) return true;
@@ -173,3 +171,5 @@ function createGripMatcher (grip, isSelector) {
 		};
 	}
 }
+
+export default draggable;

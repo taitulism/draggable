@@ -1,83 +1,57 @@
 // Karma configuration
-// Generated on Mon Sep 14 2020 22:14:22 GMT+0300 (Israel Daylight Time)
+// Generated on Fri Sep 18 2020 18:49:15 GMT+0300 (Israel Daylight Time)
 
-module.exports = function(config) {
-  config.set({
-    // used to resolve all patterns (eg. files, exclude)
-    basePath: '',
-
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai'],
-
-    // list of files / patterns to load in the browser
-    files: [
-		'dist/draggable.global.js',
-		'dist/tests/*.spec.js',
-		// 'dist/tests/*.spec.js.map',
-		// {
-		// 	pattern: 'dist/tests/*.spec.js.map',
-		// 	// included: false
-		// },
-	],
-
-	preprocessors: {
-		'**/*.js': ['sourcemap']
-	},
-	// plugins: [
-	// 	'sourcemap'
-	// ],
-
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha'],
-
-    // web server port
-    port: 9876,
-
-    // enable / disable colors in the output (reporters and logs)
-    colors: true,
-
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
-
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
-
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: [
-		'ChromeNoSandbox',
-		// 'ChromeHeadlessNoSandbox',
-	],
-	customLaunchers: {
-		ChromeNoSandbox: {
-			base: 'Chrome',
-			flags: [
-				'--no-sandbox',
-				'--disable-gpu',
-				'--remote-debugging-port-9222'
-			]
+module.exports = function (config) {
+	config.set({
+		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+		logLevel: config.LOG_INFO,
+		basePath: '',
+		port: 9876,
+		concurrency: Infinity,
+		colors: true,
+		singleRun: true,
+		autoWatch: false,
+		frameworks: ['mocha', 'chai'],
+		reporters: ['mocha'],
+		files: [
+			{ pattern: 'tests/index.spec.js', watched: false },
+			{ pattern: 'draggable.js', watched: false },
+		],
+		preprocessors: {
+			'tests/index.spec.js': ['rollup'],
+			'draggable.js': ['rollup'],
 		},
-		ChromeHeadlessNoSandbox: {
-			base: 'ChromeHeadless',
-			flags: ['--no-sandbox']
+		rollupPreprocessor: {
+			output: {
+				format: 'iife',
+				name: 'draggable',
+				sourcemap: 'inline',
+			},
 		},
-	},
-
-	client: {
-		clearContext: false,
-		mocha: {
-			reporter: 'html',
-			timeout: 2000,
-
-			// require files after Mocha is initialized - but cached - not watched :/
-			// require: [require.resolve('./draggable.js')],
+		client: {
+			clearContext: false,
+			mocha: {
+				reporter: 'html',
+				timeout: 2000,
+			},
 		},
-	},
-
-    // CI mode: if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
-
-    // how many browsers should be started simultaneous
-    concurrency: Infinity
-  })
+		browsers: [
+			'HeadlessChrome',
+			// 'ChromeWithGUI',
+		],
+		customLaunchers: {
+			HeadlessChrome: {
+				base: 'ChromeHeadless',
+				flags: ['--no-sandbox']
+			},
+			ChromeWithGUI: {
+				base: 'Chrome',
+				flags: [
+					'--no-sandbox',
+					'--disable-gpu',
+					'--remote-debugging-port-9222'
+				]
+			},
+		},
+	})
 }
