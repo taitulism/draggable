@@ -1,12 +1,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/taitulism/draggable.svg?branch=master)](https://travis-ci.org/taitulism/draggable)
 
-Draggable
-=========
+draggable-elm
+=============
 Makes elements draggable. Vanilla style.
 
 ```js
-const draggable = require('draggable');
+const draggable = require('draggable-elm');
 
 const myElm = document.getElementById('target');
 
