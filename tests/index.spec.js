@@ -52,9 +52,15 @@ describe('draggable', () => {
 	beforeEach(() => {
 		container = document.createElement('div');
 		container.id = 'container';
+		container.style.height = '400px';
+		container.style.width = '1000';
+		container.style.padding = '20px';
 
 		target = document.createElement('div');
 		target.id = 'target';
+		target.style.width = '100px';
+		target.style.height = '100px';
+		target.style.backgroundColor = 'pink';
 
 		container.appendChild(target);
 		testDOMContainer.appendChild(container);
