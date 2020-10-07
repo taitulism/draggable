@@ -4,10 +4,13 @@
    "version": "0.0.2",
    "license": "MIT",
    "browser": "./dist/draggable.browser.js",
-   "module": "./dist/draggable.esm-bundle.js",
+   "module": "./dist/draggable.esm.js",
    "author": "Taitu Lizenbaum <taitu.dev@gmail.com>",
    "homepage": "https://github.com/taitulism/draggable#readme",
    "repository": "github:taitulism/draggable",
+   "files": [
+      "dist"
+   ],
    "scripts": {
       "dev": "rollup --config rollup.dev.config.js --watch",
       "build": "rollup --config rollup.prod.config.js",
@@ -16,6 +19,7 @@
       "lint": "eslint ./draggable.js ./tests",
       "check": "npm run lint && npm test",
       "play": "node ./playground/play.js",
+      "prepare": "npm run build",
       "preversion": "npm run check",
       "postversion": "git push && git push --tags"
    },
