@@ -1,8 +1,6 @@
-export default function draggable (elm, opts) {
-	return new Draggable(elm, opts);
-}
+import createGripMatcher from './create-grip-matcher';
 
-function Draggable (elm, opts = {}) {
+export default function Draggable (elm, opts = {}) {
 	this.onDragStart = this.onDragStart.bind(this);
 	this.onDragging = this.onDragging.bind(this);
 	this.onDrop = this.onDrop.bind(this);
@@ -151,23 +149,3 @@ Draggable.prototype.destroy = function destroy () {
 	this.events = null;
 	this.elm = null;
 };
-
-function isInside (child, parent) {
-	const actualParentNode = child.parentNode;
-	if (actualParentNode === parent) return true;
-	if (actualParentNode === document.body || actualParentNode == null) return false;
-	return isInside(actualParentNode, parent);
-}
-
-function createGripMatcher (grip, isSelector) {
-	if (isSelector) { // `grip` is a string
-		return function gripMatcher (eventTarget) {
-			return eventTarget.matches(grip) || eventTarget.closest(grip) != null;
-		};
-	}
-
-	// `grip` is an HTMLElement
-	return function gripMatcher (eventTarget) {
-		return grip === eventTarget || isInside(eventTarget, grip);
-	};
-}

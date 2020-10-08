@@ -17,18 +17,17 @@ module.exports = function (config) {
 		frameworks: ['mocha', 'chai'],
 		reporters: ['mocha'],
 		files: [
+			{ pattern: 'index.js', watched: false },
 			{ pattern: 'tests/index.spec.js', watched: false },
-			{ pattern: 'draggable.js', watched: false },
 		],
 		preprocessors: {
+			'index.js': ['rollup'],
 			'tests/index.spec.js': ['rollup'],
-			'draggable.js': ['rollup'],
 		},
 		rollupPreprocessor: {
 			output: {
 				format: 'iife',
 				name: 'draggable',
-				sourcemap: 'inline',
 			},
 		},
 		client: {

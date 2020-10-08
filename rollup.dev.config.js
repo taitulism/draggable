@@ -1,9 +1,15 @@
 export default [{
-	input: 'draggable.js',
+	input: 'index.js',
 	output: {
 		file: 'draggable-dev-bundle.js',
 		format: 'iife',
 		name: 'draggable',
-		sourcemap: 'inline',
+	},
+}, {
+	input: 'tests/index.spec.js',
+	output: {
+		file: 'draggable-spec-bundle.js',
+		format: 'iife',
+		name: 'draggable',
 	},
 }];
