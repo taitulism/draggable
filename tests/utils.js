@@ -1,3 +1,5 @@
+export const px = num => num + 'px';
+
 const createEvent = (type, props = {}) => {
 	const event = new window.Event(type, {bubbles: true});
 	Object.assign(event, props);
@@ -33,4 +35,12 @@ export function simulateMouseUp (elm, x, y) {
 	elm.dispatchEvent(event);
 }
 
-export const px = num => num + 'px';
+export function createTarget () {
+	const target = document.createElement('div');
+	target.id = 'target';
+	target.style.width = '100px';
+	target.style.height = '100px';
+	target.style.backgroundColor = 'pink';
+
+	return target;
+}

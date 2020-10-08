@@ -6,12 +6,29 @@ import optionsSpec from './options.spec';
 import apiSpec from './api.spec';
 
 describe('draggable', () => {
+	let testDOMContainer;
+
+	before(() => {
+		testDOMContainer = document.createElement('div');
+		testDOMContainer.id = 'test-dom-container';
+		testDOMContainer.style.height = '400px';
+		testDOMContainer.style.width = '1000';
+		testDOMContainer.style.padding = '75px';
+		document.body.appendChild(testDOMContainer);
+	});
+
+	after(() => {
+		testDOMContainer.parentNode.removeChild(testDOMContainer);
+		testDOMContainer = null;
+	});
+
 	it('is a function', () => expect(draggable).to.be.a('function'));
 
 	it('returns a `Draggable` instance', () => {
 		const target = document.createElement('div');
 		const draggableInstance = draggable(target);
 		const ctor = Object.getPrototypeOf(draggableInstance).constructor;
+
 		expect(ctor.name).to.equal('Draggable');
 	});
 
