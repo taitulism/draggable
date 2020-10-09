@@ -1,6 +1,5 @@
 node_modules
 playground
-draggable-dev-bundle.js
-draggable-spec-bundle.js
+dev-bundles
 .vscode
 
