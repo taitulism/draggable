@@ -8,6 +8,7 @@ export default function Draggable (elm, opts = {}) {
 	this.elm = elm;
 	this.useGrip = false;
 	this.gripHandle = null;
+	this.isGripHtmlElm = false;
 	this.isDraggable = true;
 	this.startMouseX = 0;
 	this.startMouseY = 0;
@@ -52,20 +53,50 @@ export default function Draggable (elm, opts = {}) {
 	elm.addEventListener('mousedown', this.onDragStart);
 }
 
-Draggable.prototype.setGrip = function setGrip (grip) {
-	if (!grip) {
+Draggable.prototype.setGrip = function setGrip (newGrip) {
+	if (newGrip === this.gripHandle) return;
+
+	this.unsetGripClassname();
+
+	if (!newGrip) {
+		this.useGrip = false;
 		this.gripHandle = null;
 		return;
 	}
 
-	this.useGrip = true;
-	this.gripHandle = grip;
+	this.isGripHtmlElm = newGrip instanceof HTMLElement;
+	if (!this.isGripHtmlElm && typeof newGrip !== 'string') return; // TODO: throw?
 
-	if (typeof grip == 'string') {
-		this.matchesGrip = createGripMatcher(grip, true);
+	this.useGrip = true;
+	this.gripHandle = newGrip;
+	this.matchesGrip = createGripMatcher(newGrip, this.isGripHtmlElm);
+
+	this.setGripClassname();
+};
+
+Draggable.prototype.unsetGripClassname = function unsetGripClassname () {
+	if (!this.useGrip) return;
+
+	if (this.isGripHtmlElm) {
+		this.gripHandle.classList.remove('drag-grip-handle');
 	}
-	else if (grip instanceof HTMLElement) {
-		this.matchesGrip = createGripMatcher(grip, false);
+	else {
+		const grips = document.querySelectorAll(this.gripHandle);
+		for (const g of grips) {
+			g.classList.remove('drag-grip-handle');
+		}
+	}
+};
+
+Draggable.prototype.setGripClassname = function setGripClassname () {
+	if (this.isGripHtmlElm) {
+		this.gripHandle.classList.add('drag-grip-handle');
+	}
+	else {
+		const grips = document.querySelectorAll(this.gripHandle);
+		for (const g of grips) {
+			g.classList.add('drag-grip-handle');
+		}
 	}
 };
 

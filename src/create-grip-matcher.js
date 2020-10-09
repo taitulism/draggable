@@ -1,13 +1,13 @@
-export default function createGripMatcher (grip, isSelector) {
-	if (isSelector) { // `grip` is a string
+export default function createGripMatcher (grip, isHtmlElm) {
+	if (isHtmlElm) {
 		return function gripMatcher (eventTarget) {
-			return eventTarget.matches(grip) || eventTarget.closest(grip) != null;
+			return grip === eventTarget || isInside(eventTarget, grip);
 		};
 	}
 
-	// `grip` is an HTMLElement
+	// `grip` is an elm selector string
 	return function gripMatcher (eventTarget) {
-		return grip === eventTarget || isInside(eventTarget, grip);
+		return eventTarget.matches(grip) || eventTarget.closest(grip) != null;
 	};
 }
 

@@ -167,6 +167,24 @@ export default () => {
 			simulateMouseUp(gripB, ...move(150, 0));
 			expect(target.style.left).to.equal(px(box.left + 300));
 		});
+
+		it('sets the grip classname on the new grip', () => {
+			drg = draggable(target);
+			expect(gripA.classList.contains('drag-grip-handle')).to.be.false;
+			expect(gripB.classList.contains('drag-grip-handle')).to.be.false;
+
+			drg.setGrip(gripA);
+			expect(gripA.classList.contains('drag-grip-handle')).to.be.true;
+			expect(gripB.classList.contains('drag-grip-handle')).to.be.false;
+
+			drg.setGrip('#grip-B');
+			expect(gripA.classList.contains('drag-grip-handle')).to.be.false;
+			expect(gripB.classList.contains('drag-grip-handle')).to.be.true;
+
+			drg.setGrip();
+			expect(gripA.classList.contains('drag-grip-handle')).to.be.false;
+			expect(gripB.classList.contains('drag-grip-handle')).to.be.false;
+		});
 	});
 
 	describe('.destroy()', () => {

@@ -160,7 +160,16 @@ export default () => {
 			expect(target.style.left).to.equal(px(box.left + 150));
 		});
 
-		// ? :/
-		it.skip('sets a classname on the grip element');
+		it('sets a classname on the grip element', () => {
+			expect(gripA.classList.contains('drag-grip-handle')).to.be.false;
+			draggable(target, {grip: gripA});
+			expect(gripA.classList.contains('drag-grip-handle')).to.be.true;
+		});
+
+		it('sets a classname on the grip element selector', () => {
+			expect(gripA.classList.contains('drag-grip-handle')).to.be.false;
+			draggable(target, {grip: '#grip-A'});
+			expect(gripA.classList.contains('drag-grip-handle')).to.be.true;
+		});
 	});
 };

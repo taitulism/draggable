@@ -47,6 +47,8 @@ For styling, the main element will be given the following classes:
 * `'grabbed'` - on mouse down, until mouse up.
 * `'dragging'` - when moving the element until mouse up.
 
+Any element that is set as a grip handle will be given the classname: `'drag-grip-handle'`.
+
 &nbsp;
 
 >### Position:
