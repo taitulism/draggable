@@ -44,7 +44,7 @@ Kills the `Draggable` instance for good, unbinds events, releases element refere
 ## Classnames
 For styling, the main element will be given the following classes:
 * `'draggable'` - from initialization until destruction.
-* `'grabbed'` - when grabbing the element. On mouse down, before moving.
+* `'grabbed'` - on mouse down, until mouse up.
 * `'dragging'` - when moving the element until mouse up.
 
 &nbsp;

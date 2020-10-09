@@ -28,6 +28,8 @@ export default () => {
 		expect(target.classList.contains('grabbed')).to.be.false;
 		simulateMouseDown(target, 50, 50);
 		expect(target.classList.contains('grabbed')).to.be.true;
+		simulateMouseMove(target, 50, 50);
+		expect(target.classList.contains('grabbed')).to.be.true;
 		simulateMouseUp(target, 50, 50);
 		expect(target.classList.contains('grabbed')).to.be.false;
 	});

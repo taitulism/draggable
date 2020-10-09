@@ -109,7 +109,7 @@ Draggable.prototype.onDragging = function onDragging (ev) {
 		this.elm.style.top = this.box.y + mouseMovedY  + 'px';
 	}
 
-	this.elm.classList.replace('grabbed', 'dragging');
+	this.elm.classList.add('dragging');
 	this.events.dragging.forEach(cb => cb(ev));
 
 	// prevent text selection while draging
