@@ -1,4 +1,10 @@
 import createGripMatcher from './create-grip-matcher';
+import {
+	DRAGGABLE,
+	DRAGGING,
+	DRAG_DISABLED,
+	DRAG_GRIP,
+} from './classnames';
 
 export default function Draggable (elm, opts = {}) {
 	this.onDragStart = this.onDragStart.bind(this);
@@ -32,7 +38,7 @@ export default function Draggable (elm, opts = {}) {
 
 	document.body.appendChild(this.elm);
 
-	elm.classList.add('draggable');
+	elm.classList.add(DRAGGABLE);
 
 	if (opts.axis) {
 		this.mouseUpContextElm = document;
@@ -78,24 +84,24 @@ Draggable.prototype.unsetGripClassname = function unsetGripClassname () {
 	if (!this.useGrip) return;
 
 	if (this.isGripHtmlElm) {
-		this.gripHandle.classList.remove('drag-grip-handle');
+		this.gripHandle.classList.remove(DRAG_GRIP);
 	}
 	else {
 		const grips = document.querySelectorAll(this.gripHandle);
 		for (const g of grips) {
-			g.classList.remove('drag-grip-handle');
+			g.classList.remove(DRAG_GRIP);
 		}
 	}
 };
 
 Draggable.prototype.setGripClassname = function setGripClassname () {
 	if (this.isGripHtmlElm) {
-		this.gripHandle.classList.add('drag-grip-handle');
+		this.gripHandle.classList.add(DRAG_GRIP);
 	}
 	else {
 		const grips = document.querySelectorAll(this.gripHandle);
 		for (const g of grips) {
-			g.classList.add('drag-grip-handle');
+			g.classList.add(DRAG_GRIP);
 		}
 	}
 };
@@ -119,7 +125,7 @@ Draggable.prototype.onDragStart = function onDragStart (ev) {
 		this.startMouseY = ev.clientY;
 	}
 
-	this.elm.classList.add('grabbed');
+	this.elm.classList.add(DRAGGING);
 
 	document.addEventListener('mousemove', this.onDragging);
 	this.mouseUpContextElm.addEventListener('mouseup', this.onDrop);
@@ -140,7 +146,6 @@ Draggable.prototype.onDragging = function onDragging (ev) {
 		this.elm.style.top = this.box.y + mouseMovedY  + 'px';
 	}
 
-	this.elm.classList.add('dragging');
 	this.events.dragging.forEach(cb => cb(ev));
 
 	// prevent text selection while draging
@@ -152,18 +157,18 @@ Draggable.prototype.onDrop = function onDrop (ev) {
 	this.mouseUpContextElm.removeEventListener('mouseup', this.onDrop);
 
 	this.box = null;
-	this.elm.classList.remove('grabbed', 'dragging');
+	this.elm.classList.remove(DRAGGING);
 	this.events.drop.forEach(cb => cb(ev));
 };
 
 Draggable.prototype.disable = function disable () {
 	this.isDraggable = false;
-	this.elm.classList.add('drag-disabled');
+	this.elm.classList.add(DRAG_DISABLED);
 };
 
 Draggable.prototype.enable = function enable () {
 	this.isDraggable = true;
-	this.elm.classList.remove('drag-disabled');
+	this.elm.classList.remove(DRAG_DISABLED);
 };
 
 Draggable.prototype.destroy = function destroy () {
@@ -175,7 +180,7 @@ Draggable.prototype.destroy = function destroy () {
 		this.elm.style.position = this.originalJsPosition;
 	}
 
-	this.elm.classList.remove('draggable', 'grabbed', 'dragging');
+	this.elm.classList.remove(DRAGGABLE, DRAGGING);
 
 	this.events = null;
 	this.elm = null;

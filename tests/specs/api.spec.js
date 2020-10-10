@@ -1,4 +1,10 @@
 import {px, createTarget, simulateMouseDown, simulateMouseMove, simulateMouseUp} from '../utils';
+import {
+	DRAGGABLE,
+	DRAGGING,
+	DRAG_DISABLED,
+	DRAG_GRIP,
+} from '../../src/classnames';
 
 export default () => {
 	let testDOMContainer, target, box, move, drg;
@@ -70,11 +76,11 @@ export default () => {
 		it('toggles classname', () => {
 			drg = draggable(target);
 
-			expect(target.classList.contains('drag-disabled')).to.be.false;
+			expect(target.classList.contains(DRAG_DISABLED)).to.be.false;
 			drg.disable();
-			expect(target.classList.contains('drag-disabled')).to.be.true;
+			expect(target.classList.contains(DRAG_DISABLED)).to.be.true;
 			drg.enable();
-			expect(target.classList.contains('drag-disabled')).to.be.false;
+			expect(target.classList.contains(DRAG_DISABLED)).to.be.false;
 		});
 	});
 
@@ -170,20 +176,20 @@ export default () => {
 
 		it('sets the grip classname on the new grip', () => {
 			drg = draggable(target);
-			expect(gripA.classList.contains('drag-grip-handle')).to.be.false;
-			expect(gripB.classList.contains('drag-grip-handle')).to.be.false;
+			expect(gripA.classList.contains(DRAG_GRIP)).to.be.false;
+			expect(gripB.classList.contains(DRAG_GRIP)).to.be.false;
 
 			drg.setGrip(gripA);
-			expect(gripA.classList.contains('drag-grip-handle')).to.be.true;
-			expect(gripB.classList.contains('drag-grip-handle')).to.be.false;
+			expect(gripA.classList.contains(DRAG_GRIP)).to.be.true;
+			expect(gripB.classList.contains(DRAG_GRIP)).to.be.false;
 
 			drg.setGrip('#grip-B');
-			expect(gripA.classList.contains('drag-grip-handle')).to.be.false;
-			expect(gripB.classList.contains('drag-grip-handle')).to.be.true;
+			expect(gripA.classList.contains(DRAG_GRIP)).to.be.false;
+			expect(gripB.classList.contains(DRAG_GRIP)).to.be.true;
 
 			drg.setGrip();
-			expect(gripA.classList.contains('drag-grip-handle')).to.be.false;
-			expect(gripB.classList.contains('drag-grip-handle')).to.be.false;
+			expect(gripA.classList.contains(DRAG_GRIP)).to.be.false;
+			expect(gripB.classList.contains(DRAG_GRIP)).to.be.false;
 		});
 	});
 
@@ -243,13 +249,13 @@ export default () => {
 			simulateMouseMove(target, 160, 160);
 
 			drg.destroy();
-			expect(target.classList.contains('draggable')).to.be.false;
+			expect(target.classList.contains(DRAGGABLE)).to.be.false;
 
 			simulateMouseDown(target, 160, 160);
-			expect(target.classList.contains('grabbed')).to.be.false;
+			expect(target.classList.contains(DRAGGING)).to.be.false;
 
 			simulateMouseMove(target, 160, 160);
-			expect(target.classList.contains('dragging')).to.be.false;
+			expect(target.classList.contains(DRAGGING)).to.be.false;
 		});
 
 		it('resets original position', () => {

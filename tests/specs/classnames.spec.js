@@ -1,4 +1,8 @@
 import {createTarget, simulateMouseDown, simulateMouseMove, simulateMouseUp} from '../utils';
+import {
+	DRAGGABLE,
+	DRAGGING,
+} from '../../src/classnames';
 
 export default () => {
 	let testDOMContainer, target, drg;
@@ -20,29 +24,18 @@ export default () => {
 
 	it('sets a `draggable` classname on elm', () => {
 		draggable(target);
-		expect(target.classList.contains('draggable')).to.be.true;
-	});
-
-	it('sets a `grabbed` classname on elm when grabbing it', () => {
-		draggable(target);
-		expect(target.classList.contains('grabbed')).to.be.false;
-		simulateMouseDown(target, 50, 50);
-		expect(target.classList.contains('grabbed')).to.be.true;
-		simulateMouseMove(target, 50, 50);
-		expect(target.classList.contains('grabbed')).to.be.true;
-		simulateMouseUp(target, 50, 50);
-		expect(target.classList.contains('grabbed')).to.be.false;
+		expect(target.classList.contains(DRAGGABLE)).to.be.true;
 	});
 
 	it('sets a `dragging` classname on elm when moving it', () => {
 		draggable(target);
-		expect(target.classList.contains('dragging')).to.be.false;
+		expect(target.classList.contains(DRAGGING)).to.be.false;
 		simulateMouseDown(target, 50, 50);
-		expect(target.classList.contains('dragging')).to.be.false;
+		expect(target.classList.contains(DRAGGING)).to.be.true;
 		simulateMouseMove(target, 50, 50);
-		expect(target.classList.contains('dragging')).to.be.true;
+		expect(target.classList.contains(DRAGGING)).to.be.true;
 		simulateMouseUp(target, 50, 50);
-		expect(target.classList.contains('dragging')).to.be.false;
+		expect(target.classList.contains(DRAGGING)).to.be.false;
 	});
 
 	it('leaves only the `draggable` classname on elm when droping it', () => {
