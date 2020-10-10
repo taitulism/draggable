@@ -6,7 +6,7 @@ export default [{
 		name: 'draggable',
 	},
 }, {
-	input: 'tests/index.spec.js',
+	input: 'tests/specs/index.spec.js',
 	output: {
 		file: 'dev-bundles/draggable-spec.js',
 		format: 'iife',

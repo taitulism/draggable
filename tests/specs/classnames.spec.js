@@ -1,4 +1,4 @@
-import {createTarget, simulateMouseDown, simulateMouseMove, simulateMouseUp} from './utils';
+import {createTarget, simulateMouseDown, simulateMouseMove, simulateMouseUp} from '../utils';
 
 export default () => {
 	let testDOMContainer, target, drg;
