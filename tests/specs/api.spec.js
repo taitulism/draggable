@@ -201,8 +201,8 @@ export default () => {
 			let moves = 0;
 			let drops = 0;
 
-			drg.on('grab', () => { grabs++; });
-			drg.on('dragging', () => { moves++; });
+			drg.on('start', () => { grabs++; });
+			drg.on('ing', () => { moves++; });
 			drg.on('drop', () => { drops++; });
 
 			expect(grabs).to.equal(0);

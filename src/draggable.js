@@ -112,7 +112,20 @@ Draggable.prototype.setGripClassname = function setGripClassname () {
 };
 
 Draggable.prototype.on = function on (eventName, callback) {
-	this.events[eventName].push(callback);
+	const lowerEventName = eventName.toLowerCase();
+	if (lowerEventName.includes('start')) {
+		this.events.grab.push(callback);
+	}
+	else if (lowerEventName.includes('ing')) {
+		this.events.dragging.push(callback);
+	}
+	else if (
+		lowerEventName.includes('end') ||
+		lowerEventName.includes('stop') ||
+		lowerEventName.includes('drop')
+	) {
+		this.events.drop.push(callback);
+	}
 	return this;
 };
 

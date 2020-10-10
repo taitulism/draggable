@@ -18,11 +18,11 @@ export default () => {
 		target = null;
 	});
 
-	it('emits `grab` event', () => {
+	it('emits `drag-start` event', () => {
 		drg = draggable(target);
 		let fired = false;
 
-		drg.on('grab', () => { fired = true; });
+		drg.on('drag-start', () => { fired = true; });
 
 		simulateMouseDown(target, 50, 50);
 		expect(fired).to.be.true;
@@ -44,11 +44,11 @@ export default () => {
 		simulateMouseUp(target, 50, 50);
 	});
 
-	it('emits `drop` event', () => {
+	it('emits `drag-end` event', () => {
 		drg = draggable(target);
 		let fired = false;
 
-		drg.on('drop', () => { fired = true; });
+		drg.on('drag-end', () => { fired = true; });
 
 		simulateMouseDown(target, 50, 50);
 		expect(fired).to.be.false;

@@ -37,6 +37,9 @@ Listen to drag and drop events:
 * **`'dragging'`** - moving around, on mouse move (with mouse down)
 * **`'drop'`** - dragging stopped, on mouse up.
 
+**Event Aliases**  
+For extra convenience, anything that contains `start`, `stop`/`end`/`drop` or `ing` will match its respective event.
+
 ### **.destroy()**
 Kills the `Draggable` instance for good, unbinds events, releases element references.
 
