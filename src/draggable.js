@@ -6,6 +6,11 @@ import {
 	DRAG_GRIP,
 } from './classnames';
 
+const MOUSE_DOWN = 'mousedown';
+const MOUSE_MOVE = 'mousemove';
+const MOUSE_UP = 'mouseup';
+const px = 'px';
+
 export default function Draggable (elm, opts = {}) {
 	this.onDragStart = this.onDragStart.bind(this);
 	this.onDragging = this.onDragging.bind(this);
@@ -33,8 +38,8 @@ export default function Draggable (elm, opts = {}) {
 
 	const box = elm.getBoundingClientRect();
 
-	elm.style.top = box.top + 'px';
-	elm.style.left = box.left + 'px';
+	elm.style.top = box.top + px;
+	elm.style.left = box.left + px;
 
 	document.body.appendChild(this.elm);
 
@@ -56,7 +61,7 @@ export default function Draggable (elm, opts = {}) {
 
 	this.setGrip(opts.grip);
 
-	elm.addEventListener('mousedown', this.onDragStart);
+	elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 }
 
 Draggable.prototype.setGrip = function setGrip (newGrip) {
@@ -127,8 +132,8 @@ Draggable.prototype.onDragStart = function onDragStart (ev) {
 
 	this.elm.classList.add(DRAGGING);
 
-	document.addEventListener('mousemove', this.onDragging);
-	this.mouseUpContextElm.addEventListener('mouseup', this.onDrop);
+	document.addEventListener(MOUSE_MOVE, this.onDragging);
+	this.mouseUpContextElm.addEventListener(MOUSE_UP, this.onDrop);
 
 	this.events.grab.forEach(cb => cb(ev));
 };
@@ -138,12 +143,12 @@ Draggable.prototype.onDragging = function onDragging (ev) {
 
 	if (this.xAxis) {
 		const mouseMovedX = ev.clientX - this.startMouseX;
-		this.elm.style.left = this.box.x + mouseMovedX  + 'px';
+		this.elm.style.left = this.box.x + mouseMovedX  + px;
 	}
 
 	if (this.yAxis) {
 		const mouseMovedY = ev.clientY - this.startMouseY;
-		this.elm.style.top = this.box.y + mouseMovedY  + 'px';
+		this.elm.style.top = this.box.y + mouseMovedY  + px;
 	}
 
 	this.events.dragging.forEach(cb => cb(ev));
@@ -153,8 +158,8 @@ Draggable.prototype.onDragging = function onDragging (ev) {
 };
 
 Draggable.prototype.onDrop = function onDrop (ev) {
-	document.removeEventListener('mousemove', this.onDragging);
-	this.mouseUpContextElm.removeEventListener('mouseup', this.onDrop);
+	document.removeEventListener(MOUSE_MOVE, this.onDragging);
+	this.mouseUpContextElm.removeEventListener(MOUSE_UP, this.onDrop);
 
 	this.box = null;
 	this.elm.classList.remove(DRAGGING);
@@ -172,9 +177,9 @@ Draggable.prototype.enable = function enable () {
 };
 
 Draggable.prototype.destroy = function destroy () {
-	this.elm.removeEventListener('mousedown', this.onDragStart);
-	document.removeEventListener('mousemove', this.onDragging);
-	this.mouseUpContextElm.removeEventListener('mouseup', this.onDrop);
+	this.elm.removeEventListener(MOUSE_DOWN, this.onDragStart);
+	document.removeEventListener(MOUSE_MOVE, this.onDragging);
+	this.mouseUpContextElm.removeEventListener(MOUSE_UP, this.onDrop);
 
 	if (this.originalJsPosition) {
 		this.elm.style.position = this.originalJsPosition;
