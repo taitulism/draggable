@@ -1,4 +1,5 @@
 import createGripMatcher from './create-grip-matcher';
+import isElmInDom from './is-elm-in-dom';
 import {
 	DRAGGABLE,
 	DRAGGING,
@@ -9,6 +10,8 @@ import {
 const MOUSE_DOWN = 'mousedown';
 const MOUSE_MOVE = 'mousemove';
 const MOUSE_UP = 'mouseup';
+
+const DEFAULT_POSITION = 120;
 const px = 'px';
 
 export default function Draggable (elm, opts = {}) {
@@ -29,21 +32,10 @@ export default function Draggable (elm, opts = {}) {
 		dragging: []
 	};
 
-	this.originalJsPosition = elm.style.position || null;
-	const position = elm.style.position || window.getComputedStyle(elm).position;
-
-	if (position !== 'absolute') {
-		elm.style.position = 'absolute';
-	}
-
-	const box = elm.getBoundingClientRect();
-
-	elm.style.top = box.top + px;
-	elm.style.left = box.left + px;
+	elm.classList.add(DRAGGABLE);
+	this.initPosition(elm);
 
 	document.body.appendChild(this.elm);
-
-	elm.classList.add(DRAGGABLE);
 
 	if (opts.axis) {
 		this.mouseUpContextElm = document;
@@ -63,6 +55,31 @@ export default function Draggable (elm, opts = {}) {
 
 	elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 }
+
+Draggable.prototype.initPosition = function initPosition (elm) {
+	this.originalJsPosition = elm.style.position || null;
+	const position = elm.style.position || window.getComputedStyle(elm).position;
+
+	if (position !== 'absolute') {
+		elm.style.position = 'absolute';
+	}
+
+	if (isElmInDom(elm)) {
+		const {top, left} = elm.getBoundingClientRect();
+		this.moveTo({top, left});
+	}
+	else {
+		this.moveTo({top: DEFAULT_POSITION, right: DEFAULT_POSITION});
+	}
+};
+
+Draggable.prototype.moveTo = function moveTo ({top, left, right, bottom}) {
+	const elmStyle = this.elm.style;
+	if (top) elmStyle.top = top + px;
+	if (left) elmStyle.left = left + px;
+	if (right) elmStyle.right = right + px;
+	if (bottom) elmStyle.bottom = bottom + px;
+};
 
 Draggable.prototype.setGrip = function setGrip (newGrip) {
 	if (newGrip === this.gripHandle) return;
@@ -156,12 +173,12 @@ Draggable.prototype.onDragging = function onDragging (ev) {
 
 	if (this.xAxis) {
 		const mouseMovedX = ev.clientX - this.startMouseX;
-		this.elm.style.left = this.box.x + mouseMovedX  + px;
+		this.moveTo({left: this.box.x + mouseMovedX});
 	}
 
 	if (this.yAxis) {
 		const mouseMovedY = ev.clientY - this.startMouseY;
-		this.elm.style.top = this.box.y + mouseMovedY  + px;
+		this.moveTo({top: this.box.y + mouseMovedY});
 	}
 
 	this.events.dragging.forEach(cb => cb(ev));
