@@ -7,6 +7,8 @@ import {
 	simulateMouseUp
 } from '../utils';
 
+const DEFAULT_POSITION = 120;
+
 export default () => {
 	let testDOMContainer, target, box, move, drg;
 
@@ -194,6 +196,17 @@ export default () => {
 
 			const newBox = target.getBoundingClientRect();
 			expect(newBox.top).to.equal(30);
+			expect(newBox.left).to.equal(box.left);
+		});
+	});
+
+	describe('left', () => {
+		it('sets the initial left position of the element', () => {
+			draggable(target, {left: 30});
+
+			const newBox = target.getBoundingClientRect();
+			expect(newBox.left).to.equal(30);
+			expect(newBox.top).to.equal(box.top);
 		});
 	});
 
@@ -218,60 +231,109 @@ export default () => {
 
 			const newBox = target.getBoundingClientRect();
 			expect(clientHeight - newBox.bottom).to.equal(30);
-		});
-	});
-
-	describe('left', () => {
-		it('sets the initial left position of the element', () => {
-			draggable(target, {left: 30});
-
-			const newBox = target.getBoundingClientRect();
-			expect(newBox.left).to.equal(30);
+			expect(newBox.left).to.equal(box.left);
 		});
 	});
 
 	describe('Mixed Initial Position', () => {
-		it('sets the initial top-left position of the element', () => {
-			draggable(target, {top: 31, left: 32});
+		describe('when target is in the DOM', () => {
+			it('sets the initial top-left position of the element', () => {
+				draggable(target, {top: 31, left: 32});
 
-			const newBox = target.getBoundingClientRect();
-			expect(newBox.top).to.equal(31);
-			expect(newBox.left).to.equal(32);
+				const newBox = target.getBoundingClientRect();
+				expect(newBox.top).to.equal(31);
+				expect(newBox.left).to.equal(32);
+			});
+
+			it('sets the initial bottom-right position of the element', () => {
+				const htmlElm = document.getRootNode().firstElementChild;
+				const clientWidth = htmlElm.clientWidth;
+				const clientHeight = htmlElm.clientHeight;
+
+				draggable(target, {bottom: 31, right: 32});
+
+				const newBox = target.getBoundingClientRect();
+				expect(clientHeight - newBox.bottom).to.equal(31);
+				expect(clientWidth - newBox.right).to.equal(32);
+			});
+
+			it('sets the initial top-right position of the element', () => {
+				const htmlElm = document.getRootNode().firstElementChild;
+				const clientWidth = htmlElm.clientWidth;
+
+				draggable(target, {top: 31, right: 32});
+
+				const newBox = target.getBoundingClientRect();
+				expect(newBox.top).to.equal(31);
+				expect(clientWidth - newBox.right).to.equal(32);
+			});
+
+			it('sets the initial bottom-left position of the element', () => {
+				const htmlElm = document.getRootNode().firstElementChild;
+				const clientHeight = htmlElm.clientHeight;
+
+				draggable(target, {bottom: 31, left: 32});
+
+				const newBox = target.getBoundingClientRect();
+				expect(clientHeight - newBox.bottom).to.equal(31);
+				expect(newBox.left).to.equal(32);
+			});
 		});
 
-		it('sets the initial bottom-right position of the element', () => {
-			const htmlElm = document.getRootNode().firstElementChild;
-			const clientWidth = htmlElm.clientWidth;
-			const clientHeight = htmlElm.clientHeight;
+		describe('when target is NOT in the DOM', () => {
+			it('sets the initial top-left position of the element', () => {
+				const htmlElm = document.getRootNode().firstElementChild;
+				const clientWidth = htmlElm.clientWidth;
 
-			draggable(target, {bottom: 31, right: 32});
+				target.remove();
 
-			const newBox = target.getBoundingClientRect();
-			expect(clientHeight - newBox.bottom).to.equal(31);
-			expect(clientWidth - newBox.right).to.equal(32);
+				draggable(target, {top: 31});
+
+				const newBox = target.getBoundingClientRect();
+				expect(newBox.top).to.equal(31);
+				expect(clientWidth - newBox.right).to.equal(DEFAULT_POSITION);
+			});
+
+			it('sets the initial bottom-right position of the element', () => {
+				target.remove();
+
+				const htmlElm = document.getRootNode().firstElementChild;
+				const clientWidth = htmlElm.clientWidth;
+				const clientHeight = htmlElm.clientHeight;
+
+				draggable(target, {bottom: 31});
+
+				const newBox = target.getBoundingClientRect();
+				expect(clientHeight - newBox.bottom).to.equal(31);
+				expect(clientWidth - newBox.right).to.equal(DEFAULT_POSITION);
+			});
+
+			it('sets the initial top-right position of the element', () => {
+				target.remove();
+
+				const htmlElm = document.getRootNode().firstElementChild;
+				const clientWidth = htmlElm.clientWidth;
+
+				draggable(target, {top: 31, right: 32});
+
+				const newBox = target.getBoundingClientRect();
+				expect(newBox.top).to.equal(31);
+				expect(clientWidth - newBox.right).to.equal(32);
+			});
+
+			it('sets the initial bottom-left position of the element', () => {
+				target.remove();
+
+				const htmlElm = document.getRootNode().firstElementChild;
+				const clientHeight = htmlElm.clientHeight;
+
+				draggable(target, {bottom: 31, left: 32});
+
+				const newBox = target.getBoundingClientRect();
+				expect(clientHeight - newBox.bottom).to.equal(31);
+				expect(newBox.left).to.equal(32);
+			});
 		});
 
-		it('sets the initial top-right position of the element', () => {
-			const htmlElm = document.getRootNode().firstElementChild;
-			const clientWidth = htmlElm.clientWidth;
-
-			draggable(target, {top: 31, right: 32});
-
-			const newBox = target.getBoundingClientRect();
-			expect(newBox.top).to.equal(31);
-			expect(clientWidth - newBox.right).to.equal(32);
-		});
-
-
-		it('sets the initial bottom-left position of the element', () => {
-			const htmlElm = document.getRootNode().firstElementChild;
-			const clientHeight = htmlElm.clientHeight;
-
-			draggable(target, {bottom: 31, left: 32});
-
-			const newBox = target.getBoundingClientRect();
-			expect(clientHeight - newBox.bottom).to.equal(31);
-			expect(newBox.left).to.equal(32);
-		});
 	});
 };
