@@ -240,7 +240,10 @@ export default () => {
 		});
 
 		it('removes all classnames', () => {
-			drg = draggable(target);
+			const gripA = document.createElement('div');
+			gripA.id = 'grip-A';
+
+			drg = draggable(target, {grip: gripA});
 
 			simulateMouseDown(target, 50, 50);
 			simulateMouseMove(target, 50, 50);
@@ -249,6 +252,7 @@ export default () => {
 			simulateMouseMove(target, 160, 160);
 
 			drg.destroy();
+			expect(gripA.classList.contains(DRAG_GRIP)).to.be.false;
 			expect(target.classList.contains(DRAGGABLE)).to.be.false;
 
 			simulateMouseDown(target, 160, 160);

@@ -271,6 +271,7 @@ Draggable.prototype.destroy = function destroy () {
 	}
 
 	this.elm.classList.remove(this.mainClassname, DRAGGING);
+	this.unsetGripClassname();
 
 	this.events = null;
 	this.elm = null;
