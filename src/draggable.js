@@ -15,6 +15,7 @@ const DEFAULT_POSITION = 120;
 const px = 'px';
 const TYPE_NUMBER = 'number';
 const isNumber = thing => typeof thing == TYPE_NUMBER;
+const getDraggableClassname = nsp => (nsp ? `${nsp}-${DRAGGABLE}` : DRAGGABLE);
 
 export default function Draggable (elm, opts = {}) {
 	this.onDragStart = this.onDragStart.bind(this);
@@ -28,13 +29,14 @@ export default function Draggable (elm, opts = {}) {
 	this.isDraggable = true;
 	this.startMouseX = 0;
 	this.startMouseY = 0;
+	this.mainClassname = getDraggableClassname(opts.classNamespace);
 	this.events = {
 		grab: [],
 		drop: [],
 		dragging: []
 	};
 
-	elm.classList.add(DRAGGABLE);
+	elm.classList.add(this.mainClassname);
 	this.initPosition(elm, opts);
 
 	document.body.appendChild(this.elm);
@@ -268,7 +270,7 @@ Draggable.prototype.destroy = function destroy () {
 		this.elm.style.position = this.originalJsPosition;
 	}
 
-	this.elm.classList.remove(DRAGGABLE, DRAGGING);
+	this.elm.classList.remove(this.mainClassname, DRAGGING);
 
 	this.events = null;
 	this.elm = null;

@@ -1,4 +1,11 @@
-import {px, createTarget, simulateMouseDown, simulateMouseMove, simulateMouseUp} from '../utils';
+import { DRAGGABLE } from '../../src/classnames';
+import {
+	px,
+	createTarget,
+	simulateMouseDown,
+	simulateMouseMove,
+	simulateMouseUp
+} from '../utils';
 
 export default () => {
 	let testDOMContainer, target, box, move, drg;
@@ -170,6 +177,14 @@ export default () => {
 			expect(gripA.classList.contains('drag-grip-handle')).to.be.false;
 			draggable(target, {grip: '#grip-A'});
 			expect(gripA.classList.contains('drag-grip-handle')).to.be.true;
+		});
+	});
+
+	describe('classNamespace', () => {
+		it('sets a prefix to the `draggable` classname', () => {
+			draggable(target, {classNamespace: 'prefix'});
+			expect(target.classList.contains(DRAGGABLE)).to.be.false;
+			expect(target.classList.contains(`prefix-${DRAGGABLE}`)).to.be.true;
 		});
 	});
 
