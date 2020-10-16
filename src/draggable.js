@@ -13,6 +13,8 @@ const MOUSE_UP = 'mouseup';
 
 const DEFAULT_POSITION = 120;
 const px = 'px';
+const TYPE_NUMBER = 'number';
+const isNumber = thing => typeof thing == TYPE_NUMBER;
 
 export default function Draggable (elm, opts = {}) {
 	this.onDragStart = this.onDragStart.bind(this);
@@ -33,7 +35,7 @@ export default function Draggable (elm, opts = {}) {
 	};
 
 	elm.classList.add(DRAGGABLE);
-	this.initPosition(elm);
+	this.initPosition(elm, opts);
 
 	document.body.appendChild(this.elm);
 
@@ -56,7 +58,15 @@ export default function Draggable (elm, opts = {}) {
 	elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 }
 
-Draggable.prototype.initPosition = function initPosition (elm) {
+// eslint-disable-next-line complexity
+Draggable.prototype.initPosition = function initPosition (elm, opts) {
+	const {
+		top,
+		left,
+		bottom,
+		right,
+	} = opts;
+
 	this.originalJsPosition = elm.style.position || null;
 	const position = elm.style.position || window.getComputedStyle(elm).position;
 
@@ -64,13 +74,56 @@ Draggable.prototype.initPosition = function initPosition (elm) {
 		elm.style.position = 'absolute';
 	}
 
-	if (isElmInDom(elm)) {
-		const {top, left} = elm.getBoundingClientRect();
-		this.moveTo({top, left});
+	const hasTop = isNumber(top);
+	const hasLeft = isNumber(left);
+	const hasBottom = isNumber(bottom);
+	const hasRight = isNumber(right);
+
+	const hasInitX = hasLeft || hasRight;
+	const hasInitY = hasTop || hasBottom;
+
+	let newPosBox;
+
+	if (hasInitX && hasInitY) {
+		newPosBox = {};
+
+		if (hasTop) newPosBox.top = top;
+		else newPosBox.bottom = bottom;
+
+		if (hasLeft) newPosBox.left = left;
+		else newPosBox.right = right;
 	}
-	else {
-		this.moveTo({top: DEFAULT_POSITION, right: DEFAULT_POSITION});
+	else if (!hasInitX && !hasInitY) {
+		const isInDom = isElmInDom(elm);
+		const currentBox = isInDom && elm.getBoundingClientRect();
+
+		newPosBox = {
+			top: isInDom ? currentBox.top : DEFAULT_POSITION,
+			left: isInDom ? currentBox.left : DEFAULT_POSITION,
+		};
 	}
+	else { // hasInitX XOR hasInitY
+		const isInDom = isElmInDom(elm);
+		const currentBox = isInDom && elm.getBoundingClientRect();
+
+		if (hasInitX) {
+			newPosBox = {top: isInDom ? currentBox.top : DEFAULT_POSITION};
+
+			if (hasLeft) newPosBox.left = left;
+			else newPosBox.right = right;
+		}
+		else { // hasInitY
+			newPosBox = isInDom
+				? {left: currentBox.left}
+				: {right: DEFAULT_POSITION}
+			;
+
+			if (hasTop) newPosBox.top = top;
+			else newPosBox.bottom = bottom;
+		}
+	}
+
+	this.moveTo(newPosBox);
 };
 
 Draggable.prototype.moveTo = function moveTo ({top, left, right, bottom}) {

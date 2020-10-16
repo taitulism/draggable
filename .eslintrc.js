@@ -217,7 +217,6 @@ module.exports = {
 		'padding-line-between-statements': 'error',
 		'prefer-arrow-callback': 'error',
 		'prefer-const': 'error',
-		'prefer-destructuring': 'error',
 		'prefer-numeric-literals': 'error',
 		'prefer-object-spread': 'error',
 		'prefer-promise-reject-errors': 'error',
@@ -281,6 +280,7 @@ module.exports = {
 	}
 };
 
+//		"prefer-destructuring": "off",
 //		"callback-return": "off",
 //		"sort-keys": "off",
 //		"semi-style": [ "off", "last" ],

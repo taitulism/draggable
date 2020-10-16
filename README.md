@@ -15,6 +15,10 @@ draggable(myElm, {options});
 
 ## Options
 
+* **`top`** - Number. Initial top position in pixels.
+* **`bottom`** - Number. Initial bottom position in pixels.
+* **`left`** - Number. Initial left position in pixels.
+* **`right`** - Number. Initial right position in pixels.
 * **`axis`** - String. Restrict movement along a single axis, `'x'` or `'y'`.
 * **`grip`** - Element | String (element selector). A grip handle element to activate draggability upon mouse down. By default you can start dragging from anywhere within the main element.
 
