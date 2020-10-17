@@ -1,10 +1,10 @@
 /* eslint-disable no-invalid-this */
 import createGripMatcher from './create-grip-matcher';
 import {
+	DRAGGABLE,
 	DRAGGING,
 	DRAG_DISABLED,
 	DRAG_GRIP,
-	getDraggableClassname
 } from './classnames';
 
 const MOUSE_DOWN = 'mousedown';
@@ -25,10 +25,10 @@ export default class Draggable {
 		this.isDraggable = true;
 		this.startMouseX = 0;
 		this.startMouseY = 0;
-		this.mainClassname = getDraggableClassname(opts.classNamespace);
+		this.classname = opts.classname || DRAGGABLE;
 		this.events = createEventsObj();
 
-		elm.classList.add(this.mainClassname);
+		elm.classList.add(this.classname);
 		initAxes(this, opts.axis);
 		initPosition(this, elm, opts);
 		initMouseHandlers(this);
@@ -113,7 +113,7 @@ export default class Draggable {
 			this.elm.style.position = this.originalJsPosition;
 		}
 
-		this.elm.classList.remove(this.mainClassname, DRAGGING);
+		this.elm.classList.remove(this.classname, DRAGGING);
 		unsetGripClassname(this);
 
 		this.events = null;
@@ -241,7 +241,7 @@ function initPosition (drg, elm, opts) {
 		else newPosBox.right = right;
 	}
 	else if (!hasInitX && !hasInitY) {
-		const isInDom = isElmInDom(drg.mainClassname, elm);
+		const isInDom = isElmInDom(drg.classname, elm);
 		const currentBox = isInDom && elm.getBoundingClientRect();
 
 		newPosBox = {
@@ -250,7 +250,7 @@ function initPosition (drg, elm, opts) {
 		};
 	}
 	else { // hasInitX XOR hasInitY
-		const isInDom = isElmInDom(drg.mainClassname, elm);
+		const isInDom = isElmInDom(drg.classname, elm);
 		const currentBox = isInDom && elm.getBoundingClientRect();
 
 		if (hasInitX) {

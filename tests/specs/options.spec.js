@@ -182,11 +182,11 @@ export default () => {
 		});
 	});
 
-	describe('classNamespace', () => {
+	describe('classname', () => {
 		it('sets a prefix to the `draggable` classname', () => {
-			draggable(target, {classNamespace: 'prefix'});
+			draggable(target, {classname: 'my-class'});
+			expect(target.classList.contains('my-class')).to.be.true;
 			expect(target.classList.contains(DRAGGABLE)).to.be.false;
-			expect(target.classList.contains(`prefix-${DRAGGABLE}`)).to.be.true;
 		});
 	});
 

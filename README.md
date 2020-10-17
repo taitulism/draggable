@@ -15,13 +15,13 @@ draggable(myElm, {options});
 
 ## Options
 
+* **`classname`** - String. A replacement for the `draggable` classname.
 * **`top`** - Number. Initial top position in pixels.
 * **`bottom`** - Number. Initial bottom position in pixels.
 * **`left`** - Number. Initial left position in pixels.
 * **`right`** - Number. Initial right position in pixels.
 * **`axis`** - String. Restrict movement along a single axis, `'x'` or `'y'`.
 * **`grip`** - Element | String (element selector). A grip handle element to activate draggability upon mouse down. By default you can start dragging from anywhere within the main element.
-* **`classNamespace`** - String. A prefix for the `draggable` classname (`class="<prefix>-draggable"`). Use for avoiding conflicts with other draggable libraries, or just branding.
 
 ## API
 Calling the `draggable()` function returns a `Draggable` instance: 
