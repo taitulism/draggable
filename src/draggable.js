@@ -41,10 +41,18 @@ export default class Draggable {
 	moveTo ({top, left, right, bottom}) {
 		const elmStyle = this.elm.style;
 		if (top) elmStyle.top = top + px;
-		else if (bottom) elmStyle.bottom = bottom + px;
+		else if (bottom) {
+			elmStyle.bottom = bottom + px;
+			elmStyle.top = '';
+		}
 
 		if (left) elmStyle.left = left + px;
-		else if (right) elmStyle.right = right + px;
+		else if (right) {
+			elmStyle.right = right + px;
+			elmStyle.left = '';
+		}
+
+		return this;
 	}
 
 	setGrip (newGrip) {

@@ -38,12 +38,21 @@ Sets a new grip handle. Argument could be either an HTML Element or an element s
 
 ### **.on(eventName, callback)**
 Listen to drag and drop events:
-* **`'grab'`** - dragging started, on mouse down.
+* **`'drag-start'`** - dragging started, on mouse down.
 * **`'dragging'`** - moving around, on mouse move (with mouse down)
-* **`'drop'`** - dragging stopped, on mouse up.
+* **`'drag-stop'`** - dragging stopped, on mouse up.
 
 **Event Aliases**  
 For extra convenience, anything that contains `start`, `stop`/`end`/`drop` or `ing` will match its respective event.
+
+### **.moveTo({top, left, bottom, right})**
+Sets the element position. The argument is an object containing one or more of the positioning properties:
+* `top`
+* `left`
+* `bottom`
+* `right`
+
+> `top` and `left` are preferred over `bottom` and `right`, respectively.
 
 ### **.destroy()**
 Kills the `Draggable` instance for good, unbinds events, releases element references.
