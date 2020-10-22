@@ -25,17 +25,16 @@ export default class Draggable {
 		this.isDraggable = true;
 		this.startMouseX = 0;
 		this.startMouseY = 0;
-		this.classname = opts.classname || DRAGGABLE;
 		this.events = createEventsObj();
 
+		this.classname = opts.classname || DRAGGABLE;
 		elm.classList.add(this.classname);
+
 		initAxes(this, opts.axis);
 		initPosition(this, elm, opts);
 		initMouseHandlers(this);
 		this.setGrip(opts.grip);
-
-		elm.addEventListener(MOUSE_DOWN, this.onDragStart);
-		document.body.appendChild(this.elm);
+		this.elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
 
 	moveTo ({top, left, right, bottom}) {

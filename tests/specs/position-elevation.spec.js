@@ -18,12 +18,6 @@ export default () => {
 		target = null;
 	});
 
-	it('places the target element in the <body>', () => {
-		expect(target.parentNode.nodeName).to.equal('DIV');
-		draggable(target);
-		expect(target.parentNode.nodeName).to.equal('BODY');
-	});
-
 	describe('Position Elevation', () => {
 		it('if element position is `absolute` - keep it like that', () => {
 			target.style.position = 'absolute';

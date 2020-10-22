@@ -87,7 +87,7 @@ export default () => {
 	describe('.on', () => {
 		it('is chainable', () => {
 			drg = draggable(target);
-			expect(drg.on('grab', () => null)).to.deep.equal(drg);
+			expect(drg.on('start', () => null)).to.deep.equal(drg);
 		});
 	});
 

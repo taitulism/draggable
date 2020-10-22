@@ -288,6 +288,7 @@ export default () => {
 				target.remove();
 
 				draggable(target, {top: 31});
+				document.body.appendChild(target);
 
 				const newBox = target.getBoundingClientRect();
 				expect(newBox.top).to.equal(31);
@@ -302,6 +303,7 @@ export default () => {
 				const clientHeight = htmlElm.clientHeight;
 
 				draggable(target, {bottom: 31});
+				document.body.appendChild(target);
 
 				const newBox = target.getBoundingClientRect();
 				expect(clientHeight - newBox.bottom).to.equal(31);
@@ -315,6 +317,7 @@ export default () => {
 				const clientWidth = htmlElm.clientWidth;
 
 				draggable(target, {top: 31, right: 32});
+				document.body.appendChild(target);
 
 				const newBox = target.getBoundingClientRect();
 				expect(newBox.top).to.equal(31);
@@ -328,12 +331,12 @@ export default () => {
 				const clientHeight = htmlElm.clientHeight;
 
 				draggable(target, {bottom: 31, left: 32});
+				document.body.appendChild(target);
 
 				const newBox = target.getBoundingClientRect();
 				expect(clientHeight - newBox.bottom).to.equal(31);
 				expect(newBox.left).to.equal(32);
 			});
 		});
-
 	});
 };
