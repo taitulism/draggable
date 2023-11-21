@@ -147,6 +147,7 @@ function onDragStart (ev) {
 function onDragging (ev) {
 	if (!this.isDraggable) return;
 
+	// TODO: when have both axes - call `moveTo` only once
 	if (this.xAxis) {
 		const mouseMovedX = ev.clientX - this.startMouseX;
 		this.moveTo({left: this.box.x + mouseMovedX});
@@ -159,7 +160,7 @@ function onDragging (ev) {
 
 	this.events.dragging.forEach(cb => cb(ev));
 
-	// prevent text selection while draging
+	// prevent text selection while dragging
 	ev.preventDefault();
 }
 
@@ -220,6 +221,7 @@ function initPosition (drg, elm, opts) {
 		elm.style.position = 'absolute';
 	}
 
+	// TODO: use Number.isInteger(top)
 	const hasTop = isNumber(top);
 	const hasLeft = isNumber(left);
 	const hasBottom = isNumber(bottom);
