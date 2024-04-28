@@ -1,18 +1,20 @@
 
-export default [{
-	input: 'index.js',
-	output: {
-		file: 'dist/draggable.esm.js',
-		format: 'es',
-	},
-}, {
-	input: 'index.js',
-	output: {
-		file: 'dist/draggable.browser.js',
-		format: 'iife',
-		name: 'draggable',
+export default [
+	{
+		input: 'index.js',
+		output: {
+			file: 'dist/draggable.esm.js',
+			format: 'es',
+		},
+	}, {
+		input: 'index.js',
+		output: {
+			file: 'dist/draggable.browser.js',
+			format: 'iife',
+			name: 'draggable',
+		}
 	}
-}];
+];
 
 /*
 minify:
