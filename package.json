@@ -12,8 +12,8 @@
       "dist"
    ],
    "scripts": {
-      "dev": "rollup --config rollup.dev.config.js --watch",
-      "build": "rollup --config rollup.prod.config.js",
+      "dev": "rollup --config rollup.dev.config.mjs --watch",
+      "build": "rollup --config rollup.prod.config.mjs",
       "test": "karma start karma.conf.js",
       "karma": "npm run test -- --no-single-run --auto-watch",
       "lint": "eslint ./index.js ./src ./tests",
