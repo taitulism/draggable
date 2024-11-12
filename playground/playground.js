@@ -23,3 +23,7 @@ const drg = draggable(domElm, {
 	grip: gripHandle,            // for domElm
 	// grip: '#grips-container', // for jsElm
 });
+
+// document.addEventListener('mousemove', (ev) => {
+// 	console.log(ev.x, ev.y);
+// })

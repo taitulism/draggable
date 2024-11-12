@@ -11,11 +11,6 @@ const MOUSE_DOWN = 'mousedown';
 const MOUSE_MOVE = 'mousemove';
 const MOUSE_UP = 'mouseup';
 
-const DEFAULT_POSITION = 120;
-const px = 'px';
-const TYPE_NUMBER = 'number';
-const isNumber = thing => typeof thing == TYPE_NUMBER;
-
 export default class Draggable {
 	constructor (elm, opts = {}) {
 		this.elm = elm;
@@ -25,31 +20,39 @@ export default class Draggable {
 		this.isDraggable = true;
 		this.startMouseX = 0;
 		this.startMouseY = 0;
+		this.mouseMoveX = 0;
+		this.mouseMoveY = 0;
+		this.prevMouseMoveX = 0;
+		this.prevMouseMoveY = 0;
 		this.events = createEventsObj();
 
 		this.classname = opts.classname || DRAGGABLE;
 		elm.classList.add(this.classname);
 
 		initAxes(this, opts.axis);
-		initPosition(this, elm, opts);
 		initMouseHandlers(this);
 		this.setGrip(opts.grip);
 		this.elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
 
 	moveTo ({top, left, right, bottom}) {
-		const elmStyle = this.elm.style;
-		if (top) elmStyle.top = top + px;
-		else if (bottom) {
-			elmStyle.bottom = bottom + px;
-			elmStyle.top = '';
-		}
+		const translate = `translate(${left}px, ${top}px)`;
 
-		if (left) elmStyle.left = left + px;
-		else if (right) {
-			elmStyle.right = right + px;
-			elmStyle.left = '';
-		}
+		this.elm.style.transform = translate;
+
+		// const elmStyle = this.elm.style;
+
+		// if (top) elmStyle.top = top + px;
+		// else if (bottom) {
+		// 	elmStyle.bottom = bottom + px;
+		// 	elmStyle.top = '';
+		// }
+
+		// if (left) elmStyle.left = left + px;
+		// else if (right) {
+		// 	elmStyle.right = right + px;
+		// 	elmStyle.left = '';
+		// }
 
 		return this;
 	}
@@ -108,10 +111,6 @@ export default class Draggable {
 		document.removeEventListener(MOUSE_MOVE, this.onDragging);
 		this.mouseUpContextElm.removeEventListener(MOUSE_UP, this.onDrop);
 
-		if (this.originalJsPosition) {
-			this.elm.style.position = this.originalJsPosition;
-		}
-
 		this.elm.classList.remove(this.classname, DRAGGING);
 		unsetGripClassname(this);
 
@@ -125,8 +124,6 @@ export default class Draggable {
 function onDragStart (ev) {
 	if (!this.isDraggable) return;
 	if (this.useGrip && !this.matchesGrip(ev.target)) return;
-
-	this.box = this.elm.getBoundingClientRect();
 
 	if (this.xAxis) {
 		this.startMouseX = ev.clientX;
@@ -147,17 +144,13 @@ function onDragStart (ev) {
 function onDragging (ev) {
 	if (!this.isDraggable) return;
 
-	// TODO: when have both axes - call `moveTo` only once
-	if (this.xAxis) {
-		const mouseMovedX = ev.clientX - this.startMouseX;
-		this.moveTo({left: this.box.x + mouseMovedX});
-	}
+	this.mouseMoveX =
+		this.xAxis ? (ev.clientX - this.startMouseX) + this.prevMouseMoveX : 0;
 
-	if (this.yAxis) {
-		const mouseMovedY = ev.clientY - this.startMouseY;
-		this.moveTo({top: this.box.y + mouseMovedY});
-	}
+	this.mouseMoveY =
+		this.yAxis ? (ev.clientY - this.startMouseY) + this.prevMouseMoveY : 0;
 
+	this.moveTo({left: this.mouseMoveX, top: this.mouseMoveY});
 	this.events.dragging.forEach(cb => cb(ev));
 
 	// prevent text selection while dragging
@@ -168,7 +161,8 @@ function onDrop (ev) {
 	document.removeEventListener(MOUSE_MOVE, this.onDragging);
 	this.mouseUpContextElm.removeEventListener(MOUSE_UP, this.onDrop);
 
-	this.box = null;
+	this.prevMouseMoveX = this.mouseMoveX;
+	this.prevMouseMoveY = this.mouseMoveY;
 	this.elm.classList.remove(DRAGGING);
 	this.events.drop.forEach(cb => cb(ev));
 }
@@ -203,80 +197,6 @@ function initAxes (drg, axisOpt) {
 		drg.xAxis = true;
 		drg.yAxis = true;
 	}
-}
-
-// eslint-disable-next-line complexity
-function initPosition (drg, elm, opts) {
-	const {
-		top,
-		left,
-		bottom,
-		right,
-	} = opts;
-
-	drg.originalJsPosition = elm.style.position || null;
-	const position = elm.style.position || window.getComputedStyle(elm).position;
-
-	if (position !== 'absolute') {
-		elm.style.position = 'absolute';
-	}
-
-	// TODO: use Number.isInteger(top)
-	const hasTop = isNumber(top);
-	const hasLeft = isNumber(left);
-	const hasBottom = isNumber(bottom);
-	const hasRight = isNumber(right);
-
-	const hasInitX = hasLeft || hasRight;
-	const hasInitY = hasTop || hasBottom;
-
-	let newPosBox;
-
-	if (hasInitX && hasInitY) {
-		newPosBox = {};
-
-		if (hasTop) newPosBox.top = top;
-		else newPosBox.bottom = bottom;
-
-		if (hasLeft) newPosBox.left = left;
-		else newPosBox.right = right;
-	}
-	else if (!hasInitX && !hasInitY) {
-		const isInDom = isElmInDom(drg.classname, elm);
-		const currentBox = isInDom && elm.getBoundingClientRect();
-
-		newPosBox = {
-			top: isInDom ? currentBox.top : DEFAULT_POSITION,
-			left: isInDom ? currentBox.left : DEFAULT_POSITION,
-		};
-	}
-	else { // hasInitX XOR hasInitY
-		const isInDom = isElmInDom(drg.classname, elm);
-		const currentBox = isInDom && elm.getBoundingClientRect();
-
-		if (hasInitX) {
-			newPosBox = {top: isInDom ? currentBox.top : DEFAULT_POSITION};
-
-			if (hasLeft) newPosBox.left = left;
-			else newPosBox.right = right;
-		}
-		else { // hasInitY
-			newPosBox = isInDom
-				? {left: currentBox.left}
-				: {right: DEFAULT_POSITION}
-			;
-
-			if (hasTop) newPosBox.top = top;
-			else newPosBox.bottom = bottom;
-		}
-	}
-
-	drg.moveTo(newPosBox);
-}
-
-function isElmInDom (classname, elm) {
-	const draggables = document.getElementsByClassName(classname);
-	return draggables && Array.from(draggables).includes(elm);
 }
 
 function unsetGripClassname (drg) {
