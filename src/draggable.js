@@ -35,24 +35,10 @@ export default class Draggable {
 		this.elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
 
-	moveTo ({top, left, right, bottom}) {
-		const translate = `translate(${left}px, ${top}px)`;
+	moveTo (x = 0, y = 0) {
+		const translate = `translate(${x}px, ${y}px)`;
 
 		this.elm.style.transform = translate;
-
-		// const elmStyle = this.elm.style;
-
-		// if (top) elmStyle.top = top + px;
-		// else if (bottom) {
-		// 	elmStyle.bottom = bottom + px;
-		// 	elmStyle.top = '';
-		// }
-
-		// if (left) elmStyle.left = left + px;
-		// else if (right) {
-		// 	elmStyle.right = right + px;
-		// 	elmStyle.left = '';
-		// }
 
 		return this;
 	}
@@ -150,7 +136,7 @@ function onDragging (ev) {
 	this.mouseMoveY =
 		this.yAxis ? (ev.clientY - this.startMouseY) + this.prevMouseMoveY : 0;
 
-	this.moveTo({left: this.mouseMoveX, top: this.mouseMoveY});
+	this.moveTo(this.mouseMoveX, this.mouseMoveY);
 	this.events.dragging.forEach(cb => cb(ev));
 
 	// prevent text selection while dragging

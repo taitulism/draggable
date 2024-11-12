@@ -16,10 +16,6 @@ draggable(myElm, {options});
 ## Options
 
 * **`classname`** - String. A replacement for the `draggable` classname.
-* **`top`** - Number. Initial top position in pixels.
-* **`bottom`** - Number. Initial bottom position in pixels.
-* **`left`** - Number. Initial left position in pixels.
-* **`right`** - Number. Initial right position in pixels.
 * **`axis`** - String. Restrict movement along a single axis, `'x'` or `'y'`.
 * **`grip`** - Element | String (element selector). A grip handle element to activate draggability upon mouse down. By default you can start dragging from anywhere within the main element.
 
@@ -45,14 +41,8 @@ Listen to drag and drop events:
 **Event Aliases**  
 For extra convenience, anything that contains `start`, `stop`/`end`/`drop` or `ing` will match its respective event.
 
-### **.moveTo({top, left, bottom, right})**
-Sets the element position. The argument is an object containing one or more of the positioning properties:
-* `top`
-* `left`
-* `bottom`
-* `right`
-
-> `top` and `left` are preferred over `bottom` and `right`, respectively.
+### **.moveTo(x, y)**
+Sets the element **relative position**. It utilizes css `translate(x, y)`.
 
 ### **.destroy()**
 Kills the `Draggable` instance for good, unbinds events, releases element references.
@@ -64,8 +54,3 @@ For styling, the main element will be given the following classes:
 * `'dragging'` - on mouse down, until mouse up.
 
 Any element that is set as a grip handle will be given the classname: `'drag-grip-handle'`.
-
-&nbsp;
-
->### Position:
->On initialization, the target element will be placed inside the `<body>` element and will be given an inline style of `position: absolute`.
