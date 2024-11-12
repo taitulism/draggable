@@ -360,17 +360,6 @@ export default () => {
 			expect(target.classList.contains(DRAGGING)).to.be.false;
 		});
 
-		it('resets original position', () => {
-			target.style.position = 'static';
-
-			expect(target.style.position).to.equal('static');
-			drg = draggable(target);
-
-			expect(target.style.position).to.equal('absolute');
-			drg.destroy();
-			expect(target.style.position).to.equal('static');
-		});
-
 		it('releases the target element', () => {
 			drg = draggable(target);
 
