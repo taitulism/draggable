@@ -35,12 +35,10 @@ export default class Draggable {
 		this.elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
 
-	moveTo (x = 0, y = 0) {
+	moveBy (x = 0, y = 0) {
 		const translate = `translate(${x}px, ${y}px)`;
 
 		this.elm.style.transform = translate;
-
-		return this;
 	}
 
 	setGrip (newGrip) {
@@ -136,7 +134,7 @@ function onDragging (ev) {
 	this.mouseMoveY =
 		this.yAxis ? (ev.clientY - this.startMouseY) + this.prevMouseMoveY : 0;
 
-	this.moveTo(this.mouseMoveX, this.mouseMoveY);
+	this.moveBy(this.mouseMoveX, this.mouseMoveY);
 	this.events.dragging.forEach(cb => cb(ev));
 
 	// prevent text selection while dragging

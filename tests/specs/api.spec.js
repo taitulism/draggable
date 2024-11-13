@@ -204,101 +204,38 @@ export default () => {
 		});
 	});
 
-	describe.skip('.moveTo()', () => {
-		it('sets the element position (top)', () => {
-			draggable(target).moveTo({top: 55});
+	describe('.moveBy(x, y)', () => {
+		it('moves the element using CSS `transform`', () => {
+			expect(target.style.transform).to.be.empty;
+			draggable(target).moveBy(50, 25);
+			expect(target.style.transform).to.equal('translate(50px, 25px)');
+		});
+
+		it('replaces the current `transform` value', () => {
+			expect(target.style.transform).to.be.empty;
+			const drg = draggable(target);
+
+			drg.moveBy(10, 15);
+			expect(target.style.transform).to.equal('translate(10px, 15px)');
+
+			drg.moveBy(2, 4);
+			expect(target.style.transform).not.to.equal('translate(12px, 19px)');
+			expect(target.style.transform).to.equal('translate(2px, 4px)');
+		});
+
+		it('moves the element relative to its original position', () => {
+			const drg = draggable(target);
+
+			expect(box.left).to.equal(75);
+			drg.moveBy(7, 0);
 
 			const newBox = target.getBoundingClientRect();
-			expect(newBox.top).to.equal(55);
-		});
+			expect(newBox.left).to.equal(75 + 7);
 
-		it('sets the element position (bottom)', () => {
-			draggable(target).moveTo({bottom: 55});
+			drg.moveBy(3, 0);
 
-			expect(target.style.bottom).to.equal('55px');
-			expect(target.style.top).to.be.empty;
-		});
-
-		it('sets bottom after top', () => {
-			drg = draggable(target).moveTo({top: 56});
-
-			expect(target.style.top).to.equal('56px');
-			expect(target.style.bottom).to.be.empty;
-
-			drg.moveTo({bottom: 57});
-
-			expect(target.style.bottom).to.equal('57px');
-			expect(target.style.top).to.be.empty;
-		});
-
-		it('sets top after bottom', () => {
-			drg = draggable(target).moveTo({bottom: 56});
-
-			expect(target.style.bottom).to.equal('56px');
-			expect(target.style.top).to.be.empty;
-
-			drg.moveTo({top: 57});
-
-			const newBox = target.getBoundingClientRect();
-
-			expect(target.style.top).to.equal('57px');
-			expect(target.style.bottom).to.not.be.empty;
-			expect(newBox.top).to.equal(57);
-		});
-
-		it('sets the element position (left)', () => {
-			draggable(target).moveTo({left: 55});
-
-			const newBox = target.getBoundingClientRect();
-			expect(newBox.left).to.equal(55);
-		});
-
-		it('sets the element position (right)', () => {
-			draggable(target).moveTo({right: 55});
-
-			expect(target.style.right).to.equal('55px');
-			expect(target.style.left).to.be.empty;
-		});
-
-		it('sets right after left', () => {
-			drg = draggable(target).moveTo({left: 56});
-
-			expect(target.style.left).to.equal('56px');
-			expect(target.style.right).to.be.empty;
-
-			drg.moveTo({right: 57});
-
-			expect(target.style.right).to.equal('57px');
-			expect(target.style.left).to.be.empty;
-		});
-
-		it('sets left after right', () => {
-			drg = draggable(target).moveTo({right: 56});
-
-			expect(target.style.right).to.equal('56px');
-			expect(target.style.left).to.be.empty;
-
-			drg.moveTo({left: 57});
-
-			const newBox = target.getBoundingClientRect();
-
-			expect(target.style.left).to.equal('57px');
-			expect(target.style.right).to.not.be.empty;
-			expect(newBox.left).to.equal(57);
-		});
-
-		it('prefers top over bottom', () => {
-			draggable(target).moveTo({top: 55, bottom: 55});
-
-			expect(target.style.top).to.equal('55px');
-			expect(target.style.bottom).to.be.empty;
-		});
-
-		it('prefers left over right', () => {
-			draggable(target).moveTo({left: 55, right: 55});
-
-			expect(target.style.left).to.equal('55px');
-			expect(target.style.right).to.be.empty;
+			const newBox2 = target.getBoundingClientRect();
+			expect(newBox2.left).to.equal(75 + 3);
 		});
 	});
 

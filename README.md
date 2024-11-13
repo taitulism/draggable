@@ -41,8 +41,10 @@ Listen to drag and drop events:
 **Event Aliases**  
 For extra convenience, anything that contains `start`, `stop`/`end`/`drop` or `ing` will match its respective event.
 
-### **.moveTo(x, y)**
+### **.moveBy(x, y)**
 Sets the element **relative position**. It utilizes css `translate(x, y)`.
+Does not accumulate. Every call sets the element position relative to its original position and not relative to its current position.
+This method wan't made to be used during an active dragging, but for one-time positioning.
 
 ### **.destroy()**
 Kills the `Draggable` instance for good, unbinds events, releases element references.
