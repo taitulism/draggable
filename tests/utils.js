@@ -1,4 +1,5 @@
 export const px = num => num + 'px';
+export const translate = (x, y) => `translate(${x}px, ${y}px)`;
 
 const createEvent = (type, props = {}) => {
 	const event = new window.Event(type, {bubbles: true});

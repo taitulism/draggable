@@ -1,4 +1,4 @@
-import {px, createTarget, simulateMouseDown, simulateMouseMove, simulateMouseUp} from '../utils';
+import {createTarget, simulateMouseDown, simulateMouseMove, simulateMouseUp, translate} from '../utils';
 
 export default () => {
 	let testDOMContainer, target, box, move, drg;
@@ -23,75 +23,62 @@ export default () => {
 	});
 
 	it('moves the elm on the X axis', () => {
-		expect(target.style.left).to.be.empty;
 		draggable(target);
-		expect(target.style.left).to.equal(px(box.left));
 
 		simulateMouseDown(target, ...move(0, 0));
-		expect(target.style.left).to.equal(px(box.left));
+		expect(target.style.transform).to.be.empty;
 
 		simulateMouseMove(target, ...move(150, 0));
+		expect(target.style.transform).to.equal(translate(150, 0));
+
 		simulateMouseUp(target, ...move(150, 0));
-		expect(target.style.left).to.equal(px(box.left + 150));
+		expect(target.style.transform).to.equal(translate(150, 0));
 
 		simulateMouseDown(target, ...move(150, 0));
-		expect(target.style.left).to.equal(px(box.left + 150));
-		simulateMouseMove(target, ...move(150, 0));
-		expect(target.style.left).to.equal(px(box.left + 150));
+		expect(target.style.transform).to.equal(translate(150, 0));
 
 		simulateMouseMove(target, ...move(0, 0));
 		simulateMouseUp(target, ...move(0, 0));
-		expect(target.style.left).to.equal(px(box.left));
+		expect(target.style.transform).to.equal(translate(0, 0));
 	});
 
 	it('moves the elm on the Y axis', () => {
-		expect(target.style.top).to.be.empty;
 		draggable(target);
-		expect(target.style.top).equal(px(box.top));
 
 		simulateMouseDown(target, ...move(0, 0));
-		expect(target.style.top).to.equal(px(box.top));
+		expect(target.style.transform).to.be.empty;
 
 		simulateMouseMove(target, ...move(0, 150));
+		expect(target.style.transform).to.equal(translate(0, 150));
+
 		simulateMouseUp(target, ...move(0, 150));
-		expect(target.style.top).to.equal(px(box.top + 150));
+		expect(target.style.transform).to.equal(translate(0, 150));
 
 		simulateMouseDown(target, ...move(0, 150));
-		expect(target.style.top).to.equal(px(box.top + 150));
-		simulateMouseMove(target, ...move(0, 150));
-		expect(target.style.top).to.equal(px(box.top + 150));
+		expect(target.style.transform).to.equal(translate(0, 150));
 
 		simulateMouseMove(target, ...move(0, 0));
 		simulateMouseUp(target, ...move(0, 0));
-		expect(target.style.top).to.equal(px(box.top));
+		expect(target.style.transform).to.equal(translate(0, 0));
 	});
 
 	it('moves the elm freely on both axes', () => {
-		expect(target.style.left).to.be.empty;
-		expect(target.style.top).to.be.empty;
 		draggable(target);
-		expect(target.style.left).equal(px(box.left));
-		expect(target.style.top).equal(px(box.top));
 
 		simulateMouseDown(target, ...move(0, 0));
-		expect(target.style.left).to.equal(px(box.left));
-		expect(target.style.top).to.equal(px(box.top));
+		expect(target.style.transform).to.be.empty;
 
 		simulateMouseMove(target, ...move(150, 150));
+		expect(target.style.transform).to.equal(translate(150, 150));
+
 		simulateMouseUp(target, ...move(150, 150));
-		expect(target.style.left).to.equal(px(box.left + 150));
-		expect(target.style.top).to.equal(px(box.top + 150));
+		expect(target.style.transform).to.equal(translate(150, 150));
 
 		simulateMouseDown(target, ...move(150, 150));
-		expect(target.style.left).to.equal(px(box.left + 150));
-		expect(target.style.top).to.equal(px(box.top + 150));
-		simulateMouseMove(target, ...move(150, 150));
-		expect(target.style.left).to.equal(px(box.left + 150));
-		expect(target.style.top).to.equal(px(box.top + 150));
+		expect(target.style.transform).to.equal(translate(150, 150));
 
 		simulateMouseMove(target, ...move(0, 0));
 		simulateMouseUp(target, ...move(0, 0));
-		expect(target.style.left).to.equal(px(box.left));
-		expect(target.style.top).to.equal(px(box.top));
+		expect(target.style.transform).to.equal(translate(0, 0));
 	});
 };

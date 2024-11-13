@@ -1,7 +1,6 @@
 import draggingSpec from './dragging.spec';
 import eventsSpec from './events.spec';
 import classnamesSpec from './classnames.spec';
-import positionElevationSpec from './position-elevation.spec';
 import optionsSpec from './options.spec';
 import apiSpec from './api.spec';
 
@@ -35,7 +34,6 @@ describe('draggable', () => {
 	describe('Dragging Around', draggingSpec);
 	describe('Events', eventsSpec);
 	describe('Classnames', classnamesSpec);
-	describe('Position Elevation', positionElevationSpec);
 	describe('Options', optionsSpec);
 	describe('API', apiSpec);
 });

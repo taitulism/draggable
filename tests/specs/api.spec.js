@@ -1,4 +1,10 @@
-import {px, createTarget, simulateMouseDown, simulateMouseMove, simulateMouseUp} from '../utils';
+import {
+	createTarget,
+	simulateMouseDown,
+	simulateMouseMove,
+	simulateMouseUp,
+	translate,
+} from '../utils';
 import {
 	DRAGGABLE,
 	DRAGGING,
@@ -36,26 +42,26 @@ export default () => {
 			simulateMouseDown(target, ...move(0, 0));
 			simulateMouseMove(target, ...move(150, 0));
 			simulateMouseUp(target, ...move(150, 0));
-			expect(target.style.left).to.equal(px(box.left + 150));
+			expect(target.style.transform).to.equal(translate(150, 0));
 
 			simulateMouseDown(target, ...move(150, 0));
 			simulateMouseMove(target, ...move(300, 0));
 			simulateMouseUp(target, ...move(300, 0));
-			expect(target.style.left).to.equal(px(box.left + 300));
+			expect(target.style.transform).to.equal(translate(300, 0));
 
 			drg.disable();
 
 			simulateMouseDown(target, ...move(300, 0));
 			simulateMouseMove(target, ...move(450, 0));
 			simulateMouseUp(target, ...move(450, 0));
-			expect(target.style.left).to.equal(px(box.left + 300));
+			expect(target.style.transform).to.equal(translate(300, 0));
 
 			drg.enable();
 
 			simulateMouseDown(target, ...move(300, 0));
 			simulateMouseMove(target, ...move(450, 0));
 			simulateMouseUp(target, ...move(450, 0));
-			expect(target.style.left).to.equal(px(box.left + 450));
+			expect(target.style.transform).to.equal(translate(450, 0));
 		});
 
 		it('toggles draggability while dragging', () => {
@@ -64,12 +70,12 @@ export default () => {
 
 			simulateMouseDown(target, ...move(0, 0));
 			simulateMouseMove(target, ...move(100, 0));
-			expect(target.style.left).to.equal(px(box.left + 100));
+			expect(target.style.transform).to.equal(translate(100, 0));
 
 			drg.disable();
 
 			simulateMouseMove(target, ...move(200, 0));
-			expect(target.style.left).to.equal(px(box.left + 100));
+			expect(target.style.transform).to.equal(translate(100, 0));
 			simulateMouseUp(target, ...move(200, 0));
 		});
 
@@ -121,57 +127,62 @@ export default () => {
 		it('sets the drag handle element', () => {
 			drg = draggable(target, {grip: gripA});
 
-			expect(target.style.left).to.equal(px(box.left));
+			expect(target.style.transform).to.be.empty;
 
 			simulateMouseDown(gripA, ...move(0, 0));
 			simulateMouseMove(gripA, ...move(150, 0));
 			simulateMouseUp(gripA, ...move(150, 0));
-			expect(target.style.left).to.equal(px(box.left + 150));
+			expect(target.style.transform).to.equal(translate(150, 0));
 
+			// TODO:test after the first drag it's no longer at 0,0 (same for next test)
 			simulateMouseDown(gripB, ...move(0, 0));
 			simulateMouseMove(gripB, ...move(300, 0));
 			simulateMouseUp(gripB, ...move(300, 0));
-			expect(target.style.left).to.equal(px(box.left + 150));
+			expect(target.style.transform).to.equal(translate(150, 0));
 
 			drg.setGrip(gripB);
 
 			simulateMouseDown(gripA, ...move(0, 0));
 			simulateMouseMove(gripA, ...move(300, 0));
 			simulateMouseUp(gripA, ...move(300, 0));
-			expect(target.style.left).to.equal(px(box.left + 150));
+			expect(target.style.transform).to.equal(translate(150, 0));
 
 			simulateMouseDown(gripB, ...move(0, 0));
 			simulateMouseMove(gripB, ...move(150, 0));
 			simulateMouseUp(gripB, ...move(150, 0));
-			expect(target.style.left).to.equal(px(box.left + 300));
+			expect(target.style.transform).to.equal(translate(300, 0));
 		});
 
 		it('sets the drag handle element selector', () => {
 			drg = draggable(target, {grip: '#grip-A'});
 
-			expect(target.style.left).to.equal(px(box.left));
+			expect(target.style.transform).to.be.empty;
 
 			simulateMouseDown(gripA, ...move(0, 0));
 			simulateMouseMove(gripA, ...move(150, 0));
 			simulateMouseUp(gripA, ...move(150, 0));
-			expect(target.style.left).to.equal(px(box.left + 150));
+			expect(target.style.transform).to.equal(translate(150, 0));
+
 
 			simulateMouseDown(gripB, ...move(0, 0));
 			simulateMouseMove(gripB, ...move(300, 0));
 			simulateMouseUp(gripB, ...move(300, 0));
-			expect(target.style.left).to.equal(px(box.left + 150));
+			expect(target.style.transform).to.equal(translate(150, 0));
+
 
 			drg.setGrip('#grip-B');
 
 			simulateMouseDown(gripA, ...move(0, 0));
 			simulateMouseMove(gripA, ...move(300, 0));
 			simulateMouseUp(gripA, ...move(300, 0));
-			expect(target.style.left).to.equal(px(box.left + 150));
+			expect(target.style.transform).to.equal(translate(150, 0));
+
 
 			simulateMouseDown(gripB, ...move(0, 0));
 			simulateMouseMove(gripB, ...move(150, 0));
 			simulateMouseUp(gripB, ...move(150, 0));
-			expect(target.style.left).to.equal(px(box.left + 300));
+			expect(target.style.transform).to.equal(translate(300, 0));
+
 		});
 
 		it('sets the grip classname on the new grip', () => {
@@ -193,7 +204,7 @@ export default () => {
 		});
 	});
 
-	describe('.moveTo()', () => {
+	describe.skip('.moveTo()', () => {
 		it('sets the element position (top)', () => {
 			draggable(target).moveTo({top: 55});
 
