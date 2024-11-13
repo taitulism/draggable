@@ -1,7 +1,7 @@
 {
    "name": "draggable-elm",
    "description": "Makes elements draggable. Vanilla style.",
-   "version": "0.1.0",
+   "version": "0.1.1",
    "license": "MIT",
    "browser": "./dist/draggable.browser.js",
    "module": "./dist/draggable.esm.js",
