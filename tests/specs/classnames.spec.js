@@ -30,19 +30,19 @@ export default () => {
 	it('sets a `dragging` classname on elm when moving it', () => {
 		draggable(target);
 		expect(target.classList.contains(DRAGGING)).to.be.false;
-		simulateMouseDown(target, 50, 50);
+		simulateMouseDown(target, [50, 50]);
 		expect(target.classList.contains(DRAGGING)).to.be.true;
-		simulateMouseMove(target, 50, 50);
+		simulateMouseMove(target, [50, 50]);
 		expect(target.classList.contains(DRAGGING)).to.be.true;
-		simulateMouseUp(target, 50, 50);
+		simulateMouseUp(target, [50, 50]);
 		expect(target.classList.contains(DRAGGING)).to.be.false;
 	});
 
 	it('leaves only the `draggable` classname on elm when droping it', () => {
 		draggable(target);
-		simulateMouseDown(target, 50, 50);
-		simulateMouseMove(target, 50, 50);
-		simulateMouseUp(target, 50, 50);
+		simulateMouseDown(target, [50, 50]);
+		simulateMouseMove(target, [50, 50]);
+		simulateMouseUp(target, [50, 50]);
 		expect(target.classList.contains('draggable')).to.be.true;
 		expect(target.classList.length).to.equal(1);
 	});

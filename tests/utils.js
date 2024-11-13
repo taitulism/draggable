@@ -1,4 +1,3 @@
-export const px = num => num + 'px';
 export const translate = (x, y) => `translate(${x}px, ${y}px)`;
 
 const createEvent = (type, props = {}) => {
@@ -10,7 +9,8 @@ const createEvent = (type, props = {}) => {
 // constant offset of the mouse relative to the elm top-left corner
 const OFFSET = 10;
 
-export function simulateMouseDown (elm, x, y) {
+export function simulateMouseDown (elm, point) {
+	const [x, y] = point;
 	const event = createEvent('mousedown', {
 		clientX: (x || 0) + OFFSET,
 		clientY: (y || 0) + OFFSET,
@@ -18,7 +18,8 @@ export function simulateMouseDown (elm, x, y) {
 	elm.dispatchEvent(event);
 }
 
-export function simulateMouseMove (elm, x, y) {
+export function simulateMouseMove (elm, point) {
+	const [x, y] = point;
 	const event = createEvent('mousemove', {
 		clientX: (x || 0) + OFFSET,
 		clientY: (y || 0) + OFFSET,
@@ -27,7 +28,8 @@ export function simulateMouseMove (elm, x, y) {
 	elm.dispatchEvent(event);
 }
 
-export function simulateMouseUp (elm, x, y) {
+export function simulateMouseUp (elm, point) {
+	const [x, y] = point;
 	const event = createEvent('mouseup', {
 		clientX: (x || 0) + OFFSET,
 		clientY: (y || 0) + OFFSET,

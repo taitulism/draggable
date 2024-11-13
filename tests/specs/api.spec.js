@@ -39,28 +39,28 @@ export default () => {
 			expect(target.style.left).to.be.empty;
 			drg = draggable(target);
 
-			simulateMouseDown(target, ...move(0, 0));
-			simulateMouseMove(target, ...move(150, 0));
-			simulateMouseUp(target, ...move(150, 0));
+			simulateMouseDown(target, move(0, 0));
+			simulateMouseMove(target, move(150, 0));
+			simulateMouseUp(target, move(150, 0));
 			expect(target.style.transform).to.equal(translate(150, 0));
 
-			simulateMouseDown(target, ...move(150, 0));
-			simulateMouseMove(target, ...move(300, 0));
-			simulateMouseUp(target, ...move(300, 0));
+			simulateMouseDown(target, move(150, 0));
+			simulateMouseMove(target, move(300, 0));
+			simulateMouseUp(target, move(300, 0));
 			expect(target.style.transform).to.equal(translate(300, 0));
 
 			drg.disable();
 
-			simulateMouseDown(target, ...move(300, 0));
-			simulateMouseMove(target, ...move(450, 0));
-			simulateMouseUp(target, ...move(450, 0));
+			simulateMouseDown(target, move(300, 0));
+			simulateMouseMove(target, move(450, 0));
+			simulateMouseUp(target, move(450, 0));
 			expect(target.style.transform).to.equal(translate(300, 0));
 
 			drg.enable();
 
-			simulateMouseDown(target, ...move(300, 0));
-			simulateMouseMove(target, ...move(450, 0));
-			simulateMouseUp(target, ...move(450, 0));
+			simulateMouseDown(target, move(300, 0));
+			simulateMouseMove(target, move(450, 0));
+			simulateMouseUp(target, move(450, 0));
 			expect(target.style.transform).to.equal(translate(450, 0));
 		});
 
@@ -68,15 +68,15 @@ export default () => {
 			expect(target.style.left).to.be.empty;
 			drg = draggable(target);
 
-			simulateMouseDown(target, ...move(0, 0));
-			simulateMouseMove(target, ...move(100, 0));
+			simulateMouseDown(target, move(0, 0));
+			simulateMouseMove(target, move(100, 0));
 			expect(target.style.transform).to.equal(translate(100, 0));
 
 			drg.disable();
 
-			simulateMouseMove(target, ...move(200, 0));
+			simulateMouseMove(target, move(200, 0));
 			expect(target.style.transform).to.equal(translate(100, 0));
-			simulateMouseUp(target, ...move(200, 0));
+			simulateMouseUp(target, move(200, 0));
 		});
 
 		it('toggles classname', () => {
@@ -129,27 +129,27 @@ export default () => {
 
 			expect(target.style.transform).to.be.empty;
 
-			simulateMouseDown(gripA, ...move(0, 0));
-			simulateMouseMove(gripA, ...move(150, 0));
-			simulateMouseUp(gripA, ...move(150, 0));
+			simulateMouseDown(gripA, move(0, 0));
+			simulateMouseMove(gripA, move(150, 0));
+			simulateMouseUp(gripA, move(150, 0));
 			expect(target.style.transform).to.equal(translate(150, 0));
 
 			// TODO:test after the first drag it's no longer at 0,0 (same for next test)
-			simulateMouseDown(gripB, ...move(0, 0));
-			simulateMouseMove(gripB, ...move(300, 0));
-			simulateMouseUp(gripB, ...move(300, 0));
+			simulateMouseDown(gripB, move(0, 0));
+			simulateMouseMove(gripB, move(300, 0));
+			simulateMouseUp(gripB, move(300, 0));
 			expect(target.style.transform).to.equal(translate(150, 0));
 
 			drg.setGrip(gripB);
 
-			simulateMouseDown(gripA, ...move(0, 0));
-			simulateMouseMove(gripA, ...move(300, 0));
-			simulateMouseUp(gripA, ...move(300, 0));
+			simulateMouseDown(gripA, move(0, 0));
+			simulateMouseMove(gripA, move(300, 0));
+			simulateMouseUp(gripA, move(300, 0));
 			expect(target.style.transform).to.equal(translate(150, 0));
 
-			simulateMouseDown(gripB, ...move(0, 0));
-			simulateMouseMove(gripB, ...move(150, 0));
-			simulateMouseUp(gripB, ...move(150, 0));
+			simulateMouseDown(gripB, move(0, 0));
+			simulateMouseMove(gripB, move(150, 0));
+			simulateMouseUp(gripB, move(150, 0));
 			expect(target.style.transform).to.equal(translate(300, 0));
 		});
 
@@ -158,29 +158,29 @@ export default () => {
 
 			expect(target.style.transform).to.be.empty;
 
-			simulateMouseDown(gripA, ...move(0, 0));
-			simulateMouseMove(gripA, ...move(150, 0));
-			simulateMouseUp(gripA, ...move(150, 0));
+			simulateMouseDown(gripA, move(0, 0));
+			simulateMouseMove(gripA, move(150, 0));
+			simulateMouseUp(gripA, move(150, 0));
 			expect(target.style.transform).to.equal(translate(150, 0));
 
 
-			simulateMouseDown(gripB, ...move(0, 0));
-			simulateMouseMove(gripB, ...move(300, 0));
-			simulateMouseUp(gripB, ...move(300, 0));
+			simulateMouseDown(gripB, move(0, 0));
+			simulateMouseMove(gripB, move(300, 0));
+			simulateMouseUp(gripB, move(300, 0));
 			expect(target.style.transform).to.equal(translate(150, 0));
 
 
 			drg.setGrip('#grip-B');
 
-			simulateMouseDown(gripA, ...move(0, 0));
-			simulateMouseMove(gripA, ...move(300, 0));
-			simulateMouseUp(gripA, ...move(300, 0));
+			simulateMouseDown(gripA, move(0, 0));
+			simulateMouseMove(gripA, move(300, 0));
+			simulateMouseUp(gripA, move(300, 0));
 			expect(target.style.transform).to.equal(translate(150, 0));
 
 
-			simulateMouseDown(gripB, ...move(0, 0));
-			simulateMouseMove(gripB, ...move(150, 0));
-			simulateMouseUp(gripB, ...move(150, 0));
+			simulateMouseDown(gripB, move(0, 0));
+			simulateMouseMove(gripB, move(150, 0));
+			simulateMouseUp(gripB, move(150, 0));
 			expect(target.style.transform).to.equal(translate(300, 0));
 
 		});
@@ -315,36 +315,36 @@ export default () => {
 			drg.on('drop', () => { drops++; });
 
 			expect(grabs).to.equal(0);
-			simulateMouseDown(target, 50, 50);
+			simulateMouseDown(target, [50, 50]);
 			expect(grabs).to.equal(1);
 
 			expect(moves).to.equal(0);
-			simulateMouseMove(target, 50, 50);
+			simulateMouseMove(target, [50, 50]);
 			expect(moves).to.equal(1);
 
-			simulateMouseMove(target, 150, 150);
+			simulateMouseMove(target, [150, 150]);
 			expect(moves).to.equal(2);
 
 			expect(drops).to.equal(0);
-			simulateMouseUp(target, 150, 150);
+			simulateMouseUp(target, [150, 150]);
 			expect(drops).to.equal(1);
 
 			expect(moves).to.equal(2);
-			simulateMouseMove(target, 160, 160);
+			simulateMouseMove(target, [160, 160]);
 			expect(moves).to.equal(2);
 
 			drg.destroy();
 
 			expect(grabs).to.equal(1);
-			simulateMouseDown(target, 160, 160);
+			simulateMouseDown(target, [160, 160]);
 			expect(grabs).to.equal(1);
 
 			expect(moves).to.equal(2);
-			simulateMouseMove(target, 160, 160);
+			simulateMouseMove(target, [160, 160]);
 			expect(moves).to.equal(2);
 
 			expect(drops).to.equal(1);
-			simulateMouseUp(target, 160, 160);
+			simulateMouseUp(target, [160, 160]);
 			expect(drops).to.equal(1);
 		});
 
@@ -354,20 +354,20 @@ export default () => {
 
 			drg = draggable(target, {grip: gripA});
 
-			simulateMouseDown(target, 50, 50);
-			simulateMouseMove(target, 50, 50);
-			simulateMouseMove(target, 150, 150);
-			simulateMouseUp(target, 150, 150);
-			simulateMouseMove(target, 160, 160);
+			simulateMouseDown(target, [50, 50]);
+			simulateMouseMove(target, [50, 50]);
+			simulateMouseMove(target, [150, 150]);
+			simulateMouseUp(target, [150, 150]);
+			simulateMouseMove(target, [160, 160]);
 
 			drg.destroy();
 			expect(gripA.classList.contains(DRAG_GRIP)).to.be.false;
 			expect(target.classList.contains(DRAGGABLE)).to.be.false;
 
-			simulateMouseDown(target, 160, 160);
+			simulateMouseDown(target, [160, 160]);
 			expect(target.classList.contains(DRAGGING)).to.be.false;
 
-			simulateMouseMove(target, 160, 160);
+			simulateMouseMove(target, [160, 160]);
 			expect(target.classList.contains(DRAGGING)).to.be.false;
 		});
 

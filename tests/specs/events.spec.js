@@ -24,9 +24,9 @@ export default () => {
 
 		drg.on('drag-start', () => { fired = true; });
 
-		simulateMouseDown(target, 50, 50);
+		simulateMouseDown(target, [50, 50]);
 		expect(fired).to.be.true;
-		simulateMouseUp(target, 50, 50);
+		simulateMouseUp(target, [50, 50]);
 	});
 
 	it('emits `dragging` event', () => {
@@ -35,13 +35,13 @@ export default () => {
 
 		drg.on('dragging', () => { fired = true; });
 
-		simulateMouseDown(target, 50, 50);
+		simulateMouseDown(target, [50, 50]);
 
 		expect(fired).to.be.false;
-		simulateMouseMove(target, 50, 50);
+		simulateMouseMove(target, [50, 50]);
 		expect(fired).to.be.true;
 
-		simulateMouseUp(target, 50, 50);
+		simulateMouseUp(target, [50, 50]);
 	});
 
 	it('emits `drag-end` event', () => {
@@ -50,9 +50,9 @@ export default () => {
 
 		drg.on('drag-end', () => { fired = true; });
 
-		simulateMouseDown(target, 50, 50);
+		simulateMouseDown(target, [50, 50]);
 		expect(fired).to.be.false;
-		simulateMouseUp(target, 50, 50);
+		simulateMouseUp(target, [50, 50]);
 		expect(fired).to.be.true;
 
 	});
