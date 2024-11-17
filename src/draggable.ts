@@ -1,4 +1,4 @@
-/* eslint-disable no-invalid-this */
+
 import createGripMatcher from './create-grip-matcher';
 import {
 	DRAGGABLE,
@@ -11,21 +11,34 @@ const MOUSE_DOWN = 'mousedown';
 const MOUSE_MOVE = 'mousemove';
 const MOUSE_UP = 'mouseup';
 
-export default class Draggable {
-	constructor (elm, opts = {}) {
-		this.elm = elm;
-		this.useGrip = false;
-		this.gripHandle = null;
-		this.isGripHtmlElm = false;
-		this.isDraggable = true;
-		this.startMouseX = 0;
-		this.startMouseY = 0;
-		this.mouseMoveX = 0;
-		this.mouseMoveY = 0;
-		this.prevMouseMoveX = 0;
-		this.prevMouseMoveY = 0;
-		this.events = createEventsObj();
+type Handler = (ev: MouseEvent) => void
 
+type EventsObj = {
+	grab: Array<Handler>,
+	drop: Array<Handler>,
+	dragging: Array<Handler>
+};
+
+export class Draggable {
+	elm: HTMLElement;
+	classname = DRAGGABLE;
+	useGrip = false;
+	gripHandle: HTMLElement | string | null = null;
+	isGripHtmlElm = false;
+	isDraggable = true;
+	startMouseX = 0;
+	startMouseY = 0;
+	mouseMoveX = 0;
+	mouseMoveY = 0;
+	xAxis = false;
+	yAxis = false;
+	prevMouseMoveX = 0;
+	prevMouseMoveY = 0;
+	mouseUpContextElm: HTMLElement | Document = document;
+	events: EventsObj = createEventsObj();
+
+	constructor (elm: HTMLElement, opts: unknown = {}) {
+		this.elm = elm;
 		this.classname = opts.classname || DRAGGABLE;
 		elm.classList.add(this.classname);
 
@@ -35,13 +48,26 @@ export default class Draggable {
 		this.elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
 
+	onDragStart (ev: Event) {
+		console.log(ev);
+	}
+	onDragging (ev: Event) {
+		console.log(ev);
+	}
+	onDrop (ev: Event) {
+		console.log(ev);
+	}
+	matchesGrip (eventTarget: HTMLElement) {
+		return !!eventTarget;
+	}
+
 	moveBy (x = 0, y = 0) {
 		const translate = `translate(${x}px, ${y}px)`;
 
 		this.elm.style.transform = translate;
 	}
 
-	setGrip (newGrip) {
+	setGrip (newGrip: HTMLElement | string | null) {
 		if (newGrip === this.gripHandle) return;
 
 		unsetGripClassname(this);
@@ -62,7 +88,7 @@ export default class Draggable {
 		setGripClassname(this);
 	}
 
-	on (eventName, callback) {
+	on (eventName: string, callback: Handler) {
 		const lowerEventName = eventName.toLowerCase();
 		if (lowerEventName.includes('start')) {
 			this.events.grab.push(callback);
@@ -77,6 +103,7 @@ export default class Draggable {
 		) {
 			this.events.drop.push(callback);
 		}
+
 		return this;
 	}
 
@@ -98,16 +125,16 @@ export default class Draggable {
 		this.elm.classList.remove(this.classname, DRAGGING);
 		unsetGripClassname(this);
 
-		this.events = null;
-		this.elm = null;
+		this.events = createEventsObj();
+		// this.elm = null;
 	}
 }
 
 /* ---------------------------------------------------------------------------------------------- */
 
-function onDragStart (ev) {
+function onDragStart (this: Draggable, ev: MouseEvent) {
 	if (!this.isDraggable) return;
-	if (this.useGrip && !this.matchesGrip(ev.target)) return;
+	if (this.useGrip && !this.matchesGrip(ev.target as HTMLElement)) return;
 
 	if (this.xAxis) {
 		this.startMouseX = ev.clientX;
@@ -125,7 +152,7 @@ function onDragStart (ev) {
 	this.events.grab.forEach(cb => cb(ev));
 }
 
-function onDragging (ev) {
+function onDragging (this: Draggable, ev: MouseEvent) {
 	if (!this.isDraggable) return;
 
 	this.mouseMoveX =
@@ -141,7 +168,7 @@ function onDragging (ev) {
 	ev.preventDefault();
 }
 
-function onDrop (ev) {
+function onDrop (this: Draggable, ev: MouseEvent) {
 	document.removeEventListener(MOUSE_MOVE, this.onDragging);
 	this.mouseUpContextElm.removeEventListener(MOUSE_UP, this.onDrop);
 
@@ -153,25 +180,25 @@ function onDrop (ev) {
 
 /* ---------------------------------------------------------------------------------------------- */
 
-function createEventsObj () {
+function createEventsObj (): EventsObj {
 	return {
 		grab: [],
 		drop: [],
-		dragging: []
+		dragging: [],
 	};
 }
 
-function initMouseHandlers (drg) {
+function initMouseHandlers (drg: Draggable) {
 	drg.onDragStart = onDragStart.bind(drg);
 	drg.onDragging = onDragging.bind(drg);
 	drg.onDrop = onDrop.bind(drg);
 }
 
-function initAxes (drg, axisOpt) {
+function initAxes (drg: Draggable, axisOpt: unknown) {
 	if (axisOpt) {
 		drg.mouseUpContextElm = document;
 
-		const axis = axisOpt.toLowerCase();
+		const axis = (axisOpt as string).toLowerCase();
 
 		if (axis === 'x') drg.xAxis = true;
 		else if (axis === 'y') drg.yAxis = true;
@@ -183,26 +210,26 @@ function initAxes (drg, axisOpt) {
 	}
 }
 
-function unsetGripClassname (drg) {
+function unsetGripClassname (drg: Draggable) {
 	if (!drg.useGrip) return;
 
 	if (drg.isGripHtmlElm) {
-		drg.gripHandle.classList.remove(DRAG_GRIP);
+		(drg.gripHandle as HTMLElement).classList.remove(DRAG_GRIP);
 	}
 	else {
-		const grips = document.querySelectorAll(drg.gripHandle);
+		const grips = document.querySelectorAll(drg.gripHandle as string);
 		for (const g of grips) {
 			g.classList.remove(DRAG_GRIP);
 		}
 	}
 }
 
-function setGripClassname (drg) {
+function setGripClassname (drg: Draggable) {
 	if (drg.isGripHtmlElm) {
-		drg.gripHandle.classList.add(DRAG_GRIP);
+		(drg.gripHandle as HTMLElement).classList.add(DRAG_GRIP);
 	}
 	else {
-		const grips = document.querySelectorAll(drg.gripHandle);
+		const grips = document.querySelectorAll(drg.gripHandle as string);
 		for (const g of grips) {
 			g.classList.add(DRAG_GRIP);
 		}

@@ -2,4 +2,5 @@ node_modules
 playground
 dev-bundles
 .vscode
-
+coverage
+*.tgz

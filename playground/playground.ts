@@ -1,4 +1,4 @@
-/* eslint-disable */
+import {draggable} from '../src';
 
 const domElm = document.getElementById('drag-target');
 const gripHandle = document.getElementById('grips-container');
