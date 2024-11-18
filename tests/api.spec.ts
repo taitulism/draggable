@@ -125,64 +125,57 @@ describe('API', () => {
 		});
 
 		it('sets the drag handle element', () => {
-			drgInstance = draggable(drgElm, {grip: gripA});
+			drgInstance.setGrip(gripA);
 
 			expect(drgElm.style.transform).to.be.empty;
+			simulateMouseDown(gripA, move(1, 1));
+			simulateMouseMove(gripA, move(10, 8));
+			simulateMouseUp(gripA, move(10, 8));
+			expect(drgElm.style.transform).to.equal(translate(9, 7));
 
-			simulateMouseDown(gripA, move(1, 0));
-			simulateMouseMove(gripA, move(150, 3));
-			simulateMouseUp(gripA, move(150, 3));
-			expect(drgElm.style.transform).to.equal(translate(149, 3));
-
-			// TODO:test after the first drag it's no longer at 0,0 (same for next test)
-			// TODO:test also, why checking transform in these tests?
-			simulateMouseDown(gripB, move(154, 3));
-			simulateMouseMove(gripB, move(300, 5));
-			simulateMouseUp(gripB, move(300, 5));
-			expect(drgElm.style.transform).to.equal(translate(146, 2));
+			simulateMouseDown(gripB, move(10, 8));
+			simulateMouseMove(gripB, move(25, 13));
+			simulateMouseUp(gripB, move(25, 13));
+			expect(drgElm.style.transform).to.equal(translate(9, 7)); // no move
 
 			drgInstance.setGrip(gripB);
 
-			simulateMouseDown(gripA, move(0, 0));
-			simulateMouseMove(gripA, move(300, 0));
-			simulateMouseUp(gripA, move(300, 0));
-			expect(drgElm.style.transform).to.equal(translate(150, 0));
+			simulateMouseDown(gripA, move(10, 8));
+			simulateMouseMove(gripA, move(25, 13));
+			simulateMouseUp(gripA, move(25, 13));
+			expect(drgElm.style.transform).to.equal(translate(9, 7)); // no move
 
-			simulateMouseDown(gripB, move(0, 0));
-			simulateMouseMove(gripB, move(150, 0));
-			simulateMouseUp(gripB, move(150, 0));
-			expect(drgElm.style.transform).to.equal(translate(300, 0));
+			simulateMouseDown(gripB, move(10, 8));
+			simulateMouseMove(gripB, move(25, 13));
+			simulateMouseUp(gripB, move(25, 13));
+			expect(drgElm.style.transform).to.equal(translate(24, 12));
 		});
 
 		it('sets the drag handle element selector', () => {
-			drgInstance = draggable(drgElm, {grip: '#grip-A'});
+			drgInstance.setGrip('#grip-A');
 
 			expect(drgElm.style.transform).to.be.empty;
+			simulateMouseDown(gripA, move(1, 1));
+			simulateMouseMove(gripA, move(10, 8));
+			simulateMouseUp(gripA, move(10, 8));
+			expect(drgElm.style.transform).to.equal(translate(9, 7));
 
-			simulateMouseDown(gripA, move(0, 0));
-			simulateMouseMove(gripA, move(150, 0));
-			simulateMouseUp(gripA, move(150, 0));
-			expect(drgElm.style.transform).to.equal(translate(150, 0));
-
-
-			simulateMouseDown(gripB, move(0, 0));
-			simulateMouseMove(gripB, move(300, 0));
-			simulateMouseUp(gripB, move(300, 0));
-			expect(drgElm.style.transform).to.equal(translate(150, 0));
-
+			simulateMouseDown(gripB, move(10, 8));
+			simulateMouseMove(gripB, move(25, 13));
+			simulateMouseUp(gripB, move(25, 13));
+			expect(drgElm.style.transform).to.equal(translate(9, 7)); // no move
 
 			drgInstance.setGrip('#grip-B');
 
-			simulateMouseDown(gripA, move(0, 0));
-			simulateMouseMove(gripA, move(300, 0));
-			simulateMouseUp(gripA, move(300, 0));
-			expect(drgElm.style.transform).to.equal(translate(150, 0));
+			simulateMouseDown(gripA, move(10, 8));
+			simulateMouseMove(gripA, move(25, 13));
+			simulateMouseUp(gripA, move(25, 13));
+			expect(drgElm.style.transform).to.equal(translate(9, 7)); // no move
 
-
-			simulateMouseDown(gripB, move(0, 0));
-			simulateMouseMove(gripB, move(150, 0));
-			simulateMouseUp(gripB, move(150, 0));
-			expect(drgElm.style.transform).to.equal(translate(300, 0));
+			simulateMouseDown(gripB, move(10, 8));
+			simulateMouseMove(gripB, move(25, 13));
+			simulateMouseUp(gripB, move(25, 13));
+			expect(drgElm.style.transform).to.equal(translate(24, 12));
 		});
 
 		it('sets the grip classname on the new grip', () => {
@@ -290,7 +283,7 @@ describe('API', () => {
 			const gripA = document.createElement('div');
 			gripA.id = 'grip-A';
 
-			const inst = draggable(drgElm, {grip: gripA});
+			drgInstance.setGrip(gripA);
 
 			simulateMouseDown(drgElm, [80, 80]);
 			simulateMouseMove(drgElm, [100, 100]);
@@ -298,7 +291,7 @@ describe('API', () => {
 			simulateMouseUp(drgElm, [112, 112]);
 			simulateMouseMove(drgElm, [160, 160]);
 
-			inst.destroy();
+			drgInstance.destroy();
 			expect(gripA.classList.contains(DRAG_GRIP)).to.be.false;
 			expect(drgElm.classList.contains(DRAGGABLE)).to.be.false;
 

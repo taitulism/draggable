@@ -1,7 +1,8 @@
 import {draggable} from '../src';
 
-const domElm = document.getElementById('drag-target');
-const gripHandle = document.getElementById('grips-container');
+const drgElm = document.getElementById('drag-target')!;
+// const gripHandle = document.getElementById('grips-container');
+const gripHandle = document.getElementById('grip-A');
 
 const jsElm = document.createElement('div');
 jsElm.id = 'drag-target';
@@ -17,7 +18,7 @@ jsElm.innerHTML = `
 
 // const drg = draggable(domElm);
 
-const drg = draggable(domElm, {
+const drg = draggable(drgElm, {
 // const drg = draggable(jsElm, {
 	// axis:'x',
 	grip: gripHandle,            // for domElm

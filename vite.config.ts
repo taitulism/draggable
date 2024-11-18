@@ -1,4 +1,4 @@
-import type { UserConfig } from 'vite';
+import type {UserConfig} from 'vite';
 import pkg from './package.json';
 import terser from '@rollup/plugin-terser';
 
@@ -28,10 +28,10 @@ export default {
 				name: 'pkgName',
 				plugins: [terser({
 					compress: {
-						keep_classnames: true
+						keep_classnames: true,
 					},
 				}) as any],
 			}],
-		}
-	}
-} satisfies UserConfig
+		},
+	},
+} satisfies UserConfig;

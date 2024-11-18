@@ -90,6 +90,7 @@ export class Draggable {
 
 	on (eventName: string, callback: Handler) {
 		const lowerEventName = eventName.toLowerCase();
+
 		if (lowerEventName.includes('start')) {
 			this.events.grab.push(callback);
 		}
@@ -126,7 +127,7 @@ export class Draggable {
 		unsetGripClassname(this);
 
 		this.events = createEventsObj();
-		// this.elm = null;
+		// this.elm = null; // TODO: handle elm might be null (+destroy test)
 	}
 }
 
@@ -136,13 +137,8 @@ function onDragStart (this: Draggable, ev: MouseEvent) {
 	if (!this.isDraggable) return;
 	if (this.useGrip && !this.matchesGrip(ev.target as HTMLElement)) return;
 
-	if (this.xAxis) {
-		this.startMouseX = ev.clientX;
-	}
-
-	if (this.yAxis) {
-		this.startMouseY = ev.clientY;
-	}
+	if (this.xAxis) this.startMouseX = ev.clientX;
+	if (this.yAxis) this.startMouseY = ev.clientY;
 
 	this.elm.classList.add(DRAGGING);
 
@@ -175,6 +171,7 @@ function onDrop (this: Draggable, ev: MouseEvent) {
 	this.prevMouseMoveX = this.mouseMoveX;
 	this.prevMouseMoveY = this.mouseMoveY;
 	this.elm.classList.remove(DRAGGING);
+
 	this.events.drop.forEach(cb => cb(ev));
 }
 
