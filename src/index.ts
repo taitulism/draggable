@@ -1,7 +1,9 @@
-import {Draggable} from './draggable';
-export {Draggable} from './draggable';
+import {Draggable, Options} from './draggable';
+
+export * from './draggable';
 
 export const draggable = (
 	elm: HTMLElement,
-	opts: unknown = {},
+	opts: Options = {},
 ) => new Draggable(elm, opts);
+

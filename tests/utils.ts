@@ -1,6 +1,6 @@
 export const translate = (x: number, y: number) => `translate(${x}px, ${y}px)`;
 
-const createEvent = (type: string, props: unknown = {}) => {
+const createEvent = (type: string, props: MouseEventInit = {}) => {
 	const event = new window.Event(type, {bubbles: true});
 	Object.assign(event, props);
 	return event;

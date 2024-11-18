@@ -1,29 +1,16 @@
 import {draggable} from '../src';
 
 const drgElm = document.getElementById('drag-target')!;
-// const gripHandle = document.getElementById('grips-container');
-const gripHandle = document.getElementById('grip-A');
 
-const jsElm = document.createElement('div');
-jsElm.id = 'drag-target';
-jsElm.className = 'drag-box';
-jsElm.innerHTML = `
-	<div id="grips-container">
-		<div id="grip-A">A</div>
-		<br /><br />
-		<div id="grip-B">B</div>
-	</div><br />
-	draggable
-`;
+// const gripHandle = document.getElementById('grips-container')!;
+const gripHandle = document.getElementById('grip-A')!;
 
-// const drg = draggable(domElm);
-
-const drg = draggable(drgElm, {
-// const drg = draggable(jsElm, {
+draggable(drgElm, {
 	// axis:'x',
-	grip: gripHandle,            // for domElm
-	// grip: '#grips-container', // for jsElm
+	// grip: '#grips-container',
+	grip: gripHandle,
 });
+
 
 // document.addEventListener('mousemove', (ev) => {
 // 	console.log(ev.x, ev.y);

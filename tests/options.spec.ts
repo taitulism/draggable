@@ -1,5 +1,5 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
-import {type Draggable, draggable} from '../src';
+import {draggable} from '../src';
 import {DRAGGABLE} from '../src/classnames';
 import {
 	createDraggableElm,
@@ -50,7 +50,7 @@ describe('Options', () => {
 			Test by keep moving the mouse after the drop and verify target is not moving.
 		*/
 		it('restricts dragging along the X axis only', () => {
-			const drgInstance = draggable(drgElm, {axis: 'X'});
+			const drgInstance = draggable(drgElm, {axis: 'x'});
 
 			expect(drgElm.style.transform).to.be.empty;
 			simulateMouseDown(drgElm, move(0, 0));
@@ -69,7 +69,7 @@ describe('Options', () => {
 		});
 
 		it('restricts dragging along the Y axis only', () => {
-			const drgInstance = draggable(drgElm, {axis: 'Y'});
+			const drgInstance = draggable(drgElm, {axis: 'y'});
 
 			expect(drgElm.style.transform).to.be.empty;
 			simulateMouseDown(drgElm, move(0, 0));

@@ -9,6 +9,7 @@ export default defineWorkspace([
 			include: ['./tests/**/*.spec.*'],
 			browser: {
 				enabled: true,
+				headless: false,
 				name: 'chromium',
 				provider: 'playwright',
 				// https://playwright.dev

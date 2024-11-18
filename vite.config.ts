@@ -30,7 +30,7 @@ export default {
 					compress: {
 						keep_classnames: true,
 					},
-				}) as any],
+				})],
 			}],
 		},
 	},

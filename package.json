@@ -19,17 +19,17 @@
     "preview": "vite preview",
     "test": "vitest run ./tests --coverage.enabled",
     "test:watch": "vitest watch ./tests",
+    "test:browser": "vitest --workspace=vitest.workspace.ts",
     "lint": "npm run check:lint",
     "checks": "npm run check:all",
     "types": "npm run check:types",
     "check:lint": "eslint ./src ./tests",
     "check:types": "tsc --noEmit",
-    "check:all": "npm run check:lint && npm run check:types && npm test",
+    "check:all": "npm run check:types && npm run check:lint && npm test",
     "preversion": "npm run check:all",
     "version": "npm run build",
     "postversion": "git push && git push --tags",
-    "prepublishOnly": "npm run check:all",
-    "test:browser": "vitest --workspace=vitest.workspace.ts"
+    "prepublishOnly": "npm run check:all"
   },
   "devDependencies": {
     "@eslint/js": "9.14.0",
@@ -45,7 +45,10 @@
     "vitest": "2.1.5"
   },
   "homepage": "https://github.com/taitulism/draggable#readme",
-  "repository": "github:taitulism/draggable",
+  "repository": {
+		"type": "git",
+		"url": "git+https://github.com/taitulism/draggable.git"
+	},
   "author": {
     "name": "Itai Tenenbaum",
     "email": "taitu.dev@gmail.com",

@@ -19,7 +19,6 @@ export default [
 	},
 	{
 		rules: {
-			'no-undef': 'error',
 			'semi': 'error',
 			'comma-dangle': ['error', 'always-multiline'],
 			'arrow-body-style': ['error', 'as-needed'],
@@ -55,6 +54,7 @@ export default [
 			'brace-style': ['error', 'stroustrup'],
 			'curly': ['error', 'multi-line'],
 
+			'no-undef': 0,
 			'no-unused-vars': 0,
 			'@typescript-eslint/no-unused-expressions': 0,
 		},
