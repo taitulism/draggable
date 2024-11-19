@@ -1,42 +1,39 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: Build
 
 on:
   push:
-    branches: ["master", "upgrade"]
+    branches: [ "master", "upgrade" ]
   pull_request:
-    branches: ["master", "develop"]
+    branches: [ "master", "develop" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ['18.x', '20.x', '22.x']
+        node-version: [ '18.x', '20.x', '22.x' ]
 
     steps:
-		- uses: actions/checkout@v4
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-		- name: Install Dependencies
-    	run: npm ci
-		- name: Install Playwright Chromium (with deps)
-    	run: npx playwright install chromium --with-deps
-		- name: Check Types
-    	run: npm run check:types
-		- name: Lint
-    	run: npm run lint
-		- name: Tests
-    	run: npm test
-		- name: Build
-    	run: npm run build
-		- name: qwe
-			uses: actions/upload-artifact@v4
+    - name: Install Dependencies
+      run: npm ci
+    - name: Install Playwright Chromium (with deps)
+      run: npx playwright install chromium --with-deps
+    - name: Check Types
+      run: npm run check:types
+    - name: Lint
+      run: npm run lint
+    - name: Tests
+      run: npm test
+    - name: Build
+      run: npm run build
+    - name: Upload Playwright Report
       if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@v4
       with:
         name: playwright-report
         path: playwright-report/
