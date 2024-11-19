@@ -2,10 +2,13 @@ import {defineConfig} from 'vitest/config';
 
 export default defineConfig({
 	test: {
-		environment: 'jsdom',
+		include: ['./tests/**/*.spec.*'],
 		browser: {
-			enabled: false,
-			headless: true,
+			enabled: true,
+			headless: false,
+			name: 'chromium',
+			provider: 'playwright',
+			providerOptions: {},
 		},
 		coverage: {
 			enabled: false,
