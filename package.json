@@ -1,66 +1,66 @@
 {
-  "name": "draggable-elm",
-  "description": "Makes elements draggable. Vanilla style.",
-  "version": "0.1.1",
-  "license": "MIT",
-  "type": "module",
-  "main": "./src/index.ts",
-  "browser": "./dist/browser/draggable.min.js",
-  "module": "./dist/esm/draggable.esm.js",
-  "types": "./dist/esm/pkg-name.esm.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "scripts": {
-    "dev": "npm run test:watch",
-    "play": "vite serve ./playground --open '/playground.html'",
-    "test": "vitest run --config vitest.config.mjs --browser.headless --coverage.enabled",
-    "test:watch": "vitest watch --config vitest.config.mjs --browser.headless",
-    "test:browser": "vitest watch --config vitest.config.mjs",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "lint": "npm run check:lint",
-    "checks": "npm run check:all",
-    "types": "npm run check:types",
-    "check:lint": "eslint ./src ./tests",
-    "check:types": "tsc --noEmit",
-    "check:all": "npm run check:types && npm run check:lint && npm test",
-    "preversion": "npm run check:all",
-    "version": "npm run build",
-    "postversion": "git push && git push --tags",
-    "prepublishOnly": "npm run check:all"
-  },
-  "devDependencies": {
-    "@eslint/js": "9.14.0",
-    "@rollup/plugin-terser": "0.4.4",
-    "@vitest/browser": "2.1.5",
-    "@vitest/coverage-v8": "2.1.5",
-    "eslint": "9.14.0",
-    "globals": "15.12.0",
-    "playwright": "1.48.2",
-    "typescript": "5.6.3",
-    "typescript-eslint": "8.14.0",
-    "vite": "5.4.11",
-    "vitest": "2.1.5"
-  },
-  "homepage": "https://github.com/taitulism/draggable#readme",
-  "repository": {
+	"name": "draggable-elm",
+	"description": "Makes elements draggable. Vanilla style.",
+	"version": "0.1.1",
+	"license": "MIT",
+	"type": "module",
+	"main": "./src/index.ts",
+	"browser": "./dist/browser/draggable.min.js",
+	"module": "./dist/esm/draggable.esm.js",
+	"types": "./dist/esm/pkg-name.esm.d.ts",
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"dev": "npm run test:watch",
+		"play": "vite serve ./playground --open '/playground.html'",
+		"test": "vitest run --config vitest.config.mjs --browser.headless --coverage.enabled",
+		"test:watch": "vitest watch --config vitest.config.mjs --browser.headless",
+		"test:browser": "vitest watch --config vitest.config.mjs",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"lint": "npm run check:lint",
+		"checks": "npm run check:all",
+		"types": "npm run check:types",
+		"check:lint": "eslint ./src ./tests",
+		"check:types": "tsc --noEmit",
+		"check:all": "npm run check:types && npm run check:lint && npm test",
+		"preversion": "npm run check:all",
+		"version": "npm run build",
+		"postversion": "git push && git push --tags",
+		"prepublishOnly": "npm run check:all"
+	},
+	"devDependencies": {
+		"@eslint/js": "9.14.0",
+		"@rollup/plugin-terser": "0.4.4",
+		"@vitest/browser": "2.1.5",
+		"@vitest/coverage-v8": "2.1.5",
+		"eslint": "9.14.0",
+		"globals": "15.12.0",
+		"playwright": "1.48.2",
+		"typescript": "5.6.3",
+		"typescript-eslint": "8.14.0",
+		"vite": "5.4.11",
+		"vitest": "2.1.5"
+	},
+	"homepage": "https://github.com/taitulism/draggable#readme",
+	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/taitulism/draggable.git"
 	},
-  "author": {
-    "name": "Itai Tenenbaum",
-    "email": "taitu.dev@gmail.com",
-    "url": "https://github.com/taitulism"
-  },
-  "keywords": [
-    "draggable",
-    "element",
-    "drag",
-    "drop",
-    "html",
-    "vanilla",
-    "js"
-  ]
+	"author": {
+		"name": "Itai Tenenbaum",
+		"email": "taitu.dev@gmail.com",
+		"url": "https://github.com/taitulism"
+	},
+	"keywords": [
+		"draggable",
+		"element",
+		"drag",
+		"drop",
+		"html",
+		"vanilla",
+		"js"
+	]
 }
