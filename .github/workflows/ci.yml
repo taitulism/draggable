@@ -17,13 +17,14 @@ jobs:
         node-version: ['18.x', '20.x', '22.x']
 
     steps:
-    - uses: actions/checkout@v4
+		- uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
 		- name: Install Dependencies
     	run: npm ci
+		- name: Install Playwright Chromium (with deps)
     	run: npx playwright install chromium --with-deps
 		- name: Check Types
     	run: npm run check:types
