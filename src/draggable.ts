@@ -103,6 +103,7 @@ export class Draggable {
 		setGripClassname(this);
 	}
 
+	// TODO: improve
 	on (eventName: string, callback: MouseEventHandler) {
 		const lowerEventName = eventName.toLowerCase();
 
@@ -177,6 +178,7 @@ function createEventsObj (): EventsObj {
 	};
 }
 
+// TODO: refactor
 function initAxes (drg: Draggable, axisOpt: Options['axis']) {
 	if (axisOpt) { // TODO:test uncovered block
 		drg.mouseUpContextElm = document;

@@ -78,6 +78,5 @@ describe('Events', () => {
 		expect(fired).to.be.false;
 		simulateMouseUp(drgElm, [50, 50]);
 		expect(fired).to.be.true;
-
 	});
 });
