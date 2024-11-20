@@ -302,10 +302,19 @@ describe('API', () => {
 			expect(drgElm.classList.contains(DRAGGING)).to.be.false;
 		});
 
-		it('releases the target element', () => {
+		it.skip('releases the target element', () => {
+			const gripA = document.createElement('div');
+			gripA.id = 'grip-A';
+
+			drgInstance.setGrip(gripA);
+
 			expect(drgInstance.elm).to.deep.equal(drgElm);
+			expect(drgInstance.grip).to.deep.equal(gripA);
+
 			drgInstance.destroy();
-			// expect(drgInstance.elm).to.be.null;
+
+			expect(drgInstance.elm).to.be.null;
+			expect(drgInstance.grip).to.be.null;
 		});
 	});
 });

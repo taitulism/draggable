@@ -5,3 +5,4 @@ dev-bundles
 .vscode
 coverage
 *.tgz
+__screenshots__
