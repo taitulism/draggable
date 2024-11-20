@@ -6,7 +6,7 @@ const drgElm = document.getElementById('drag-target')!;
 const gripHandle = document.getElementById('grip-A')!;
 
 draggable(drgElm, {
-	// axis:'x',
+	axis:'x',
 	// grip: '#grips-container',
 	grip: gripHandle,
 });

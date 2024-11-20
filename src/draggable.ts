@@ -5,16 +5,16 @@ import {
 	DRAG_GRIP,
 } from './classnames';
 
-const MOUSE_DOWN = 'mousedown';
-const MOUSE_MOVE = 'mousemove';
-const MOUSE_UP = 'mouseup';
+const MOUSE_DOWN = 'pointerdown';
+const MOUSE_MOVE = 'pointermove';
+const MOUSE_UP = 'pointerup';
 
-type MouseEventHandler = (ev: MouseEvent) => void
+type PointerEventHandler = (ev: PointerEvent) => void
 
 type EventsObj = {
-	grab: Array<MouseEventHandler>,
-	drop: Array<MouseEventHandler>,
-	dragging: Array<MouseEventHandler>
+	grab: Array<PointerEventHandler>,
+	drop: Array<PointerEventHandler>,
+	dragging: Array<PointerEventHandler>
 };
 
 export type ElementOrSelector = HTMLElement | string
@@ -42,7 +42,6 @@ export class Draggable {
 	yAxis = false;
 	prevMouseMoveX = 0;
 	prevMouseMoveY = 0;
-	mouseUpContextElm: HTMLElement | Document = document;
 	events: EventsObj = createEventsObj();
 
 	constructor (elm: HTMLElement, opts: Options = {}) {
@@ -57,8 +56,8 @@ export class Draggable {
 
 	destroy () {
 		this.elm.removeEventListener(MOUSE_DOWN, this.onDragStart);
-		document.removeEventListener(MOUSE_MOVE, this.onDragging);
-		this.mouseUpContextElm.removeEventListener(MOUSE_UP, this.onDrop as EventListener);
+		this.elm.removeEventListener(MOUSE_MOVE, this.onDragging);
+		this.elm.removeEventListener(MOUSE_UP, this.onDrop);
 
 		this.elm.classList.remove(this.classname, DRAGGING);
 
@@ -115,7 +114,7 @@ export class Draggable {
 		}
 	}
 
-	on (eventName: string, callback: MouseEventHandler) {
+	on (eventName: string, callback: PointerEventHandler) {
 		const lowerEventName = eventName.toLowerCase();
 
 		if (lowerEventName.includes('start')) {
@@ -136,7 +135,7 @@ export class Draggable {
 		return this;
 	}
 
-	onDragStart = (ev: MouseEvent) => {
+	onDragStart = (ev: PointerEvent) => {
 		if (!this.isDraggable) return;
 		if (this.grip && !this.matchesGrip(ev.target!)) return;
 
@@ -145,14 +144,17 @@ export class Draggable {
 
 		this.elm.classList.add(DRAGGING);
 
-		document.addEventListener(MOUSE_MOVE, this.onDragging);
-		this.mouseUpContextElm.addEventListener(MOUSE_UP, this.onDrop as EventListener);
+		this.elm.setPointerCapture(ev.pointerId);
+		this.elm.addEventListener(MOUSE_MOVE, this.onDragging);
+		this.elm.addEventListener(MOUSE_UP, this.onDrop);
 
 		this.events.grab.forEach(cb => cb(ev));
 	};
 
-	onDragging = (ev: MouseEvent) => {
+	onDragging = (ev: PointerEvent) => {
 		if (!this.isDraggable) return;
+
+		ev.preventDefault(); // prevent text selection
 
 		this.mouseMoveX =
 			this.xAxis ? (ev.clientX - this.startMouseX) + this.prevMouseMoveX : 0;
@@ -162,14 +164,12 @@ export class Draggable {
 
 		this.moveBy(this.mouseMoveX, this.mouseMoveY);
 		this.events.dragging.forEach(cb => cb(ev));
-
-		// prevent text selection while dragging
-		ev.preventDefault();
 	};
 
-	onDrop = (ev: MouseEvent) => {
-		document.removeEventListener(MOUSE_MOVE, this.onDragging);
-		this.mouseUpContextElm.removeEventListener(MOUSE_UP, this.onDrop as EventListener);
+	onDrop = (ev: PointerEvent) => {
+		this.elm.releasePointerCapture(ev.pointerId);
+		this.elm.removeEventListener(MOUSE_MOVE, this.onDragging);
+		this.elm.removeEventListener(MOUSE_UP, this.onDrop);
 
 		this.prevMouseMoveX = this.mouseMoveX;
 		this.prevMouseMoveY = this.mouseMoveY;
@@ -194,15 +194,12 @@ function createEventsObj (): EventsObj {
 // TODO: refactor
 function initAxes (drg: Draggable, axisOpt: Options['axis']) {
 	if (axisOpt) { // TODO:test uncovered block
-		drg.mouseUpContextElm = document;
-
 		const axis = (axisOpt as string).toLowerCase();
 
 		if (axis === 'x') drg.xAxis = true;
 		else if (axis === 'y') drg.yAxis = true;
 	}
 	else {
-		drg.mouseUpContextElm = drg.elm;
 		drg.xAxis = true;
 		drg.yAxis = true;
 	}

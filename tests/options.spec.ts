@@ -40,15 +40,6 @@ describe('Options', () => {
 	});
 
 	describe('axis', () => {
-		/*
-			Why simulating a mouse move on container?
-			When restricting to an axis, moving the mouse in the other axis (outside of target)
-			misses the mouseup event.
-			In this case, if the event is bound to target, the mouseup event occures
-			outside (hence the container).
-			Fixed by binding the mouseup to the document.
-			Test by keep moving the mouse after the drop and verify target is not moving.
-		*/
 		it('restricts dragging along the X axis only', () => {
 			const drgInstance = draggable(drgElm, {axis: 'x'});
 
@@ -57,12 +48,11 @@ describe('Options', () => {
 			simulateMouseMove(drgElm, move(50, 50));
 			expect(drgElm.style.transform).to.equal(translate(50, 0));
 
-			// why container? see comment above
-			simulateMouseMove(testContainerElm, move(150, 150));
+			simulateMouseMove(drgElm, move(150, 150));
 			expect(drgElm.style.transform).to.equal(translate(150, 0));
 
-			simulateMouseUp(testContainerElm, move(150, 150));
-			simulateMouseMove(testContainerElm, move(300, 300));
+			simulateMouseUp(drgElm, move(150, 150));
+			simulateMouseMove(drgElm, move(300, 300));
 			expect(drgElm.style.transform).to.equal(translate(150, 0));
 
 			drgInstance.destroy();
@@ -76,12 +66,11 @@ describe('Options', () => {
 			simulateMouseMove(drgElm, move(50, 50));
 			expect(drgElm.style.transform).to.equal(translate(0, 50));
 
-			// why container? see comment above
-			simulateMouseMove(testContainerElm, move(150, 150));
+			simulateMouseMove(drgElm, move(150, 150));
 			expect(drgElm.style.transform).to.equal(translate(0, 150));
 
-			simulateMouseUp(testContainerElm, move(150, 150));
-			simulateMouseMove(testContainerElm, move(300, 300));
+			simulateMouseUp(drgElm, move(150, 150));
+			simulateMouseMove(drgElm, move(300, 300));
 			expect(drgElm.style.transform).to.equal(translate(0, 150));
 
 			drgInstance.destroy();
