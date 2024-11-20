@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![ts](https://badgen.net/badge/Built%20With/TypeScript/blue)
-[![Build Status](https://travis-ci.org/taitulism/draggable.svg?branch=develop)](https://travis-ci.org/taitulism/draggable)
+![Build Status](https://github.com/taitulism/draggable/actions/workflows/ci.yml/badge.svg)
 
 draggable-elm
 =============
