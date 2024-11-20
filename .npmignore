@@ -1,5 +1,8 @@
 node_modules
 playground
+playwright-references
 dev-bundles
 .vscode
-
+coverage
+*.tgz
+__screenshots__
