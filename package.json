@@ -14,7 +14,7 @@
 	],
 	"scripts": {
 		"dev": "npm run test:watch",
-		"play": "vite serve ./playground --open '/playground.html'",
+		"play": "vite serve ./playground",
 		"test": "vitest run --config vitest.config.mjs --browser.headless --coverage.enabled",
 		"test:watch": "vitest watch --config vitest.config.mjs --browser.headless",
 		"test:browser": "vitest watch --config vitest.config.mjs",
