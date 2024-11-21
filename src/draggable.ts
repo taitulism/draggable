@@ -34,14 +34,14 @@ export class Draggable {
 	classname = DRAGGABLE;
 	grip: HTMLElement | string | null = null;
 	isDraggable = true;
-	startMouseX = 0;
-	startMouseY = 0;
-	mouseMoveX = 0;
-	mouseMoveY = 0;
 	xAxis = false;
 	yAxis = false;
-	prevMouseMoveX = 0;
-	prevMouseMoveY = 0;
+	startX = 0;
+	startY = 0;
+	moveX = 0;
+	moveY = 0;
+	prevX = 0;
+	prevY = 0;
 	events: EventsObj = createEventsObj();
 
 	constructor (elm: HTMLElement, opts: Options = {}) {
@@ -139,8 +139,8 @@ export class Draggable {
 		if (!this.isDraggable) return;
 		if (this.grip && !this.matchesGrip(ev.target!)) return;
 
-		if (this.xAxis) this.startMouseX = ev.clientX;
-		if (this.yAxis) this.startMouseY = ev.clientY;
+		if (this.xAxis) this.startX = ev.clientX;
+		if (this.yAxis) this.startY = ev.clientY;
 
 		this.elm.classList.add(DRAGGING);
 
@@ -156,13 +156,10 @@ export class Draggable {
 
 		ev.preventDefault(); // prevent text selection
 
-		this.mouseMoveX =
-			this.xAxis ? (ev.clientX - this.startMouseX) + this.prevMouseMoveX : 0;
+		this.moveX = this.xAxis ? (ev.clientX - this.startX) + this.prevX : 0;
+		this.moveY = this.yAxis ? (ev.clientY - this.startY) + this.prevY : 0;
 
-		this.mouseMoveY =
-			this.yAxis ? (ev.clientY - this.startMouseY) + this.prevMouseMoveY : 0;
-
-		this.moveBy(this.mouseMoveX, this.mouseMoveY);
+		this.moveBy(this.moveX, this.moveY);
 		this.events.dragging.forEach(cb => cb(ev));
 	};
 
@@ -171,8 +168,8 @@ export class Draggable {
 		this.elm.removeEventListener(MOUSE_MOVE, this.onDragging);
 		this.elm.removeEventListener(MOUSE_UP, this.onDrop);
 
-		this.prevMouseMoveX = this.mouseMoveX;
-		this.prevMouseMoveY = this.mouseMoveY;
+		this.prevX = this.moveX;
+		this.prevY = this.moveY;
 		this.elm.classList.remove(DRAGGING);
 
 		this.events.drop.forEach(cb => cb(ev));
