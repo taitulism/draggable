@@ -35,17 +35,17 @@ const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
 };
 
 export class DraggingLayer {
-	isEnabled = true;
-	contextElm?: HTMLElement;
-	activeDrag!: ActiveDrag;
-	events: EventsObj = createEventsObj();
+	public isEnabled = true;
+	private contextElm?: HTMLElement;
+	private activeDrag!: ActiveDrag;
+	private events: EventsObj = createEventsObj();
 
 	constructor (elm: HTMLElement) {
 		this.contextElm = elm;
 		elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
 
-	destroy () {
+	public destroy () {
 		this.contextElm!.removeEventListener(MOUSE_DOWN, this.onDragStart);
 		window.removeEventListener(MOUSE_MOVE, this.onDragging);
 		window.removeEventListener(MOUSE_UP, this.onDrop);
@@ -57,15 +57,15 @@ export class DraggingLayer {
 		this.disable();
 	}
 
-	enable () {
+	public enable () {
 		this.isEnabled = true;
 	}
 
-	disable () {
+	public disable () {
 		this.isEnabled = false;
 	}
 
-	on (eventName: string, callback: PointerEventHandler) {
+	public on (eventName: string, callback: PointerEventHandler) {
 		const lowerEventName = eventName.toLowerCase();
 
 		if (lowerEventName.includes('start')) {
@@ -86,7 +86,7 @@ export class DraggingLayer {
 		return this;
 	}
 
-	onDragStart = (ev: PointerEvent) => {
+	private onDragStart = (ev: PointerEvent) => {
 		if (!this.isEnabled) return;
 		const evTarget = ev.target as HTMLElement;
 		const {dragRole} = evTarget.dataset;
@@ -148,7 +148,7 @@ export class DraggingLayer {
 		this.events.grab.forEach(cb => cb(ev));
 	};
 
-	onDragging = (ev: PointerEvent) => {
+	private onDragging = (ev: PointerEvent) => {
 		const evTarget = ev.target as HTMLElement;
 
 		if (
@@ -169,7 +169,7 @@ export class DraggingLayer {
 		this.events.dragging.forEach(cb => cb(ev));
 	};
 
-	onDrop = (ev: PointerEvent) => {
+	private onDrop = (ev: PointerEvent) => {
 		window.removeEventListener(MOUSE_MOVE, this.onDragging);
 		window.removeEventListener(MOUSE_UP, this.onDrop);
 
