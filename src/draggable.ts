@@ -56,8 +56,8 @@ export class Draggable {
 
 	destroy () {
 		this.elm.removeEventListener(MOUSE_DOWN, this.onDragStart);
-		this.elm.removeEventListener(MOUSE_MOVE, this.onDragging);
-		this.elm.removeEventListener(MOUSE_UP, this.onDrop);
+		window.removeEventListener(MOUSE_MOVE, this.onDragging);
+		window.removeEventListener(MOUSE_UP, this.onDrop);
 
 		this.elm.classList.remove(this.classname, DRAGGING);
 
@@ -144,9 +144,8 @@ export class Draggable {
 
 		this.elm.classList.add(DRAGGING);
 
-		this.elm.setPointerCapture(ev.pointerId);
-		this.elm.addEventListener(MOUSE_MOVE, this.onDragging);
-		this.elm.addEventListener(MOUSE_UP, this.onDrop);
+		window.addEventListener(MOUSE_MOVE, this.onDragging);
+		window.addEventListener(MOUSE_UP, this.onDrop);
 
 		this.events.grab.forEach(cb => cb(ev));
 	};
@@ -164,9 +163,8 @@ export class Draggable {
 	};
 
 	onDrop = (ev: PointerEvent) => {
-		this.elm.releasePointerCapture(ev.pointerId);
-		this.elm.removeEventListener(MOUSE_MOVE, this.onDragging);
-		this.elm.removeEventListener(MOUSE_UP, this.onDrop);
+		window.removeEventListener(MOUSE_MOVE, this.onDragging);
+		window.removeEventListener(MOUSE_UP, this.onDrop);
 
 		this.prevX = this.moveX;
 		this.prevY = this.moveY;
