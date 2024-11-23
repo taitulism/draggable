@@ -308,12 +308,12 @@ describe('API', () => {
 
 			drgInstance.setGrip(gripA);
 
-			expect(drgInstance.elm).to.deep.equal(drgElm);
+			expect(drgInstance.contextElm).to.deep.equal(drgElm);
 			expect(drgInstance.grip).to.deep.equal(gripA);
 
 			drgInstance.destroy();
 
-			expect(drgInstance.elm).to.be.null;
+			expect(drgInstance.contextElm).to.be.null;
 			expect(drgInstance.grip).to.be.null;
 		});
 	});
