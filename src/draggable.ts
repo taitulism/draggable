@@ -6,14 +6,6 @@ type EventsObj = {
 	dragging: Array<PointerEventHandler>
 };
 
-export type ElementOrSelector = HTMLElement | string
-
-export type Options = {
-	classname?: string
-	grip?: ElementOrSelector
-	axis?: 'x' | 'y'
-}
-
 type DragAxis = 'x' | 'y'
 
 type ActiveDrag = {
@@ -44,25 +36,25 @@ const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
 
 export class DraggingLayer {
 	isEnabled = true;
-	contextElm: HTMLElement;
+	contextElm?: HTMLElement;
+	activeDrag!: ActiveDrag;
 	events: EventsObj = createEventsObj();
 
-	activeDrag!: ActiveDrag;
-
-	constructor (elm: HTMLElement, opts: Options = {}) {
+	constructor (elm: HTMLElement) {
 		this.contextElm = elm;
-		this.contextElm.addEventListener(MOUSE_DOWN, this.onDragStart);
+		elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
 
 	destroy () {
-		this.contextElm.removeEventListener(MOUSE_DOWN, this.onDragStart);
+		this.contextElm!.removeEventListener(MOUSE_DOWN, this.onDragStart);
 		window.removeEventListener(MOUSE_MOVE, this.onDragging);
 		window.removeEventListener(MOUSE_UP, this.onDrop);
 
-		delete this.activeDrag.elm?.dataset.dragIsActive;
-
 		this.events = createEventsObj();
-		// this.contextElm = null; // TODO: handle elm might be null (+destroy test)
+		delete this.activeDrag.elm?.dataset.dragIsActive;
+		this.activeDrag.elm = undefined;
+		this.contextElm = undefined; // TODO:test - see destroy spec
+		this.disable();
 	}
 
 	enable () {
@@ -148,7 +140,7 @@ export class DraggingLayer {
 		}
 
 		this.activeDrag = activeDrag;
-		this.contextElm.style.userSelect = 'none';
+		this.contextElm!.style.userSelect = 'none';
 
 		window.addEventListener(MOUSE_MOVE, this.onDragging);
 		window.addEventListener(MOUSE_UP, this.onDrop);
@@ -187,7 +179,7 @@ export class DraggingLayer {
 		elm!.dataset.dragPosition = (moveX || prevX) + ',' + (moveY || prevY);
 		delete elm!.dataset.dragIsActive;
 
-		this.contextElm.style.userSelect = '';
+		this.contextElm!.style.userSelect = '';
 		this.events.drop.forEach(cb => cb(ev));
 	};
 }
