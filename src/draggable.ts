@@ -43,8 +43,8 @@ const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
 };
 
 export class Draggable {
+	isEnabled = true;
 	contextElm: HTMLElement;
-	isDraggable = true;
 	events: EventsObj = createEventsObj();
 
 	activeDrag!: ActiveDrag;
@@ -65,14 +65,12 @@ export class Draggable {
 		// this.contextElm = null; // TODO: handle elm might be null (+destroy test)
 	}
 
-	disable () {
-		this.isDraggable = false;
-		this.contextElm.setAttribute('disabled', '');
+	enable () {
+		this.isEnabled = true;
 	}
 
-	enable () {
-		this.isDraggable = true;
-		this.contextElm.removeAttribute('disabled');
+	disable () {
+		this.isEnabled = false;
 	}
 
 	on (eventName: string, callback: PointerEventHandler) {
@@ -97,9 +95,12 @@ export class Draggable {
 	}
 
 	onDragStart = (ev: PointerEvent) => {
+		if (!this.isEnabled) return;
 		const evTarget = ev.target as HTMLElement;
 		const {dragRole} = evTarget.dataset;
-		if (!dragRole || evTarget.hasAttribute('disabled')) return;
+		if (!dragRole || 'dragDisabled' in evTarget.dataset && evTarget.dataset.dragDisabled !== 'false') {
+			return;
+		}
 
 		let draggableElm: HTMLElement;
 
@@ -109,8 +110,8 @@ export class Draggable {
 		else if (dragRole === 'grip') {
 			const closest = evTarget.closest('[data-drag-role="draggable"]') as HTMLElement;
 
-			if (!closest) return;
-			// TODO: throw
+			if (!closest || closest.dataset.dragDisabled) return;
+			// TODO: throw only when !closest
 
 			draggableElm = closest;
 		}
@@ -147,6 +148,8 @@ export class Draggable {
 		}
 
 		this.activeDrag = activeDrag;
+		this.contextElm.style.userSelect = 'none';
+
 		window.addEventListener(MOUSE_MOVE, this.onDragging);
 		window.addEventListener(MOUSE_UP, this.onDrop);
 
@@ -156,9 +159,12 @@ export class Draggable {
 	onDragging = (ev: PointerEvent) => {
 		const evTarget = ev.target as HTMLElement;
 
-		if (evTarget.hasAttribute('disabled')) return;
-
-		ev.preventDefault(); // prevent text selection
+		if (
+			!this.isEnabled
+			|| 'dragDisabled' in evTarget.dataset && evTarget.dataset.dragDisabled !== 'false'
+		) {
+			return;
+		}
 
 		const {activeDrag} = this;
 		const {elm, axis, startX, startY, prevX, prevY} = activeDrag;
@@ -176,11 +182,12 @@ export class Draggable {
 		window.removeEventListener(MOUSE_UP, this.onDrop);
 
 		const {activeDrag} = this;
-		const {elm, moveX, moveY} = activeDrag;
+		const {elm, moveX, moveY, prevX, prevY} = activeDrag;
 
-		elm!.dataset.dragPosition = moveX + ',' + moveY;
+		elm!.dataset.dragPosition = (moveX || prevX) + ',' + (moveY || prevY);
 		delete elm!.dataset.dragIsActive;
 
+		this.contextElm.style.userSelect = '';
 		this.events.drop.forEach(cb => cb(ev));
 	};
 }

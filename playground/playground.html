@@ -60,13 +60,14 @@
 </head>
 <body>
 	<button id="toggle-btn">Toggle</button>
-	<div data-drag-role="ctx" id="the-container" class="container">
+	<div id="the-container" class="container">
 		<div
 			id="drag-me"
 			class="drag-box"
 			data-drag-role="draggable"
 			data-drag-axis="y"
-		>
+			data-drag-disabled="false"
+			>
 			<div id="grips-container">
 				<div id="grip-a" data-drag-role="grip">A</div>
 				<div id="grip-b">B</div>

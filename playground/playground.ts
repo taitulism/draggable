@@ -6,7 +6,7 @@ const toggleBtn = document.getElementById('toggle-btn')!;
 // const staticElm = document.getElementById('static')!;
 
 toggleBtn.addEventListener('click', () => {
-	d.isDraggable
+	d.isEnabled
 		? d.disable()
 		: d.enable();
 }, false);
