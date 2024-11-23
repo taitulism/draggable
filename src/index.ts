@@ -1,9 +1,9 @@
-import {Draggable, Options} from './draggable';
+import {DraggingLayer, Options} from './draggable';
 
 export * from './draggable';
 
 export const draggable = (
 	elm: HTMLElement,
 	opts: Options = {},
-) => new Draggable(elm, opts);
+) => new DraggingLayer(elm, opts);
 

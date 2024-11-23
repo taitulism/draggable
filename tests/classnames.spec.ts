@@ -1,5 +1,5 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
-import {Draggable, draggable} from '../src';
+import {DraggingLayer, draggable} from '../src';
 import {
 	DRAGGABLE,
 	DRAGGING,
@@ -14,7 +14,7 @@ import {
 
 describe('Classnames', () => {
 	let drgElm: HTMLElement;
-	let drgInstance: Draggable;
+	let drgInstance: DraggingLayer;
 	let testContainerElm: HTMLElement;
 
 	beforeAll(() => {
