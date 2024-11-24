@@ -1,6 +1,6 @@
-import {DraggingLayer} from './draggable';
+import {Draggable} from './draggable';
 
 export * from './draggable';
 
-export const draggable = (elm: HTMLElement = document.body) => new DraggingLayer(elm);
+export const draggable = (elm: HTMLElement = document.body) => new Draggable(elm);
 

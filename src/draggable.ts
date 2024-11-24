@@ -34,7 +34,7 @@ const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
 	elm.style.transform = translate;
 };
 
-export class DraggingLayer {
+export class Draggable {
 	public isEnabled = true;
 	private contextElm?: HTMLElement;
 	private activeDrag!: ActiveDrag;
