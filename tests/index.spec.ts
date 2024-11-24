@@ -5,10 +5,9 @@ describe('draggable', () => {
 	it('is a function', () => expect(draggable).to.be.a('function'));
 
 	it('returns a `Draggable` instance', () => {
-		const target = document.createElement('div');
-		const draggableInstance = draggable(target);
+		const draggableInstance = draggable();
 		const ctor = Object.getPrototypeOf(draggableInstance).constructor;
 
-		expect(ctor.name).to.equal('Draggable');
+		expect(ctor.name).to.equal('DraggingLayer');
 	});
 });

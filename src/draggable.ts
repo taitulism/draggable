@@ -46,14 +46,19 @@ export class DraggingLayer {
 	}
 
 	public destroy () {
-		this.contextElm!.removeEventListener(MOUSE_DOWN, this.onDragStart);
 		window.removeEventListener(MOUSE_MOVE, this.onDragging);
 		window.removeEventListener(MOUSE_UP, this.onDrop);
 
-		this.events = createEventsObj();
-		delete this.activeDrag.elm?.dataset.dragIsActive;
-		this.activeDrag.elm = undefined;
+		this.contextElm?.removeEventListener(MOUSE_DOWN, this.onDragStart);
 		this.contextElm = undefined; // TODO:test - see destroy spec
+
+		this.events = createEventsObj();
+
+		if (this.activeDrag?.elm) {
+			delete this.activeDrag.elm.dataset.dragIsActive;
+			this.activeDrag.elm = undefined;
+		}
+
 		this.disable();
 	}
 

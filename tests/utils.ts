@@ -1,3 +1,5 @@
+import {DragAxis} from '../src';
+
 export const translate = (x: number, y: number) => `translate(${x}px, ${y}px)`;
 
 const createEvent = (type: string, props: PointerEventInit = {}) => {
@@ -43,19 +45,6 @@ export function simulateMouseUp (elm: HTMLElement, point: Point) {
 	elm.dispatchEvent(event);
 }
 
-export function createDraggableElm (grip?: HTMLElement) {
-	const elm = document.createElement('div');
-
-	elm.id = 'target';
-	elm.style.width = '100px';
-	elm.style.height = '100px';
-	elm.style.backgroundColor = 'pink';
-
-	grip && elm.appendChild(grip);
-
-	return elm;
-}
-
 export function createTestContainerElm () {
 	const container = document.createElement('div');
 
@@ -67,10 +56,20 @@ export function createTestContainerElm () {
 	return container;
 }
 
-export function createGripElm (id: string) {
-	const grip = document.createElement('div');
-	grip.id = `grip-${id}`;
-	return grip;
+export function createDraggableElm (grip?: HTMLElement, axis?: DragAxis) {
+	const elm = document.createElement('div');
+
+	elm.dataset.dragRole = 'draggable';
+	if (axis) elm.dataset.dragAxis = axis;
+
+	elm.id = 'target';
+	elm.style.width = '100px';
+	elm.style.height = '100px';
+	elm.style.backgroundColor = 'pink';
+
+	grip && elm.appendChild(grip);
+
+	return elm;
 }
 
 export function createGripsContainer () {
@@ -83,4 +82,13 @@ export function createGripsContainer () {
 	container.appendChild(gripB);
 
 	return [container, gripA, gripB];
+}
+
+// TODO:test some tests not using this and should
+export function createGripElm (id: string) {
+	const grip = document.createElement('div');
+
+	grip.dataset.dragRole = 'grip';
+	grip.id = `grip-${id}`;
+	return grip;
 }

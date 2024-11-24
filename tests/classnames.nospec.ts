@@ -1,10 +1,6 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
 import {DraggingLayer, draggable} from '../src';
 import {
-	DRAGGABLE,
-	DRAGGING,
-} from '../src/classnames';
-import {
 	createDraggableElm,
 	createTestContainerElm,
 	simulateMouseDown,

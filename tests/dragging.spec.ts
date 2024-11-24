@@ -25,9 +25,9 @@ describe('Dragging Around', () => {
 
 	beforeEach(() => {
 		drgElm = createDraggableElm();
-		drgInstance = draggable(drgElm);
 		testContainerElm.appendChild(drgElm);
 		box = drgElm.getBoundingClientRect();
+		drgInstance = draggable();
 		move = (x, y) => [(box.left + x), (box.top + y)];
 	});
 
@@ -41,8 +41,6 @@ describe('Dragging Around', () => {
 	});
 
 	it('moves the elm on the X axis', () => {
-		draggable(drgElm);
-
 		simulateMouseDown(drgElm, move(0, 0));
 		expect(drgElm.style.transform).to.be.empty;
 
@@ -61,8 +59,6 @@ describe('Dragging Around', () => {
 	});
 
 	it('moves the elm on the Y axis', () => {
-		draggable(drgElm);
-
 		simulateMouseDown(drgElm, move(0, 0));
 		expect(drgElm.style.transform).to.be.empty;
 
@@ -81,8 +77,6 @@ describe('Dragging Around', () => {
 	});
 
 	it('moves the elm freely on both axes', () => {
-		draggable(drgElm);
-
 		simulateMouseDown(drgElm, move(0, 0));
 		expect(drgElm.style.transform).to.be.empty;
 
@@ -99,4 +93,8 @@ describe('Dragging Around', () => {
 		simulateMouseUp(drgElm, move(0, 0));
 		expect(drgElm.style.transform).to.equal(translate(0, 0));
 	});
+
+	// TODO:test - add checks against initial box
+	// 	const newBox = drgElm.getBoundingClientRect();
+	// 	expect(newBox.left).to.equal(75 + 7);
 });

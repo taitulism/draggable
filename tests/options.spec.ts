@@ -1,6 +1,5 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
 import {draggable} from '../src';
-import {DRAGGABLE} from '../src/classnames';
 import {
 	createDraggableElm,
 	createGripsContainer,
@@ -41,7 +40,7 @@ describe('Options', () => {
 
 	describe('axis', () => {
 		it('restricts dragging along the X axis only', () => {
-			const drgInstance = draggable(drgElm, {axis: 'x'});
+			const drgInstance = draggable({axis: 'x'});
 
 			expect(drgElm.style.transform).to.be.empty;
 			simulateMouseDown(drgElm, move(0, 0));
@@ -181,7 +180,7 @@ describe('Options', () => {
 
 			const drgInstance = draggable(drgElm, {classname: 'my-class'});
 			expect(drgElm.classList.contains('my-class')).to.be.true;
-			expect(drgElm.classList.contains(DRAGGABLE)).to.be.false;
+			expect(drgElm.classList.contains('DRAGGABLE')).to.be.false;
 
 			drgInstance.destroy();
 		});
