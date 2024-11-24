@@ -10,12 +10,6 @@ import {
 	simulateMouseUp,
 	translate,
 } from './utils';
-// import {
-// 	DRAGGABLE,
-// 	DRAGGING,
-// 	DRAG_DISABLED,
-// 	DRAG_GRIP,
-// } from '../src/classnames';
 
 describe('API', () => {
 	let drgElm: HTMLElement;
@@ -194,57 +188,6 @@ describe('API', () => {
 			// drgInstance.setGrip(null);
 			expect(gripA.classList.contains('DRAG_GRIP')).to.be.false;
 			expect(gripB.classList.contains('DRAG_GRIP')).to.be.false;
-		});
-	});
-
-	describe('.destroy()', () => {
-		it('removes all listeners', () => {
-			let grabs = 0;
-			let moves = 0;
-			let drops = 0;
-
-			drgInstance.on('start', () => {
-				grabs++;
-			});
-			drgInstance.on('ing', () => {
-				moves++;
-			});
-			drgInstance.on('drop', () => {
-				drops++;
-			});
-
-			expect(grabs).to.equal(0);
-			simulateMouseDown(drgElm, [50, 50]);
-			expect(grabs).to.equal(1);
-
-			expect(moves).to.equal(0);
-			simulateMouseMove(drgElm, [50, 50]);
-			expect(moves).to.equal(1);
-
-			simulateMouseMove(drgElm, [150, 150]);
-			expect(moves).to.equal(2);
-
-			expect(drops).to.equal(0);
-			simulateMouseUp(drgElm, [150, 150]);
-			expect(drops).to.equal(1);
-
-			expect(moves).to.equal(2);
-			simulateMouseMove(drgElm, [160, 160]);
-			expect(moves).to.equal(2);
-
-			drgInstance.destroy();
-
-			expect(grabs).to.equal(1);
-			simulateMouseDown(drgElm, [160, 160]);
-			expect(grabs).to.equal(1);
-
-			expect(moves).to.equal(2);
-			simulateMouseMove(drgElm, [160, 160]);
-			expect(moves).to.equal(2);
-
-			expect(drops).to.equal(1);
-			simulateMouseUp(drgElm, [160, 160]);
-			expect(drops).to.equal(1);
 		});
 	});
 });

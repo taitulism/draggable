@@ -49,13 +49,13 @@ export function createTestContainerElm () {
 	const container = document.createElement('div');
 
 	container.id = 'test-dom-container';
-	container.style.height = '400px';
-	container.style.width = '1000';
-	container.style.padding = '75px';
+	container.style.height = '200px';
+	container.style.padding = '50px';
 
 	return container;
 }
 
+// TODO:test - grip not in use
 export function createDraggableElm (grip?: HTMLElement, axis?: DragAxis) {
 	const elm = document.createElement('div');
 

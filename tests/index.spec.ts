@@ -8,6 +8,6 @@ describe('draggable', () => {
 		const draggableInstance = draggable();
 		const ctor = Object.getPrototypeOf(draggableInstance).constructor;
 
-		expect(ctor.name).to.equal('DraggingLayer');
+		expect(ctor.name).to.equal('Draggable');
 	});
 });
