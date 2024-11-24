@@ -1,4 +1,4 @@
-type PointerEventHandler = (ev: PointerEvent) => void
+export type PointerEventHandler = (ev: PointerEvent) => void
 
 type EventsObj = {
 	grab: Array<PointerEventHandler>,
@@ -6,7 +6,7 @@ type EventsObj = {
 	dragging: Array<PointerEventHandler>
 };
 
-type DragAxis = 'x' | 'y'
+export type DragAxis = 'x' | 'y'
 
 type ActiveDrag = {
 	elm?: HTMLElement
