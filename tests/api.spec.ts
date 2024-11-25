@@ -2,7 +2,6 @@ import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from '
 import {type Draggable, draggable} from '../src';
 import {
 	createDraggableElm,
-	createGripsContainer,
 	createContainerElm,
 	Point,
 	simulateMouseDown,

@@ -77,6 +77,20 @@ describe('Data Attributes', () => {
 			drgInstance.destroy();
 		});
 
+		it.todo('its children also become grips', () => {
+			// const drgInstance = draggable();
+
+			// makeDraggable(drgElm);
+			// const grip = addGrip(drgElm);
+
+			// simulateMouseDown(grip, move(62, 62));
+			// simulateMouseMove(grip, move(70, 80));
+			// simulateMouseUp(grip, move(70, 80));
+			// expect(drgElm.style.transform).to.equal(translate(8, 18));
+
+			// drgInstance.destroy();
+		});
+
 		it('prevents dragging the closest draggable not via grip', () => {
 			const drgInstance = draggable();
 
