@@ -31,7 +31,7 @@ describe('draggable', () => {
 		box = drgElm.getBoundingClientRect();
 		box2 = drgElm2.getBoundingClientRect();
 		move = (x, y) => [(box.left + x), (box.top + y)];
-		move2 = (x, y) => [(box.left + x), (box2.top + y)];
+		move2 = (x, y) => [(box2.left + x), (box2.top + y)];
 	});
 
 	afterEach(() => {
