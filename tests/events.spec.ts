@@ -2,7 +2,7 @@ import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from '
 import {type Draggable, draggable} from '../src';
 import {
 	createDraggableElm,
-	createTestContainerElm,
+	createContainerElm,
 	simulateMouseDown,
 	simulateMouseMove,
 	simulateMouseUp,
@@ -14,7 +14,7 @@ describe('Events', () => {
 	let testContainerElm: HTMLElement;
 
 	beforeAll(() => {
-		testContainerElm = createTestContainerElm();
+		testContainerElm = createContainerElm();
 		document.body.appendChild(testContainerElm);
 	});
 

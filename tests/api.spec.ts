@@ -3,7 +3,7 @@ import {type Draggable, draggable} from '../src';
 import {
 	createDraggableElm,
 	createGripsContainer,
-	createTestContainerElm,
+	createContainerElm,
 	Point,
 	simulateMouseDown,
 	simulateMouseMove,
@@ -20,7 +20,7 @@ describe('API', () => {
 	let move: (x: number, y: number) => Point;
 
 	beforeAll(() => {
-		testContainerElm = createTestContainerElm();
+		testContainerElm = createContainerElm();
 		document.body.appendChild(testContainerElm);
 	});
 
@@ -97,97 +97,6 @@ describe('API', () => {
 		it('is chainable', () => {
 			drgInstance = draggable(drgElm);
 			expect(drgInstance.on('start', () => null)).to.deep.equal(drgInstance);
-		});
-	});
-
-	describe.skip('.setGrip()', () => {
-		let gripsContainer: HTMLElement;
-		let gripA: HTMLElement;
-		let gripB: HTMLElement;
-
-		beforeEach(() => {
-			const [container, gA, gB] = createGripsContainer();
-			gripsContainer = container;
-			gripA = gA;
-			gripB = gB;
-			drgElm.appendChild(gripsContainer);
-		});
-
-		afterEach(() => {
-			// drgInstance.setGrip(null);
-			gripsContainer.remove();
-		});
-
-		it('sets the drag handle element', () => {
-			// drgInstance.setGrip(gripA);
-
-			expect(drgElm.style.transform).to.be.empty;
-			simulateMouseDown(gripA, move(1, 1));
-			simulateMouseMove(gripA, move(10, 8));
-			simulateMouseUp(gripA, move(10, 8));
-			expect(drgElm.style.transform).to.equal(translate(9, 7));
-
-			simulateMouseDown(gripB, move(10, 8));
-			simulateMouseMove(gripB, move(25, 13));
-			simulateMouseUp(gripB, move(25, 13));
-			expect(drgElm.style.transform).to.equal(translate(9, 7)); // no move
-
-			// drgInstance.setGrip(gripB);
-
-			simulateMouseDown(gripA, move(10, 8));
-			simulateMouseMove(gripA, move(25, 13));
-			simulateMouseUp(gripA, move(25, 13));
-			expect(drgElm.style.transform).to.equal(translate(9, 7)); // no move
-
-			simulateMouseDown(gripB, move(10, 8));
-			simulateMouseMove(gripB, move(25, 13));
-			simulateMouseUp(gripB, move(25, 13));
-			expect(drgElm.style.transform).to.equal(translate(24, 12));
-		});
-
-		it('sets the drag handle element selector', () => {
-			// drgInstance.setGrip('#grip-A');
-
-			expect(drgElm.style.transform).to.be.empty;
-			simulateMouseDown(gripA, move(1, 1));
-			simulateMouseMove(gripA, move(10, 8));
-			simulateMouseUp(gripA, move(10, 8));
-			expect(drgElm.style.transform).to.equal(translate(9, 7));
-
-			simulateMouseDown(gripB, move(10, 8));
-			simulateMouseMove(gripB, move(25, 13));
-			simulateMouseUp(gripB, move(25, 13));
-			expect(drgElm.style.transform).to.equal(translate(9, 7)); // no move
-
-			// drgInstance.setGrip('#grip-B');
-
-			simulateMouseDown(gripA, move(10, 8));
-			simulateMouseMove(gripA, move(25, 13));
-			simulateMouseUp(gripA, move(25, 13));
-			expect(drgElm.style.transform).to.equal(translate(9, 7)); // no move
-
-			simulateMouseDown(gripB, move(10, 8));
-			simulateMouseMove(gripB, move(25, 13));
-			simulateMouseUp(gripB, move(25, 13));
-			expect(drgElm.style.transform).to.equal(translate(24, 12));
-		});
-
-		it('sets the grip classname on the new grip', () => {
-			drgInstance = draggable(drgElm);
-			expect(gripA.classList.contains('DRAG_GRIP')).to.be.false;
-			expect(gripB.classList.contains('DRAG_GRIP')).to.be.false;
-
-			// drgInstance.setGrip(gripA);
-			expect(gripA.classList.contains('DRAG_GRIP')).to.be.true;
-			expect(gripB.classList.contains('DRAG_GRIP')).to.be.false;
-
-			// drgInstance.setGrip('#grip-B');
-			expect(gripA.classList.contains('DRAG_GRIP')).to.be.false;
-			expect(gripB.classList.contains('DRAG_GRIP')).to.be.true;
-
-			// drgInstance.setGrip(null);
-			expect(gripA.classList.contains('DRAG_GRIP')).to.be.false;
-			expect(gripB.classList.contains('DRAG_GRIP')).to.be.false;
 		});
 	});
 });

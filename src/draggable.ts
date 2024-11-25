@@ -1,5 +1,7 @@
 export type PointerEventHandler = (ev: PointerEvent) => void
 
+export type DragRole = 'draggable' | 'grip'
+
 type EventsObj = {
 	grab: Array<PointerEventHandler>,
 	drop: Array<PointerEventHandler>,
@@ -102,13 +104,20 @@ export class Draggable {
 		let draggableElm: HTMLElement;
 
 		if (dragRole === 'draggable') {
+			const hasGrip = Boolean(evTarget.querySelector('[data-drag-role="grip"]'));
+
+			if (hasGrip) return;
+
 			draggableElm = evTarget;
 		}
 		else if (dragRole === 'grip') {
 			const closest = evTarget.closest('[data-drag-role="draggable"]') as HTMLElement;
 
-			if (!closest || closest.dataset.dragDisabled) return;
-			// TODO: throw only when !closest
+			if (!closest) {
+				throw new Error('A grip must be inside a draggable [data-drag-role="draggable"]');
+			}
+
+			if (closest.dataset.dragDisabled === 'true') return;
 
 			draggableElm = closest;
 		}
@@ -125,6 +134,7 @@ export class Draggable {
 			prevY: 0,
 		};
 
+		// TODO: i don't like this name & value (dragActive = '' - key exist is enough)
 		draggableElm!.dataset.dragIsActive = 'true';
 
 		if (draggableElm!.dataset.dragPosition) {

@@ -3,7 +3,7 @@ import {draggable} from '../src';
 import {
 	createDraggableElm,
 	createGripsContainer,
-	createTestContainerElm,
+	createContainerElm,
 	Point,
 	simulateMouseDown,
 	simulateMouseMove,
@@ -19,7 +19,7 @@ describe('Options', () => {
 	let move: (x: number, y: number) => Point;
 
 	beforeAll(() => {
-		testContainerElm = createTestContainerElm();
+		testContainerElm = createContainerElm();
 		document.body.appendChild(testContainerElm);
 	});
 

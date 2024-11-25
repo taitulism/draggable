@@ -2,7 +2,7 @@ import {describe, it, expect, beforeAll, beforeEach, afterEach, afterAll} from '
 import {Draggable, draggable} from '../src';
 import {
 	createDraggableElm,
-	createTestContainerElm,
+	createContainerElm,
 	Point,
 	simulateMouseDown,
 	simulateMouseMove,
@@ -20,7 +20,7 @@ describe('draggable', () => {
 	let move2: (x: number, y: number) => Point;
 
 	beforeAll(() => {
-		testContainerElm = createTestContainerElm();
+		testContainerElm = createContainerElm();
 		document.body.appendChild(testContainerElm);
 	});
 
