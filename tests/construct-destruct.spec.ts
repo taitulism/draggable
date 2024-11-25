@@ -1,9 +1,8 @@
 import {describe, it, expect, beforeAll, beforeEach, afterEach, afterAll} from 'vitest';
-import {Draggable, draggable} from '../src';
+import {type Draggable, draggable} from '../src';
+import {createContainerElm, createDraggableElm} from './dom-utils';
 import {
-	createDraggableElm,
-	createContainerElm,
-	Point,
+	type Point,
 	simulateMouseDown,
 	simulateMouseMove,
 	simulateMouseUp,

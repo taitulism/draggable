@@ -1,12 +1,14 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
-import {Draggable, draggable} from '../src';
+import {type Draggable, draggable} from '../src';
 import {
-	addGrip,
 	createContainerElm,
 	createTargetElm,
 	makeDraggable,
-	Point,
+	addGrip,
 	setAxis,
+} from './dom-utils';
+import {
+	type Point,
 	simulateMouseDown,
 	simulateMouseMove,
 	simulateMouseUp,
