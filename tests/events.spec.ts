@@ -75,6 +75,36 @@ describe('Events', () => {
 			simulateMouseUp(drgElm, [0, 0]);
 			expect(fired).to.be.true;
 		});
+
+		it('passed DragEvent object to all event handlers', () => {
+			let count = 0;
+
+			// TODO:test use spy because errors inside handlers are uncaught
+			drgInstance.on('drag-start', (dragEv) => {
+				count++;
+				expect(dragEv.elm).toBe(drgElm);
+				expect(dragEv.ev).to.be.instanceOf(Event);
+				expect(dragEv.relPos).to.deep.equal([0, 0]);
+			});
+			drgInstance.on('dragging', (dragEv) => {
+				count++;
+				expect(dragEv.elm).toBe(drgElm);
+				expect(dragEv.ev).to.be.instanceOf(Event);
+				expect(dragEv.relPos).to.deep.equal([15, 15]);
+			});
+			drgInstance.on('drag-end', (dragEv) => {
+				count++;
+				expect(dragEv.elm).toBe(drgElm);
+				expect(dragEv.ev).to.be.instanceOf(Event);
+				expect(dragEv.relPos).to.deep.equal([15, 15]);
+			});
+
+			simulateMouseDown(drgElm, [0, 0]);
+			simulateMouseMove(drgElm, [15, 15]);
+			simulateMouseUp(drgElm, [15, 15]);
+
+			expect(count).to.equal(3);
+		});
 	});
 
 	describe('.off()', () => {

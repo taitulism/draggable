@@ -1,9 +1,17 @@
-export type PointerEventHandler = (ev: PointerEvent) => void
+export type Point = [number, number]
+
+export type DragEvent = {
+	ev: PointerEvent
+	elm: HTMLElement
+	relPos: Point
+}
+
+export type DragEventHandler = (dragEvent: DragEvent) => void
 
 export type EventsObj = {
-	grab: PointerEventHandler | undefined
-	drop: PointerEventHandler | undefined
-	dragging: PointerEventHandler | undefined
+	grab: DragEventHandler | undefined
+	drop: DragEventHandler | undefined
+	dragging: DragEventHandler | undefined
 };
 
 export const createEventsObj = (): EventsObj => ({

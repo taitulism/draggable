@@ -1,3 +1,5 @@
+import {Point} from '../src/internals';
+
 export const translate = (x: number, y: number) => `translate(${x}px, ${y}px)`;
 
 const createEvent = (type: string, props: PointerEventInit = {}) => {
@@ -5,8 +7,6 @@ const createEvent = (type: string, props: PointerEventInit = {}) => {
 	Object.assign(event, props);
 	return event;
 };
-
-export type Point = [number, number]
 
 export function simulateMouseDown (elm: HTMLElement, point: Point) {
 	const [x, y] = point;
