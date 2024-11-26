@@ -32,44 +32,164 @@ describe('Events', () => {
 		testContainerElm.remove();
 	});
 
-	it('emits `drag-start` event', () => {
-		let fired = false;
+	describe('.on()', () => {
+		it('emits `drag-start` event', () => {
+			let fired = false;
 
-		drgInstance.on('drag-start', () => {
-			fired = true;
+			drgInstance.on('drag-start', () => {
+				fired = true;
+			});
+
+			expect(fired).to.be.false;
+			simulateMouseDown(drgElm, [0, 0]);
+			expect(fired).to.be.true;
+			simulateMouseUp(drgElm, [0, 0]);
 		});
 
-		simulateMouseDown(drgElm, [50, 50]);
-		expect(fired).to.be.true;
-		simulateMouseUp(drgElm, [50, 50]);
+		it('emits `dragging` event', () => {
+			let fired = false;
+
+			drgInstance.on('dragging', () => {
+				fired = true;
+			});
+
+			simulateMouseDown(drgElm, [0, 0]);
+
+			expect(fired).to.be.false;
+			simulateMouseMove(drgElm, [15, 15]);
+			expect(fired).to.be.true;
+
+			simulateMouseUp(drgElm, [15, 15]);
+		});
+
+		it('emits `drag-end` event', () => {
+			let fired = false;
+
+			drgInstance.on('drag-end', () => {
+				fired = true;
+			});
+
+			simulateMouseDown(drgElm, [0, 0]);
+
+			expect(fired).to.be.false;
+			simulateMouseUp(drgElm, [0, 0]);
+			expect(fired).to.be.true;
+		});
+
+		it('passed DragEvent object to all event handlers', () => {
+			let count = 0;
+
+			// TODO:test use spy because errors inside handlers are uncaught
+			drgInstance.on('drag-start', (dragEv) => {
+				count++;
+				expect(dragEv.elm).toBe(drgElm);
+				expect(dragEv.ev).to.be.instanceOf(Event);
+				expect(dragEv.relPos).to.deep.equal([0, 0]);
+			});
+			drgInstance.on('dragging', (dragEv) => {
+				count++;
+				expect(dragEv.elm).toBe(drgElm);
+				expect(dragEv.ev).to.be.instanceOf(Event);
+				expect(dragEv.relPos).to.deep.equal([15, 15]);
+			});
+			drgInstance.on('drag-end', (dragEv) => {
+				count++;
+				expect(dragEv.elm).toBe(drgElm);
+				expect(dragEv.ev).to.be.instanceOf(Event);
+				expect(dragEv.relPos).to.deep.equal([15, 15]);
+			});
+
+			simulateMouseDown(drgElm, [0, 0]);
+			simulateMouseMove(drgElm, [15, 15]);
+			simulateMouseUp(drgElm, [15, 15]);
+
+			expect(count).to.equal(3);
+		});
 	});
 
-	it('emits `dragging` event', () => {
-		let fired = false;
+	describe('.off()', () => {
+		it('stops emitting `drag-start` events', () => {
+			let count = 0;
 
-		drgInstance.on('dragging', () => {
-			fired = true;
+			drgInstance.on('drag-start', () => count++);
+
+			expect(count).to.equal(0);
+			simulateMouseDown(drgElm, [0, 0]);
+			expect(count).to.equal(1);
+
+			simulateMouseMove(drgElm, [15, 15]);
+			simulateMouseUp(drgElm, [15, 15]);
+
+			expect(count).to.equal(1);
+			simulateMouseDown(drgElm, [15, 15]);
+			expect(count).to.equal(2);
+
+			simulateMouseMove(drgElm, [30, 30]);
+			simulateMouseUp(drgElm, [30, 30]);
+
+			drgInstance.off('drag-start');
+
+			expect(count).to.equal(2);
+			simulateMouseDown(drgElm, [30, 30]);
+			expect(count).to.equal(2);
+
+			simulateMouseMove(drgElm, [45, 45]);
+			simulateMouseUp(drgElm, [45, 45]);
 		});
 
-		simulateMouseDown(drgElm, [50, 50]);
+		it('stops emitting `dragging` events', () => {
+			let count = 0;
 
-		expect(fired).to.be.false;
-		simulateMouseMove(drgElm, [50, 50]);
-		expect(fired).to.be.true;
+			drgInstance.on('dragging', () => count++);
 
-		simulateMouseUp(drgElm, [50, 50]);
-	});
+			simulateMouseDown(drgElm, [0, 0]);
+			expect(count).to.equal(0);
+			simulateMouseMove(drgElm, [15, 15]);
+			expect(count).to.equal(1);
+			simulateMouseUp(drgElm, [15, 15]);
 
-	it('emits `drag-end` event', () => {
-		let fired = false;
+			simulateMouseDown(drgElm, [15, 15]);
+			expect(count).to.equal(1);
+			simulateMouseMove(drgElm, [30, 30]);
+			expect(count).to.equal(2);
+			simulateMouseUp(drgElm, [30, 30]);
 
-		drgInstance.on('drag-end', () => {
-			fired = true;
+			drgInstance.off('dragging');
+
+			simulateMouseDown(drgElm, [30, 30]);
+			expect(count).to.equal(2);
+			simulateMouseMove(drgElm, [45, 45]);
+			expect(count).to.equal(2);
+			simulateMouseUp(drgElm, [45, 45]);
 		});
 
-		simulateMouseDown(drgElm, [50, 50]);
-		expect(fired).to.be.false;
-		simulateMouseUp(drgElm, [50, 50]);
-		expect(fired).to.be.true;
+		it('stops emitting `drag-end`s event', () => {
+			let count = 0;
+
+			drgInstance.on('drag-end', () => count++);
+
+			simulateMouseDown(drgElm, [0, 0]);
+			simulateMouseMove(drgElm, [15, 15]);
+
+			expect(count).to.equal(0);
+			simulateMouseUp(drgElm, [15, 15]);
+			expect(count).to.equal(1);
+
+			simulateMouseDown(drgElm, [0, 0]);
+			simulateMouseMove(drgElm, [15, 15]);
+
+			expect(count).to.equal(1);
+			simulateMouseUp(drgElm, [0, 0]);
+			expect(count).to.equal(2);
+
+			drgInstance.off('drag-end');
+
+			simulateMouseDown(drgElm, [0, 0]);
+			simulateMouseMove(drgElm, [15, 15]);
+
+			expect(count).to.equal(2);
+			simulateMouseUp(drgElm, [0, 0]);
+			expect(count).to.equal(2);
+		});
 	});
 });

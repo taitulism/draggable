@@ -1,6 +1,6 @@
-import {createEventsObj, EventsObj, getDraggable, moveBy, PointerEventHandler} from './internals';
+import {createEventsObj, EventsObj, getDraggable, moveBy, DragEventHandler} from './internals';
 
-export {type PointerEventHandler} from './internals';
+export {type DragEventHandler} from './internals';
 export type DragRole = 'draggable' | 'grip'
 export type DragAxis = 'x' | 'y'
 
@@ -65,14 +65,14 @@ export class Draggable {
 		this.isEnabled = false;
 	}
 
-	public on (eventName: string, callback: PointerEventHandler) {
+	public on (eventName: string, callback: DragEventHandler) {
 		const lowerEventName = eventName.toLowerCase();
 
 		if (lowerEventName.includes('start')) {
-			this.events.grab.push(callback);
+			this.events.grab = callback;
 		}
 		else if (lowerEventName.includes('ing')) {
-			this.events.dragging.push(callback);
+			this.events.dragging = callback;
 		}
 		else if (
 			// TODO: improve
@@ -80,7 +80,28 @@ export class Draggable {
 			lowerEventName.includes('stop') ||
 			lowerEventName.includes('drop')
 		) {
-			this.events.drop.push(callback);
+			this.events.drop = callback;
+		}
+
+		return this;
+	}
+
+	public off (eventName: string) {
+		const lowerEventName = eventName.toLowerCase();
+
+		if (lowerEventName.includes('start')) {
+			this.events.grab = undefined;
+		}
+		else if (lowerEventName.includes('ing')) {
+			this.events.dragging = undefined;
+		}
+		else if (
+			// TODO: improve
+			lowerEventName.includes('end') ||
+			lowerEventName.includes('stop') ||
+			lowerEventName.includes('drop')
+		) {
+			this.events.drop = undefined;
 		}
 
 		return this;
@@ -129,7 +150,7 @@ export class Draggable {
 		window.addEventListener(MOUSE_MOVE, this.onDragging);
 		window.addEventListener(MOUSE_UP, this.onDrop);
 
-		this.events.grab.forEach(cb => cb(ev));
+		this.events.grab?.({ev, elm: draggableElm, relPos: [0, 0]});
 		ev.stopPropagation();
 	};
 
@@ -151,7 +172,7 @@ export class Draggable {
 
 		moveBy(elm!, activeDrag.moveX, activeDrag.moveY);
 
-		this.events.dragging.forEach(cb => cb(ev));
+		this.events.dragging?.({ev, elm: elm!, relPos: [activeDrag.moveX, activeDrag.moveY]});
 	};
 
 	private onDrop = (ev: PointerEvent) => {
@@ -165,6 +186,6 @@ export class Draggable {
 		delete elm!.dataset.dragIsActive;
 
 		this.contextElm!.style.userSelect = '';
-		this.events.drop.forEach(cb => cb(ev));
+		this.events.drop?.({ev, elm: elm!, relPos: [moveX || prevX, moveY || prevY]});
 	};
 }
