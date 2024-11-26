@@ -1,15 +1,15 @@
 export type PointerEventHandler = (ev: PointerEvent) => void
 
 export type EventsObj = {
-	grab: Array<PointerEventHandler>,
-	drop: Array<PointerEventHandler>,
-	dragging: Array<PointerEventHandler>
+	grab: PointerEventHandler | undefined
+	drop: PointerEventHandler | undefined
+	dragging: PointerEventHandler | undefined
 };
 
 export const createEventsObj = (): EventsObj => ({
-	grab: [],
-	drop: [],
-	dragging: [],
+	grab: undefined,
+	drop: undefined,
+	dragging: undefined,
 });
 
 export const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
