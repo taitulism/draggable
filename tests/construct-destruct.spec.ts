@@ -83,10 +83,8 @@ describe('draggable', () => {
 
 		describe('When called again with the same context element', () => {
 			it('throws an error', () => {
-				let drgInstance1: Draggable;
-				let drgInstance2: Draggable;
-
 				// test default <body>
+				let drgInstance1: Draggable;
 				const badFn1 = () => {
 					drgInstance1 = draggable();
 					/* errInstance = */ draggable();
@@ -96,6 +94,7 @@ describe('draggable', () => {
 				drgInstance1!.destroy();
 
 				// test given element
+				let drgInstance2: Draggable;
 				const badFn2 = () => {
 					drgInstance2 = draggable(testContainerElm);
 					/* errInstance = */ draggable(testContainerElm);
@@ -103,6 +102,32 @@ describe('draggable', () => {
 
 				expect(badFn2).to.throw('already bound and cannot be bound twice');
 				drgInstance2!.destroy();
+			});
+		});
+
+		describe('When one context element contains another', () => {
+			it('only triggers the inner one', () => {
+				const drgInstance1 = draggable();
+				const drgInstance2 = draggable(testContainerElm);
+
+				let count1 = 0;
+				let count2 = 0;
+
+				drgInstance1.on('start', () => {
+					count1++;
+				});
+				drgInstance2.on('start', () => {
+					count2++;
+				});
+
+				simulateMouseDown(drgElm, [0, 0]);
+				simulateMouseUp(drgElm, [0, 0]);
+
+				drgInstance1.destroy();
+				drgInstance2.destroy();
+
+				expect(count1).to.equal(0);
+				expect(count2).to.equal(1);
 			});
 		});
 	});

@@ -130,6 +130,7 @@ export class Draggable {
 		window.addEventListener(MOUSE_UP, this.onDrop);
 
 		this.events.grab.forEach(cb => cb(ev));
+		ev.stopPropagation();
 	};
 
 	private onDragging = (ev: PointerEvent) => {
