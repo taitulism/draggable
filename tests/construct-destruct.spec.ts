@@ -80,6 +80,31 @@ describe('draggable', () => {
 				drgInstance.destroy();
 			});
 		});
+
+		describe('When called again with the same context element', () => {
+			it('throws an error', () => {
+				let drgInstance1: Draggable;
+				let drgInstance2: Draggable;
+
+				// test default <body>
+				const badFn1 = () => {
+					drgInstance1 = draggable();
+					/* errInstance = */ draggable();
+				};
+
+				expect(badFn1).to.throw('already bound and cannot be bound twice');
+				drgInstance1!.destroy();
+
+				// test given element
+				const badFn2 = () => {
+					drgInstance2 = draggable(testContainerElm);
+					/* errInstance = */ draggable(testContainerElm);
+				};
+
+				expect(badFn2).to.throw('already bound and cannot be bound twice');
+				drgInstance2!.destroy();
+			});
+		});
 	});
 
 	describe('.destroy()', () => {

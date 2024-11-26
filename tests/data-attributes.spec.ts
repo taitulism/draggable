@@ -1,5 +1,5 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
-import {type Draggable, draggable} from '../src';
+import {draggable} from '../src';
 import {
 	createContainerElm,
 	createTargetElm,
@@ -18,7 +18,6 @@ import {
 
 describe('Data Attributes', () => {
 	let drgElm: HTMLElement;
-	let drgInstance: Draggable;
 	let testContainerElm: HTMLElement;
 
 	beforeAll(() => {
@@ -28,12 +27,10 @@ describe('Data Attributes', () => {
 
 	beforeEach(() => {
 		drgElm = createTargetElm();
-		drgInstance = draggable();
 		testContainerElm.appendChild(drgElm);
 	});
 
 	afterEach(() => {
-		drgInstance.destroy();
 		drgElm.remove();
 	});
 

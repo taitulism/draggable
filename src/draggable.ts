@@ -19,6 +19,9 @@ const MOUSE_DOWN = 'pointerdown';
 const MOUSE_MOVE = 'pointermove';
 const MOUSE_UP = 'pointerup';
 
+const ctxElms = new WeakSet();
+const SameCtxErr = 'Context element already bound and cannot be bound twice. Destroy the previous one first.';
+
 export class Draggable {
 	public isEnabled = true;
 	private contextElm?: HTMLElement;
@@ -26,6 +29,10 @@ export class Draggable {
 	private events: EventsObj = createEventsObj();
 
 	constructor (elm: HTMLElement) {
+		if (ctxElms.has(elm)) throw new Error(SameCtxErr);
+
+		ctxElms.add(elm);
+
 		this.contextElm = elm;
 		elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
@@ -34,8 +41,11 @@ export class Draggable {
 		window.removeEventListener(MOUSE_MOVE, this.onDragging);
 		window.removeEventListener(MOUSE_UP, this.onDrop);
 
-		this.contextElm?.removeEventListener(MOUSE_DOWN, this.onDragStart);
-		this.contextElm = undefined; // TODO:test - see destroy spec
+		if (this.contextElm) {
+			ctxElms.delete(this.contextElm);
+			this.contextElm.removeEventListener(MOUSE_DOWN, this.onDragStart);
+			this.contextElm = undefined; // TODO:test - see destroy spec
+		}
 
 		this.events = createEventsObj();
 
