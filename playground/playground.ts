@@ -1,24 +1,21 @@
 import {draggable} from '../src';
 
-const drgElm = document.getElementById('drag-target')!;
+const wrapper = document.getElementById('the-container')!;
+// const drgElm = document.getElementById('drag-me')!;
 const toggleBtn = document.getElementById('toggle-btn')!;
 // const staticElm = document.getElementById('static')!;
 
 toggleBtn.addEventListener('click', () => {
-	d.isDraggable
+	d.isEnabled
 		? d.disable()
 		: d.enable();
 }, false);
 
 
 // const gripHandle = document.getElementById('grips-container')!;
-const gripHandle = document.getElementById('grip-A')!;
+// const gripHandle = document.getElementById('grip-a')!;
 
-const d = draggable(drgElm, {
-	axis:'x',
-	// grip: '#grips-container',
-	grip: gripHandle,
-});
+const d = draggable(wrapper);
 
 
 // document.addEventListener('mousemove', (ev) => {

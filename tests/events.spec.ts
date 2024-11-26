@@ -1,8 +1,7 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
 import {type Draggable, draggable} from '../src';
+import {createContainerElm, createDraggableElm} from './dom-utils';
 import {
-	createDraggableElm,
-	createTestContainerElm,
 	simulateMouseDown,
 	simulateMouseMove,
 	simulateMouseUp,
@@ -14,14 +13,14 @@ describe('Events', () => {
 	let testContainerElm: HTMLElement;
 
 	beforeAll(() => {
-		testContainerElm = createTestContainerElm();
+		testContainerElm = createContainerElm();
 		document.body.appendChild(testContainerElm);
 	});
 
 	beforeEach(() => {
 		drgElm = createDraggableElm();
-		drgInstance = draggable(drgElm);
 		testContainerElm.appendChild(drgElm);
+		drgInstance = draggable();
 	});
 
 	afterEach(() => {
@@ -34,8 +33,6 @@ describe('Events', () => {
 	});
 
 	it('emits `drag-start` event', () => {
-		drgInstance = draggable(drgElm);
-
 		let fired = false;
 
 		drgInstance.on('drag-start', () => {
@@ -48,8 +45,6 @@ describe('Events', () => {
 	});
 
 	it('emits `dragging` event', () => {
-		drgInstance = draggable(drgElm);
-
 		let fired = false;
 
 		drgInstance.on('dragging', () => {
@@ -66,8 +61,6 @@ describe('Events', () => {
 	});
 
 	it('emits `drag-end` event', () => {
-		drgInstance = draggable(drgElm);
-
 		let fired = false;
 
 		drgInstance.on('drag-end', () => {

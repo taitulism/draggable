@@ -1,15 +1,6 @@
-import {
-	DRAGGABLE,
-	DRAGGING,
-	DRAG_DISABLED,
-	DRAG_GRIP,
-} from './classnames';
+export type PointerEventHandler = (ev: PointerEvent) => void
 
-const MOUSE_DOWN = 'pointerdown';
-const MOUSE_MOVE = 'pointermove';
-const MOUSE_UP = 'pointerup';
-
-type PointerEventHandler = (ev: PointerEvent) => void
+export type DragRole = 'draggable' | 'grip'
 
 type EventsObj = {
 	grab: Array<PointerEventHandler>,
@@ -17,104 +8,71 @@ type EventsObj = {
 	dragging: Array<PointerEventHandler>
 };
 
-export type ElementOrSelector = HTMLElement | string
+export type DragAxis = 'x' | 'y'
 
-export type Options = {
-	classname?: string
-	grip?: ElementOrSelector
-	axis?: 'x' | 'y'
+type ActiveDrag = {
+	elm?: HTMLElement
+	axis?: DragAxis
+	startX: number
+	startY: number
+	moveX: number
+	moveY: number
+	prevX: number
+	prevY: number
 }
 
-const isSelector = (grip: ElementOrSelector): grip is string =>
-	typeof grip === 'string';
+const MOUSE_DOWN = 'pointerdown';
+const MOUSE_MOVE = 'pointermove';
+const MOUSE_UP = 'pointerup';
 
+const createEventsObj = (): EventsObj => ({
+	grab: [],
+	drop: [],
+	dragging: [],
+});
+
+const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
+	const translate = `translate(${x}px, ${y}px)`;
+	elm.style.transform = translate;
+};
 
 export class Draggable {
-	elm: HTMLElement;
-	classname = DRAGGABLE;
-	grip: HTMLElement | string | null = null;
-	isDraggable = true;
-	xAxis = false;
-	yAxis = false;
-	startX = 0;
-	startY = 0;
-	moveX = 0;
-	moveY = 0;
-	prevX = 0;
-	prevY = 0;
-	events: EventsObj = createEventsObj();
+	public isEnabled = true;
+	private contextElm?: HTMLElement;
+	private activeDrag!: ActiveDrag;
+	private events: EventsObj = createEventsObj();
 
-	constructor (elm: HTMLElement, opts: Options = {}) {
-		this.elm = elm;
-		this.classname = opts.classname || DRAGGABLE;
-		elm.classList.add(this.classname);
-
-		initAxes(this, opts.axis);
-		opts.grip && this.setGrip(opts.grip);
-		this.elm.addEventListener(MOUSE_DOWN, this.onDragStart);
+	constructor (elm: HTMLElement) {
+		this.contextElm = elm;
+		elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
 
-	destroy () {
-		this.elm.removeEventListener(MOUSE_DOWN, this.onDragStart);
+	public destroy () {
 		window.removeEventListener(MOUSE_MOVE, this.onDragging);
 		window.removeEventListener(MOUSE_UP, this.onDrop);
 
-		this.elm.classList.remove(this.classname, DRAGGING);
-
-		const isSelector = typeof this.grip === 'string';
-		this.grip && unsetGripClassname(this, isSelector);
+		this.contextElm?.removeEventListener(MOUSE_DOWN, this.onDragStart);
+		this.contextElm = undefined; // TODO:test - see destroy spec
 
 		this.events = createEventsObj();
-		// this.elm = null; // TODO: handle elm might be null (+destroy test)
-	}
 
-	disable () {
-		this.isDraggable = false;
-		this.elm.classList.add(DRAG_DISABLED);
-	}
-
-	enable () {
-		this.isDraggable = true;
-		this.elm.classList.remove(DRAG_DISABLED);
-	}
-
-	moveBy (x = 0, y = 0) {
-		const translate = `translate(${x}px, ${y}px)`;
-		this.elm.style.transform = translate;
-	}
-
-	setGrip (newGrip: ElementOrSelector | null) {
-		if (newGrip === this.grip) return;
-
-		const isCurrentGripSelector = typeof this.grip === 'string';
-		this.grip && unsetGripClassname(this, isCurrentGripSelector);
-
-		if (!newGrip) {
-			this.grip = null;
-			return;
+		if (this.activeDrag?.elm) {
+			delete this.activeDrag.elm.dataset.dragIsActive;
+			this.activeDrag.elm = undefined;
 		}
 
-		const isNewGripSelector = typeof newGrip === 'string';
-		if (!isNewGripSelector && !(newGrip instanceof HTMLElement)) return;
-		// TODO: throw?
-
-		this.grip = newGrip;
-
-		setGripClassname(this, isNewGripSelector);
+		this.disable();
 	}
 
-	private matchesGrip (eventTarget: EventTarget) {
-		const elm = eventTarget as HTMLElement;
-
-		if (isSelector(this.grip!)) {
-			return elm.matches(this.grip) || elm.closest(this.grip) !== null;
-		}
-		else {
-			return this.grip === elm || (this.grip!).contains(elm);
-		}
+	public enable () {
+		this.isEnabled = true;
 	}
 
-	on (eventName: string, callback: PointerEventHandler) {
+	public disable () {
+		this.isEnabled = false;
+	}
+
+	public on (eventName: string, callback: PointerEventHandler) {
 		const lowerEventName = eventName.toLowerCase();
 
 		if (lowerEventName.includes('start')) {
@@ -135,14 +93,69 @@ export class Draggable {
 		return this;
 	}
 
-	onDragStart = (ev: PointerEvent) => {
-		if (!this.isDraggable) return;
-		if (this.grip && !this.matchesGrip(ev.target!)) return;
+	private onDragStart = (ev: PointerEvent) => {
+		if (!this.isEnabled) return;
+		const evTarget = ev.target as HTMLElement;
+		const {dragRole} = evTarget.dataset;
+		if (!dragRole || 'dragDisabled' in evTarget.dataset && evTarget.dataset.dragDisabled !== 'false') {
+			return;
+		}
 
-		if (this.xAxis) this.startX = ev.clientX;
-		if (this.yAxis) this.startY = ev.clientY;
+		let draggableElm: HTMLElement;
 
-		this.elm.classList.add(DRAGGING);
+		if (dragRole === 'draggable') {
+			const hasGrip = Boolean(evTarget.querySelector('[data-drag-role="grip"]'));
+
+			if (hasGrip) return;
+
+			draggableElm = evTarget;
+		}
+		else if (dragRole === 'grip') {
+			const closest = evTarget.closest('[data-drag-role="draggable"]') as HTMLElement;
+
+			if (!closest) {
+				throw new Error('A grip must be inside a draggable [data-drag-role="draggable"]');
+			}
+
+			if (closest.dataset.dragDisabled === 'true') return;
+
+			draggableElm = closest;
+		}
+
+		// TODO: fn
+		const activeDrag: ActiveDrag = {
+			elm: draggableElm!,
+			axis: draggableElm!.dataset.dragAxis as DragAxis,
+			startX: 0,
+			startY: 0,
+			moveX: 0,
+			moveY: 0,
+			prevX: 0,
+			prevY: 0,
+		};
+
+		// TODO: i don't like this name & value (dragActive = '' - key exist is enough)
+		draggableElm!.dataset.dragIsActive = 'true';
+
+		if (draggableElm!.dataset.dragPosition) {
+			const [x, y] = draggableElm!.dataset.dragPosition.split(',');
+			activeDrag.prevX = parseInt(x, 10);
+			activeDrag.prevY = parseInt(y, 10);
+		}
+
+		if (activeDrag.axis === 'x') {
+			activeDrag.startX = ev.clientX;
+		}
+		else if (activeDrag.axis === 'y') {
+			activeDrag.startY = ev.clientY;
+		}
+		else {
+			activeDrag.startX = ev.clientX;
+			activeDrag.startY = ev.clientY;
+		}
+
+		this.activeDrag = activeDrag;
+		this.contextElm!.style.userSelect = 'none';
 
 		window.addEventListener(MOUSE_MOVE, this.onDragging);
 		window.addEventListener(MOUSE_UP, this.onDrop);
@@ -150,71 +163,38 @@ export class Draggable {
 		this.events.grab.forEach(cb => cb(ev));
 	};
 
-	onDragging = (ev: PointerEvent) => {
-		if (!this.isDraggable) return;
+	private onDragging = (ev: PointerEvent) => {
+		const evTarget = ev.target as HTMLElement;
 
-		ev.preventDefault(); // prevent text selection
+		if (
+			!this.isEnabled
+			|| 'dragDisabled' in evTarget.dataset && evTarget.dataset.dragDisabled !== 'false'
+		) {
+			return;
+		}
 
-		this.moveX = this.xAxis ? (ev.clientX - this.startX) + this.prevX : 0;
-		this.moveY = this.yAxis ? (ev.clientY - this.startY) + this.prevY : 0;
+		const {activeDrag} = this;
+		const {elm, axis, startX, startY, prevX, prevY} = activeDrag;
 
-		this.moveBy(this.moveX, this.moveY);
+		activeDrag.moveX = !axis || axis === 'x' ? (ev.clientX - startX) + prevX : 0;
+		activeDrag.moveY = !axis || axis === 'y' ? (ev.clientY - startY) + prevY : 0;
+
+		moveBy(elm!, activeDrag.moveX, activeDrag.moveY);
+
 		this.events.dragging.forEach(cb => cb(ev));
 	};
 
-	onDrop = (ev: PointerEvent) => {
+	private onDrop = (ev: PointerEvent) => {
 		window.removeEventListener(MOUSE_MOVE, this.onDragging);
 		window.removeEventListener(MOUSE_UP, this.onDrop);
 
-		this.prevX = this.moveX;
-		this.prevY = this.moveY;
-		this.elm.classList.remove(DRAGGING);
+		const {activeDrag} = this;
+		const {elm, moveX, moveY, prevX, prevY} = activeDrag;
 
+		elm!.dataset.dragPosition = (moveX || prevX) + ',' + (moveY || prevY);
+		delete elm!.dataset.dragIsActive;
+
+		this.contextElm!.style.userSelect = '';
 		this.events.drop.forEach(cb => cb(ev));
 	};
-}
-
-
-/* ---------------------------------------------------------------------------------------------- */
-
-
-function createEventsObj (): EventsObj {
-	return {
-		grab: [],
-		drop: [],
-		dragging: [],
-	};
-}
-
-// TODO: refactor
-function initAxes (drg: Draggable, axisOpt: Options['axis']) {
-	if (axisOpt) { // TODO:test uncovered block
-		const axis = (axisOpt as string).toLowerCase();
-
-		if (axis === 'x') drg.xAxis = true;
-		else if (axis === 'y') drg.yAxis = true;
-	}
-	else {
-		drg.xAxis = true;
-		drg.yAxis = true;
-	}
-}
-
-function setGripClassname (drg: Draggable, isSelector: boolean) {
-	const grips = getGrips(drg.grip!, isSelector);
-
-	for (const grip of grips) grip.classList.add(DRAG_GRIP);
-}
-
-function unsetGripClassname (drg: Draggable, isSelector: boolean) {
-	const grips = getGrips(drg.grip!, isSelector);
-
-	for (const grip of grips) grip.classList.remove(DRAG_GRIP);
-}
-
-function getGrips (grip: ElementOrSelector, isSelector: boolean) {
-	return isSelector
-		? document.querySelectorAll(grip as string)
-		: [grip as HTMLElement]
-	;
 }
