@@ -37,12 +37,37 @@ export function makeDraggable (elm: HTMLElement) {
 	elm.dataset.dragRole = 'draggable';
 }
 
-export function setAxis (elm:HTMLElement, axis: DragAxis) {
+export function setAxis (elm: HTMLElement, axis: DragAxis) {
 	elm.dataset.dragAxis = axis;
 }
 
-export function addGrip (elm:HTMLElement, grip?: HTMLElement) {
+export function addChild (elm: HTMLElement) {
+	const child = document.createElement('div');
+
+	child.id = 'child';
+	child.style.width = '50px';
+	child.style.height = '50px';
+	child.style.backgroundColor = 'steelblue';
+
+	elm.appendChild(child);
+	return child;
+}
+
+export function addGripChild (grip: HTMLElement) {
+	const child = document.createElement('div');
+
+	child.id = 'grip-child';
+	child.style.width = '15px';
+	child.style.height = '15px';
+	child.style.backgroundColor = 'rebeccapurple';
+
+	grip.appendChild(child);
+	return child;
+}
+
+export function addGrip (elm: HTMLElement, grip?: HTMLElement) {
 	grip ||= createGripElm('A');
+
 	elm.appendChild(grip);
 	return grip;
 }
@@ -69,5 +94,6 @@ export function createGripElm (id: string) {
 	grip.style.height = '30px';
 	grip.style.margin = '10px';
 	grip.style.backgroundColor = 'red';
+
 	return grip;
 }

@@ -1,13 +1,7 @@
-export type PointerEventHandler = (ev: PointerEvent) => void
+import {createEventsObj, EventsObj, getDraggable, moveBy, PointerEventHandler} from './internals';
 
+export {type PointerEventHandler} from './internals';
 export type DragRole = 'draggable' | 'grip'
-
-type EventsObj = {
-	grab: Array<PointerEventHandler>,
-	drop: Array<PointerEventHandler>,
-	dragging: Array<PointerEventHandler>
-};
-
 export type DragAxis = 'x' | 'y'
 
 type ActiveDrag = {
@@ -24,17 +18,6 @@ type ActiveDrag = {
 const MOUSE_DOWN = 'pointerdown';
 const MOUSE_MOVE = 'pointermove';
 const MOUSE_UP = 'pointerup';
-
-const createEventsObj = (): EventsObj => ({
-	grab: [],
-	drop: [],
-	dragging: [],
-});
-
-const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
-	const translate = `translate(${x}px, ${y}px)`;
-	elm.style.transform = translate;
-};
 
 export class Draggable {
 	public isEnabled = true;
@@ -95,37 +78,13 @@ export class Draggable {
 
 	private onDragStart = (ev: PointerEvent) => {
 		if (!this.isEnabled) return;
-		const evTarget = ev.target as HTMLElement;
-		const {dragRole} = evTarget.dataset;
-		if (!dragRole || 'dragDisabled' in evTarget.dataset && evTarget.dataset.dragDisabled !== 'false') {
-			return;
-		}
-
-		let draggableElm: HTMLElement;
-
-		if (dragRole === 'draggable') {
-			const hasGrip = Boolean(evTarget.querySelector('[data-drag-role="grip"]'));
-
-			if (hasGrip) return;
-
-			draggableElm = evTarget;
-		}
-		else if (dragRole === 'grip') {
-			const closest = evTarget.closest('[data-drag-role="draggable"]') as HTMLElement;
-
-			if (!closest) {
-				throw new Error('A grip must be inside a draggable [data-drag-role="draggable"]');
-			}
-
-			if (closest.dataset.dragDisabled === 'true') return;
-
-			draggableElm = closest;
-		}
+		const draggableElm = getDraggable(ev.target);
+		if (!draggableElm) return;
 
 		// TODO: fn
 		const activeDrag: ActiveDrag = {
-			elm: draggableElm!,
-			axis: draggableElm!.dataset.dragAxis as DragAxis,
+			elm: draggableElm,
+			axis: draggableElm.dataset.dragAxis as DragAxis,
 			startX: 0,
 			startY: 0,
 			moveX: 0,
@@ -134,11 +93,11 @@ export class Draggable {
 			prevY: 0,
 		};
 
-		// TODO: i don't like this name & value (dragActive = '' - key exist is enough)
-		draggableElm!.dataset.dragIsActive = 'true';
+		// TODO: I don't like this name & value (dragActive = '' - key exist is enough)
+		draggableElm.dataset.dragIsActive = 'true';
 
-		if (draggableElm!.dataset.dragPosition) {
-			const [x, y] = draggableElm!.dataset.dragPosition.split(',');
+		if (draggableElm.dataset.dragPosition) {
+			const [x, y] = draggableElm.dataset.dragPosition.split(',');
 			activeDrag.prevX = parseInt(x, 10);
 			activeDrag.prevY = parseInt(y, 10);
 		}

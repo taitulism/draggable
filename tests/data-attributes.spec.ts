@@ -6,6 +6,8 @@ import {
 	makeDraggable,
 	addGrip,
 	setAxis,
+	addChild,
+	addGripChild,
 } from './dom-utils';
 import {
 	simulateMouseDown,
@@ -57,6 +59,19 @@ describe('Data Attributes', () => {
 
 			drgInstance.destroy();
 		});
+
+		it('also by its children', () => {
+			const drgInstance = draggable();
+			const child = addChild(drgElm);
+			makeDraggable(drgElm);
+
+			simulateMouseDown(child, [30, 25]);
+			simulateMouseMove(child, [51, 50]);
+			simulateMouseUp(child, [51, 80]);
+			expect(drgElm.style.transform).to.equal(translate(21, 25));
+
+			drgInstance.destroy();
+		});
 	});
 
 	describe('An element with `data-drag-role="grip"`', () => {
@@ -74,18 +89,19 @@ describe('Data Attributes', () => {
 			drgInstance.destroy();
 		});
 
-		it.todo('its children also become grips', () => {
-			// const drgInstance = draggable();
+		it('its children also function as grips', () => {
+			const drgInstance = draggable();
 
-			// makeDraggable(drgElm);
-			// const grip = addGrip(drgElm);
+			makeDraggable(drgElm);
+			const grip = addGrip(drgElm);
+			const gripChild = addGripChild(grip);
 
-			// simulateMouseDown(grip, [62, 62]);
-			// simulateMouseMove(grip, [70, 80]);
-			// simulateMouseUp(grip, [70, 80]);
-			// expect(drgElm.style.transform).to.equal(translate(8, 18));
+			simulateMouseDown(gripChild, [62, 62]);
+			simulateMouseMove(gripChild, [70, 80]);
+			simulateMouseUp(gripChild, [70, 80]);
+			expect(drgElm.style.transform).to.equal(translate(8, 18));
 
-			// drgInstance.destroy();
+			drgInstance.destroy();
 		});
 
 		it('prevents dragging the closest draggable not via grip', () => {
@@ -93,10 +109,16 @@ describe('Data Attributes', () => {
 
 			makeDraggable(drgElm);
 			const grip = addGrip(drgElm);
+			const child = addChild(drgElm);
 
 			simulateMouseDown(drgElm, [50, 50]);
 			simulateMouseMove(drgElm, [70, 80]);
 			simulateMouseUp(drgElm, [70, 80]);
+			expect(drgElm.style.transform).to.be.empty;
+
+			simulateMouseDown(child, [62, 62]);
+			simulateMouseMove(child, [70, 80]);
+			simulateMouseUp(child, [70, 80]);
 			expect(drgElm.style.transform).to.be.empty;
 
 			simulateMouseDown(grip, [62, 62]);
