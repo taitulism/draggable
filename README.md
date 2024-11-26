@@ -78,10 +78,7 @@ Using different data attributes you can control the dragging behavior.
 	data-drag-axis="x"
 	data-drag-disabled="false"
 >
-	<div
-		class="card-title"
-		data-drag-role="grip"
-	>
+	<div class="card-title" data-drag-role="grip">
 		Grab here!
 	</div>
 	<div class="card-body">
@@ -112,15 +109,45 @@ It has the following methods:
 Toggle draggability for all draggable elements within the context. When disabled, the main element gets a `'drag-disabled'` classname.
 
 
-### **.on(eventName, callback)**
-Listen to drag and drop events:
+### **.on(eventName, callback) / .off(eventName)**
+Start and stop listening to drag events:
 * **`'drag-start'`** - drag started, fires on `pointerdown` on a draggable element.
 * **`'dragging'`** - dragging around, fires on `pointermove` (with `pointerdown`)
 * **`'drag-stop'`** - dragging stopped, fires on `pointerup`.
 
+A `Draggable` instance can only hold one event listener for each event (unlike a classic EventEmitter):
+
+```js
+const doSomething = () => {...}
+const doSomethingElse = () => {...}
+const stopDoingThing = () => {...}
+
+const d = draggable()
+	.on('drag-start', doSomething)     // <-- this is replaced
+	.on('drag-start', doSomethingElse) // <-- by  (same event)
+	.on('drop', stopDoingThing)
+
+d.off('drop');
+```
+
+**Event Handlers**  
+The event handlers get called with a `DragEvent` object which holds 3 properties:
+* `ev` - the vanilla pointer event (type `Event`)
+* `elm` - the draggable element, which is not always the `ev.target` (type `HTMLElement`), 
+* `relPos` - the draggable element's relative position (in pixels), that is, relative to its pre-drag position (type `[x: number, y: number]`)
+
+```js
+draggable().on('drag-start', (dragEv) => {
+	console.log(
+		dragEv.elm,       // e.g. <div data-drag-role="draggable">
+		dragEv.ev.target, // e.g. <div data-drag-role="grip">
+		dragEv.relPos     // e.g. [0, 0] ('drag-start' event is always 0,0)
+	);
+});
+```
+
 **Event Aliases**  
 For extra convenience, anything that contains `start`, `ing` or `stop`/`end`/`drop` will match its respective event. For example, you can use `dragging`/`moving`/`swiping` - all are aliases for the `pointermove` event.
-
 
 ### **.destroy()**
 Kills the `Draggable` instance for good, unbinds event listeners, releases element references. Once destroyed, an instance cannot be revived. Use it when the context element is removed from the DOM.
