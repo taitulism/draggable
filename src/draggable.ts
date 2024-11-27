@@ -7,6 +7,7 @@ import {
 	ActiveDrag,
 	createActiveDrag,
 	DragAxis,
+	withinPadding,
 } from './internals';
 
 const MOUSE_DOWN = 'pointerdown';
@@ -110,16 +111,21 @@ export class Draggable {
 		const draggableElm = getDraggable(ev.target);
 		if (!draggableElm) return;
 
-		const activeDrag = createActiveDrag(
-			draggableElm,
-			draggableElm.dataset.dragAxis as DragAxis,
-		);
+		const {dragAxis, dragPad, dragPadCorners, dragPosition} = draggableElm.dataset;
+
+		// padding
+		const sidePad = dragPad ? parseInt(dragPad, 10) : 0;
+		if (sidePad && withinPadding(draggableElm, sidePad, ev, false)) return;
+		const cornerPad = dragPadCorners ? parseInt(dragPadCorners, 10) : 0;
+		if (cornerPad && withinPadding(draggableElm, cornerPad, ev, true)) return;
+
+		const activeDrag = createActiveDrag(draggableElm, dragAxis as DragAxis);
 
 		// TODO: I don't like this name & value (dragActive = '' - key exist is enough)
 		draggableElm.dataset.dragIsActive = 'true';
 
-		if (draggableElm.dataset.dragPosition) {
-			const [x, y] = draggableElm.dataset.dragPosition.split(',');
+		if (dragPosition) {
+			const [x, y] = dragPosition.split(',');
 			activeDrag.prevX = parseInt(x, 10);
 			activeDrag.prevY = parseInt(y, 10);
 		}

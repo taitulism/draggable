@@ -1,4 +1,4 @@
-import {DragAxis} from '../src';
+import {DragAxis} from '../src/internals';
 
 export function createContainerElm () {
 	const container = document.createElement('div');

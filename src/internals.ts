@@ -31,6 +31,43 @@ export function createActiveDrag (elm: HTMLElement, axis?: DragAxis) {
 	};
 }
 
+export function withinPadding (
+	elm: HTMLElement,
+	padding: number,
+	ev: PointerEvent,
+	isCornerPad = false,
+) {
+	const box = elm.getBoundingClientRect();
+	const {clientX, clientY} = ev;
+
+	if (isCornerPad) { /* Corners */
+		const topLeftX = clientX - box.x <= padding;
+		const topLeftY = clientY - box.y <= padding;
+
+		const topRightX = box.x + box.width - clientX <= padding;
+		const topRightY = clientY - box.y <= padding;
+
+		const bottomRightX = box.x + box.width - clientX <= padding;
+		const bottomRightY = box.y + box.height - clientY <= padding;
+
+		const bottomLeftX = clientX - box.x <= padding;
+		const bottomLeftY = box.y + box.height - clientY <= padding;
+
+		return (
+			topLeftX && topLeftY
+			|| topRightX && topRightY
+			|| bottomRightX && bottomRightY
+			|| bottomLeftX && bottomLeftY
+		);
+	}
+	else { /* Sides */
+		const XInPad = (clientX - box.x) <= padding || (box.width + box.x - clientX) <= padding;
+		const YInPad = (clientY - box.y) <= padding || (box.height + box.y - clientY) <= padding;
+
+		return XInPad || YInPad;
+	}
+}
+
 export type DragEventHandler = (dragEvent: DragEvent) => void
 
 export type EventsObj = {
@@ -50,9 +87,9 @@ export const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
 	elm.style.transform = translate;
 };
 
-const DragRoleSelector = '[data-drag-role]';
 const DraggableSelector = '[data-drag-role="draggable"]';
 const GripSelector = '[data-drag-role="grip"]';
+const DragRoleSelector = `${DraggableSelector}, ${GripSelector}`;
 
 const getClosestDragRole = (elm: HTMLElement) => elm.closest(DragRoleSelector);
 const getClosestDraggable = (elm: HTMLElement) => elm.closest(DraggableSelector);

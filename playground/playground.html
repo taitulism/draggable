@@ -30,6 +30,8 @@
 			height: 150px;
 			text-align: center;
 			background-color: #6850d4;
+			resize: both;
+			overflow: auto;
 		}
 
 		#grips-container {
@@ -66,10 +68,12 @@
 			class="drag-box"
 			data-drag-role="draggable"
 			data-drag-axis="y"
+			Adata-drag-pad="8"
+			Adata-drag-pad-corner="8"
 			data-drag-disabled="false"
-			>
+		>
 			<div id="grips-container">
-				<div id="grip-a" data-drag-role="grip">A</div>
+				<div id="grip-a" Adata-drag-role="grip">A</div>
 				<div id="grip-b">B</div>
 			</div><br />
 		</div>
