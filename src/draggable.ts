@@ -1,19 +1,13 @@
-import {createEventsObj, EventsObj, getDraggable, moveBy, DragEventHandler} from './internals';
-
-export {type DragEventHandler} from './internals';
-export type DragRole = 'draggable' | 'grip'
-export type DragAxis = 'x' | 'y'
-
-type ActiveDrag = {
-	elm?: HTMLElement
-	axis?: DragAxis
-	startX: number
-	startY: number
-	moveX: number
-	moveY: number
-	prevX: number
-	prevY: number
-}
+import {
+	createEventsObj,
+	EventsObj,
+	getDraggable,
+	moveBy,
+	DragEventHandler,
+	ActiveDrag,
+	createActiveDrag,
+	DragAxis,
+} from './internals';
 
 const MOUSE_DOWN = 'pointerdown';
 const MOUSE_MOVE = 'pointermove';
@@ -21,6 +15,10 @@ const MOUSE_UP = 'pointerup';
 
 const ctxElms = new WeakSet();
 const SameCtxErr = 'Context element already bound and cannot be bound twice. Destroy the previous one first.';
+
+export {type DragEventHandler} from './internals';
+
+export type DragRole = 'draggable' | 'grip';
 
 export class Draggable {
 	public isEnabled = true;
@@ -112,17 +110,10 @@ export class Draggable {
 		const draggableElm = getDraggable(ev.target);
 		if (!draggableElm) return;
 
-		// TODO: fn
-		const activeDrag: ActiveDrag = {
-			elm: draggableElm,
-			axis: draggableElm.dataset.dragAxis as DragAxis,
-			startX: 0,
-			startY: 0,
-			moveX: 0,
-			moveY: 0,
-			prevX: 0,
-			prevY: 0,
-		};
+		const activeDrag = createActiveDrag(
+			draggableElm,
+			draggableElm.dataset.dragAxis as DragAxis,
+		);
 
 		// TODO: I don't like this name & value (dragActive = '' - key exist is enough)
 		draggableElm.dataset.dragIsActive = 'true';

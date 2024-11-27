@@ -1,9 +1,34 @@
+export type DragAxis = 'x' | 'y'
 export type Point = [number, number]
 
 export type DragEvent = {
 	ev: PointerEvent
 	elm: HTMLElement
 	relPos: Point
+}
+
+export type ActiveDrag = {
+	elm?: HTMLElement
+	axis?: DragAxis
+	startX: number
+	startY: number
+	moveX: number
+	moveY: number
+	prevX: number
+	prevY: number
+}
+
+export function createActiveDrag (elm: HTMLElement, axis?: DragAxis) {
+	return {
+		elm,
+		axis,
+		startX: 0,
+		startY: 0,
+		moveX: 0,
+		moveY: 0,
+		prevX: 0,
+		prevY: 0,
+	};
 }
 
 export type DragEventHandler = (dragEvent: DragEvent) => void
