@@ -15,7 +15,7 @@ toggleBtn.addEventListener('click', () => {
 // const gripHandle = document.getElementById('grips-container')!;
 // const gripHandle = document.getElementById('grip-a')!;
 
-const d = draggable(wrapper);
+const d = draggable(wrapper, {cornerPadding: 20});
 
 
 // document.addEventListener('mousemove', (ev) => {

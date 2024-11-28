@@ -21,17 +21,24 @@ export {type DragEventHandler} from './internals';
 
 export type DragRole = 'draggable' | 'grip';
 
+export type DraggableOptions = {
+	padding?: number
+	cornerPadding?: number
+}
+
 export class Draggable {
 	public isEnabled = true;
 	private contextElm?: HTMLElement;
+	private opts: DraggableOptions;
 	private activeDrag!: ActiveDrag;
 	private events: EventsObj = createEventsObj();
 
-	constructor (elm: HTMLElement) {
+	constructor (elm: HTMLElement, opts: DraggableOptions) {
 		if (ctxElms.has(elm)) throw new Error(SameCtxErr);
 
 		ctxElms.add(elm);
 
+		this.opts = opts;
 		this.contextElm = elm;
 		elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
@@ -111,14 +118,13 @@ export class Draggable {
 		const draggableElm = getDraggable(ev.target);
 		if (!draggableElm) return;
 
-		const {dragAxis, dragPad, dragPadCorners, dragPosition} = draggableElm.dataset;
+		const {padding, cornerPadding} = this.opts;
 
 		// padding
-		const sidePad = dragPad ? parseInt(dragPad, 10) : 0;
-		if (sidePad && withinPadding(draggableElm, sidePad, ev, false)) return;
-		const cornerPad = dragPadCorners ? parseInt(dragPadCorners, 10) : 0;
-		if (cornerPad && withinPadding(draggableElm, cornerPad, ev, true)) return;
+		if (padding && withinPadding(draggableElm, padding, ev, false)) return;
+		if (cornerPadding && withinPadding(draggableElm, cornerPadding, ev, true)) return;
 
+		const {dragAxis, dragPosition} = draggableElm.dataset;
 		const activeDrag = createActiveDrag(draggableElm, dragAxis as DragAxis);
 
 		// TODO: I don't like this name & value (dragActive = '' - key exist is enough)
