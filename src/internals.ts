@@ -49,15 +49,6 @@ export function createActiveDrag (elm: HTMLElement, ev: PointerEvent): ActiveDra
 	return activeDrag;
 }
 
-export function isBoxInsideBox (box: DOMRect, maybeContainerBox: DOMRect, position: Point) {
-	return (
-		box.left + position[0] >= maybeContainerBox.left &&
-		box.top + position[1] >= maybeContainerBox.top &&
-		box.right + position[0] <= maybeContainerBox.right &&
-		box.bottom + position[1] <= maybeContainerBox.bottom
-	);
-}
-
 export function withinPadding (
 	elm: HTMLElement,
 	padding: number,

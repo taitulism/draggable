@@ -7,7 +7,6 @@ import {
 	ActiveDrag,
 	createActiveDrag,
 	withinPadding,
-	isBoxInsideBox,
 	isDisabled,
 } from './internals';
 
@@ -153,10 +152,6 @@ export class Draggable {
 		let elmMoveX = mouseMoveX + prevX;
 		let elmMoveY = mouseMoveY + prevY;
 
-		// const isInsideContainer = isBoxInsideBox(box, containerBox, [moveX, moveY]);
-
-		// if (isInsideContainer)
-
 		const elmX = box.x + mouseMoveX;
 		const elmY = box.y + mouseMoveY;
 
@@ -189,7 +184,7 @@ export class Draggable {
 		const {activeDrag} = this;
 		const {elm, moveX, moveY, prevX, prevY} = activeDrag;
 
-		elm.dataset.dragPosition = (moveX || prevX) + ',' + (moveY || prevY);
+		elm.dataset.dragPosition = `${moveX},${moveY}`;
 		delete elm.dataset.dragIsActive;
 
 		this.contextElm!.style.userSelect = '';
