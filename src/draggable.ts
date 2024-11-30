@@ -6,8 +6,9 @@ import {
 	DragEventHandler,
 	ActiveDrag,
 	createActiveDrag,
-	DragAxis,
 	withinPadding,
+	isBoxInsideBox,
+	isDisabled,
 } from './internals';
 
 const MOUSE_DOWN = 'pointerdown';
@@ -57,6 +58,8 @@ export class Draggable {
 
 		if (this.activeDrag?.elm) {
 			delete this.activeDrag.elm.dataset.dragIsActive;
+
+			// @ts-ignore
 			this.activeDrag.elm = undefined;
 		}
 
@@ -120,35 +123,14 @@ export class Draggable {
 
 		const {padding, cornerPadding} = this.opts;
 
-		// padding
 		if (padding && withinPadding(draggableElm, padding, ev, false)) return;
 		if (cornerPadding && withinPadding(draggableElm, cornerPadding, ev, true)) return;
 
-		const {dragAxis, dragPosition} = draggableElm.dataset;
-		const activeDrag = createActiveDrag(draggableElm, dragAxis as DragAxis);
+		this.activeDrag = createActiveDrag(draggableElm, ev);
+		this.contextElm!.style.userSelect = 'none';
 
 		// TODO: I don't like this name & value (dragActive = '' - key exist is enough)
 		draggableElm.dataset.dragIsActive = 'true';
-
-		if (dragPosition) {
-			const [x, y] = dragPosition.split(',');
-			activeDrag.prevX = parseInt(x, 10);
-			activeDrag.prevY = parseInt(y, 10);
-		}
-
-		if (activeDrag.axis === 'x') {
-			activeDrag.startX = ev.clientX;
-		}
-		else if (activeDrag.axis === 'y') {
-			activeDrag.startY = ev.clientY;
-		}
-		else {
-			activeDrag.startX = ev.clientX;
-			activeDrag.startY = ev.clientY;
-		}
-
-		this.activeDrag = activeDrag;
-		this.contextElm!.style.userSelect = 'none';
 
 		window.addEventListener(MOUSE_MOVE, this.onDragging);
 		window.addEventListener(MOUSE_UP, this.onDrop);
@@ -160,12 +142,7 @@ export class Draggable {
 	private onDragging = (ev: PointerEvent) => {
 		const evTarget = ev.target as HTMLElement;
 
-		if (
-			!this.isEnabled
-			|| 'dragDisabled' in evTarget.dataset && evTarget.dataset.dragDisabled !== 'false'
-		) {
-			return;
-		}
+		if (!this.isEnabled || isDisabled(evTarget.dataset)) return;
 
 		const {activeDrag} = this;
 		const {elm, axis, startX, startY, prevX, prevY} = activeDrag;
@@ -175,7 +152,7 @@ export class Draggable {
 
 		moveBy(elm!, activeDrag.moveX, activeDrag.moveY);
 
-		this.events.dragging?.({ev, elm: elm!, relPos: [activeDrag.moveX, activeDrag.moveY]});
+		this.events.dragging?.({ev, elm, relPos: [activeDrag.moveX, activeDrag.moveY]});
 	};
 
 	private onDrop = (ev: PointerEvent) => {
@@ -185,10 +162,10 @@ export class Draggable {
 		const {activeDrag} = this;
 		const {elm, moveX, moveY, prevX, prevY} = activeDrag;
 
-		elm!.dataset.dragPosition = (moveX || prevX) + ',' + (moveY || prevY);
-		delete elm!.dataset.dragIsActive;
+		elm.dataset.dragPosition = (moveX || prevX) + ',' + (moveY || prevY);
+		delete elm.dataset.dragIsActive;
 
 		this.contextElm!.style.userSelect = '';
-		this.events.drop?.({ev, elm: elm!, relPos: [moveX || prevX, moveY || prevY]});
+		this.events.drop?.({ev, elm, relPos: [moveX || prevX, moveY || prevY]});
 	};
 }

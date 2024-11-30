@@ -57,6 +57,7 @@ export default [
 			'no-undef': 0,
 			'no-unused-vars': 0,
 			'@typescript-eslint/no-unused-expressions': 0,
+			'@typescript-eslint/ban-ts-comment': 0,
 		},
 	},
 	// {
