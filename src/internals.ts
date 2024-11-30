@@ -111,7 +111,6 @@ export const createEventsObj = (): EventsObj => ({
 });
 
 export const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
-	console.log('move', x);
 	const translate = `translate(${x}px, ${y}px)`;
 	elm.style.transform = translate;
 };

@@ -145,14 +145,41 @@ export class Draggable {
 		if (!this.isEnabled || isDisabled(evTarget.dataset)) return;
 
 		const {activeDrag} = this;
-		const {elm, axis, startX, startY, prevX, prevY} = activeDrag;
+		const {elm, box, containerBox, axis, startX, startY, prevX, prevY} = activeDrag;
 
-		activeDrag.moveX = !axis || axis === 'x' ? (ev.clientX - startX) + prevX : 0;
-		activeDrag.moveY = !axis || axis === 'y' ? (ev.clientY - startY) + prevY : 0;
+		const mouseMoveX = !axis || axis === 'x' ? (ev.clientX - startX) : 0;
+		const mouseMoveY = !axis || axis === 'y' ? (ev.clientY - startY) : 0;
 
-		moveBy(elm!, activeDrag.moveX, activeDrag.moveY);
+		let elmMoveX = mouseMoveX + prevX;
+		let elmMoveY = mouseMoveY + prevY;
 
-		this.events.dragging?.({ev, elm, relPos: [activeDrag.moveX, activeDrag.moveY]});
+		// const isInsideContainer = isBoxInsideBox(box, containerBox, [moveX, moveY]);
+
+		// if (isInsideContainer)
+
+		const elmX = box.x + mouseMoveX;
+		const elmY = box.y + mouseMoveY;
+
+		if (elmX < containerBox.x) {
+			elmMoveX += containerBox.x - elmX;
+		}
+		else if (elmX + box.width > containerBox.right) {
+			elmMoveX -= elmX + box.width - containerBox.right;
+		}
+
+		if (elmY < containerBox.y) {
+			elmMoveY += containerBox.y - elmY;
+		}
+		else if (elmY + box.height > containerBox.bottom) {
+			elmMoveY -= elmY + box.height - containerBox.bottom;
+		}
+
+		moveBy(elm, elmMoveX, elmMoveY);
+
+		activeDrag.moveX = elmMoveX;
+		activeDrag.moveY = elmMoveY;
+
+		this.events.dragging?.({ev, elm, relPos: [elmMoveX, elmMoveY]});
 	};
 
 	private onDrop = (ev: PointerEvent) => {
