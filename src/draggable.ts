@@ -121,14 +121,14 @@ export class Draggable {
 		const draggableElm = getDraggable(ev.target);
 		if (!draggableElm) return;
 
-		const {padding, cornerPadding} = this.opts;
+		const {padding, cornerPadding, container} = this.opts;
 
 		if (padding && withinPadding(draggableElm, padding, ev, false)) return;
 		if (cornerPadding && withinPadding(draggableElm, cornerPadding, ev, true)) return;
 
 		const containerElm = (
 			draggableElm.closest('[data-drag-container]') ||
-			(this.opts.container !== false ? ev.currentTarget : document.body)
+			(container !== false ? ev.currentTarget : document.body)
 		) as HTMLElement;
 
 		this.activeDrag = createActiveDrag(draggableElm, ev, containerElm);
