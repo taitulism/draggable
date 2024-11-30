@@ -24,6 +24,7 @@ export type DragRole = 'draggable' | 'grip';
 export type DraggableOptions = {
 	padding?: number
 	cornerPadding?: number
+	container?: boolean
 }
 
 export class Draggable {
@@ -125,7 +126,12 @@ export class Draggable {
 		if (padding && withinPadding(draggableElm, padding, ev, false)) return;
 		if (cornerPadding && withinPadding(draggableElm, cornerPadding, ev, true)) return;
 
-		this.activeDrag = createActiveDrag(draggableElm, ev);
+		const containerElm = (
+			draggableElm.closest('[data-drag-container]') ||
+			(this.opts.container !== false ? ev.currentTarget : document.body)
+		) as HTMLElement;
+
+		this.activeDrag = createActiveDrag(draggableElm, ev, containerElm);
 		this.contextElm!.style.userSelect = 'none';
 
 		// TODO: I don't like this name & value (dragActive = '' - key exist is enough)

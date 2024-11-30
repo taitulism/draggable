@@ -22,13 +22,16 @@ export type ActiveDrag = {
 	prevY: number
 }
 
-export function createActiveDrag (elm: HTMLElement, ev: PointerEvent): ActiveDrag {
+export function createActiveDrag (
+	elm: HTMLElement,
+	ev: PointerEvent,
+	containerElm: HTMLElement,
+): ActiveDrag {
 	const {dragAxis, dragPosition} = elm.dataset;
-
 	const activeDrag: ActiveDrag = {
 		elm,
 		box: elm.getBoundingClientRect(),
-		containerBox: (ev.currentTarget as HTMLElement).getBoundingClientRect(),
+		containerBox: containerElm.getBoundingClientRect(),
 		axis: dragAxis as DragAxis,
 		startX: !dragAxis || dragAxis === 'x' ? ev.clientX : 0,
 		startY: !dragAxis || dragAxis === 'y' ? ev.clientY : 0,
