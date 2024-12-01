@@ -171,8 +171,9 @@ describe('Data Attributes', () => {
 			simulateMouseUp(drgElm, [15, 15]);
 			expect(drgElm.style.transform).to.equal(translate(15, 0));
 
+			// TODO:test - switching axis after move fails (no reset position)
+
 			// reset position
-			// TODO:test - switching axis after move fails
 			simulateMouseDown(drgElm, [15, 15]);
 			simulateMouseMove(drgElm, [0, 0]);
 			simulateMouseUp(drgElm, [0, 0]);

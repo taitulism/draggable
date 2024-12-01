@@ -1,4 +1,4 @@
-import type {ActiveDrag, DragAxis, EventsObj} from './types';
+import type {ActiveDrag, DragAxis, DraggableOptions, EventsObj} from './types';
 
 const DraggableSelector = '[data-drag-role="draggable"]';
 const GripSelector = '[data-drag-role="grip"]';
@@ -33,7 +33,6 @@ export const getDraggable = (evTarget: EventTarget | null) => {
 		if (isDisabled(dragRoleElm.dataset)) return;
 
 		const hasGrip = Boolean(dragRoleElm.querySelector(GripSelector));
-
 		if (hasGrip) return;
 
 		return dragRoleElm;
@@ -41,31 +40,59 @@ export const getDraggable = (evTarget: EventTarget | null) => {
 	else if (dragRole === 'grip') {
 		const draggable = getClosestDraggable(dragRoleElm) as HTMLElement;
 
-		if (!draggable) {
-			throw new Error(`A grip must be inside a draggable ${DraggableSelector}`);
-		}
-
+		if (!draggable) throw new Error(`A grip must be inside a draggable ${DraggableSelector}`);
 		if (draggable.dataset.dragDisabled === 'true') return;
 
 		return draggable;
 	}
 };
 
+export function pointerWithinPadding (
+	box: DOMRect,
+	ev: PointerEvent,
+	opts: DraggableOptions,
+) {
+	const {clientX, clientY} = ev;
+	const {padding, cornerPadding} = opts;
+
+	const offsetLeft = clientX - box.x;
+	const offsetTop = clientY - box.y;
+	const offsetRight = box.x + box.width - clientX;
+	const offsetBottom = box.y + box.height - clientY;
+
+	if (padding) { /* Sides */
+		return (
+			offsetTop <= padding ||
+			offsetBottom <= padding ||
+			offsetLeft <= padding ||
+			offsetRight <= padding
+		);
+	}
+
+	if (cornerPadding) { /* Corners */
+		return (
+			offsetLeft <= cornerPadding && offsetTop <= cornerPadding ||
+			offsetRight <= cornerPadding && offsetTop <= cornerPadding ||
+			offsetRight <= cornerPadding && offsetBottom <= cornerPadding ||
+			offsetLeft <= cornerPadding && offsetBottom <= cornerPadding
+		);
+	}
+}
+
 export function createActiveDrag (
 	elm: HTMLElement,
+	box: DOMRect,
 	ev: PointerEvent,
 	containerElm: HTMLElement,
 ): ActiveDrag {
 	const {dragAxis, dragPosition} = elm.dataset;
 	const activeDrag: ActiveDrag = {
 		elm,
-		box: elm.getBoundingClientRect(),
+		box,
 		containerBox: containerElm.getBoundingClientRect(),
 		axis: dragAxis as DragAxis,
-		startX: !dragAxis || dragAxis === 'x' ? ev.clientX : 0,
-		startY: !dragAxis || dragAxis === 'y' ? ev.clientY : 0,
-		// offsetX: ev.offsetX,
-		// offsetY: ev.offsetY,
+		mouseStartX: !dragAxis || dragAxis === 'x' ? ev.clientX : 0,
+		mouseStartY: !dragAxis || dragAxis === 'y' ? ev.clientY : 0,
 		moveX: 0,
 		moveY: 0,
 		prevX: 0,
@@ -81,40 +108,39 @@ export function createActiveDrag (
 	return activeDrag;
 }
 
-export function withinPadding (
-	elm: HTMLElement,
-	padding: number,
-	ev: PointerEvent,
-	isCornerPad = false,
-) {
-	const box = elm.getBoundingClientRect();
-	const {clientX, clientY} = ev;
+export function drag (activeDrag: ActiveDrag, ev: PointerEvent) {
+	const {box, containerBox, axis, mouseStartX, mouseStartY, prevX, prevY} = activeDrag;
 
-	if (isCornerPad) { /* Corners */
-		// TODO: clientX - box.x... offsetX?
-		const topLeftX = clientX - box.x <= padding;
-		const topLeftY = clientY - box.y <= padding;
+	let elmMoveX = 0;
+	let elmMoveY = 0;
 
-		const topRightX = box.x + box.width - clientX <= padding;
-		const topRightY = clientY - box.y <= padding;
+	if (!axis || axis === 'x') {
+		const mouseMoveX = ev.clientX - mouseStartX;
+		const elmX = box.x + mouseMoveX;
 
-		const bottomRightX = box.x + box.width - clientX <= padding;
-		const bottomRightY = box.y + box.height - clientY <= padding;
+		elmMoveX = mouseMoveX + prevX;
 
-		const bottomLeftX = clientX - box.x <= padding;
-		const bottomLeftY = box.y + box.height - clientY <= padding;
-
-		return (
-			topLeftX && topLeftY
-			|| topRightX && topRightY
-			|| bottomRightX && bottomRightY
-			|| bottomLeftX && bottomLeftY
-		);
+		if (elmX < containerBox.x) {
+			elmMoveX += containerBox.x - elmX;
+		}
+		else if (elmX + box.width > containerBox.right) {
+			elmMoveX -= elmX + box.width - containerBox.right;
+		}
 	}
-	else { /* Sides */
-		const XInPad = (clientX - box.x) <= padding || (box.width + box.x - clientX) <= padding;
-		const YInPad = (clientY - box.y) <= padding || (box.height + box.y - clientY) <= padding;
 
-		return XInPad || YInPad;
+	if (!axis || axis === 'y') {
+		const mouseMoveY = ev.clientY - mouseStartY;
+		const elmY = box.y + mouseMoveY;
+
+		elmMoveY = mouseMoveY + prevY;
+
+		if (elmY < containerBox.y) {
+			elmMoveY += containerBox.y - elmY;
+		}
+		else if (elmY + box.height > containerBox.bottom) {
+			elmMoveY -= elmY + box.height - containerBox.bottom;
+		}
 	}
+
+	return [elmMoveX, elmMoveY];
 }

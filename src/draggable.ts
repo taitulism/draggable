@@ -4,8 +4,9 @@ import {
 	getDraggable,
 	moveBy,
 	createActiveDrag,
-	withinPadding,
+	pointerWithinPadding,
 	isDisabled,
+	drag,
 } from './internals';
 
 const MOUSE_DOWN = 'pointerdown';
@@ -106,20 +107,20 @@ export class Draggable {
 
 	private onDragStart = (ev: PointerEvent) => {
 		if (!this.isEnabled) return;
+
 		const draggableElm = getDraggable(ev.target);
 		if (!draggableElm) return;
 
-		const {padding, cornerPadding, container} = this.opts;
+		const box = draggableElm.getBoundingClientRect();
+		if (pointerWithinPadding(box, ev, this.opts)) return;
 
-		if (padding && withinPadding(draggableElm, padding, ev, false)) return;
-		if (cornerPadding && withinPadding(draggableElm, cornerPadding, ev, true)) return;
-
+		const {container} = this.opts;
 		const containerElm = (
 			draggableElm.closest('[data-drag-container]') ||
 			(container !== false ? ev.currentTarget : document.body)
 		) as HTMLElement;
 
-		this.activeDrag = createActiveDrag(draggableElm, ev, containerElm);
+		this.activeDrag = createActiveDrag(draggableElm, box, ev, containerElm);
 		this.contextElm!.style.userSelect = 'none';
 
 		draggableElm.dataset.dragActive = ''; // Key only
@@ -137,30 +138,8 @@ export class Draggable {
 		if (!this.isEnabled || isDisabled(evTarget.dataset)) return;
 
 		const {activeDrag} = this;
-		const {elm, box, containerBox, axis, startX, startY, prevX, prevY} = activeDrag;
-
-		const mouseMoveX = !axis || axis === 'x' ? (ev.clientX - startX) : 0;
-		const mouseMoveY = !axis || axis === 'y' ? (ev.clientY - startY) : 0;
-
-		let elmMoveX = mouseMoveX + prevX;
-		let elmMoveY = mouseMoveY + prevY;
-
-		const elmX = box.x + mouseMoveX;
-		const elmY = box.y + mouseMoveY;
-
-		if (elmX < containerBox.x) {
-			elmMoveX += containerBox.x - elmX;
-		}
-		else if (elmX + box.width > containerBox.right) {
-			elmMoveX -= elmX + box.width - containerBox.right;
-		}
-
-		if (elmY < containerBox.y) {
-			elmMoveY += containerBox.y - elmY;
-		}
-		else if (elmY + box.height > containerBox.bottom) {
-			elmMoveY -= elmY + box.height - containerBox.bottom;
-		}
+		const {elm} = activeDrag;
+		const [elmMoveX, elmMoveY] = drag(activeDrag, ev);
 
 		moveBy(elm, elmMoveX, elmMoveY);
 
