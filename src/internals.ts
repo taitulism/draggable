@@ -1,26 +1,55 @@
-export type DragAxis = 'x' | 'y'
-export type Point = [number, number]
+import type {ActiveDrag, DragAxis, EventsObj} from './types';
 
-export type DragEvent = {
-	ev: PointerEvent
-	elm: HTMLElement
-	relPos: Point
-}
+const DraggableSelector = '[data-drag-role="draggable"]';
+const GripSelector = '[data-drag-role="grip"]';
+const DragRoleSelector = `${DraggableSelector}, ${GripSelector}`;
 
-export type ActiveDrag = {
-	elm: HTMLElement
-	box: DOMRect
-	containerBox: DOMRect
-	axis?: DragAxis
-	// offsetX: number
-	// offsetY: number
-	startX: number
-	startY: number
-	moveX: number
-	moveY: number
-	prevX: number
-	prevY: number
-}
+const getClosestDragRole = (elm: HTMLElement) => elm.closest(DragRoleSelector);
+const getClosestDraggable = (elm: HTMLElement) => elm.closest(DraggableSelector);
+
+export const isDisabled = (dataset: DOMStringMap) =>
+	'dragDisabled' in dataset && dataset.dragDisabled !== 'false';
+
+export const createEventsObj = (): EventsObj => ({
+	grab: undefined,
+	drop: undefined,
+	dragging: undefined,
+});
+
+export const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
+	const translate = `translate(${x}px, ${y}px)`;
+	elm.style.transform = translate;
+};
+
+export const getDraggable = (evTarget: EventTarget | null) => {
+	if (!evTarget || !(evTarget instanceof HTMLElement)) return;
+
+	const dragRoleElm = getClosestDragRole(evTarget) as HTMLElement || undefined;
+	if (!dragRoleElm) return;
+
+	const {dragRole} = dragRoleElm.dataset;
+
+	if (dragRole === 'draggable') {
+		if (isDisabled(dragRoleElm.dataset)) return;
+
+		const hasGrip = Boolean(dragRoleElm.querySelector(GripSelector));
+
+		if (hasGrip) return;
+
+		return dragRoleElm;
+	}
+	else if (dragRole === 'grip') {
+		const draggable = getClosestDraggable(dragRoleElm) as HTMLElement;
+
+		if (!draggable) {
+			throw new Error(`A grip must be inside a draggable ${DraggableSelector}`);
+		}
+
+		if (draggable.dataset.dragDisabled === 'true') return;
+
+		return draggable;
+	}
+};
 
 export function createActiveDrag (
 	elm: HTMLElement,
@@ -89,62 +118,3 @@ export function withinPadding (
 		return XInPad || YInPad;
 	}
 }
-
-export type DragEventHandler = (dragEvent: DragEvent) => void
-
-export type EventsObj = {
-	grab: DragEventHandler | undefined
-	drop: DragEventHandler | undefined
-	dragging: DragEventHandler | undefined
-};
-
-export const createEventsObj = (): EventsObj => ({
-	grab: undefined,
-	drop: undefined,
-	dragging: undefined,
-});
-
-export const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
-	const translate = `translate(${x}px, ${y}px)`;
-	elm.style.transform = translate;
-};
-
-const DraggableSelector = '[data-drag-role="draggable"]';
-const GripSelector = '[data-drag-role="grip"]';
-const DragRoleSelector = `${DraggableSelector}, ${GripSelector}`;
-
-const getClosestDragRole = (elm: HTMLElement) => elm.closest(DragRoleSelector);
-const getClosestDraggable = (elm: HTMLElement) => elm.closest(DraggableSelector);
-
-export const isDisabled = (dataset: DOMStringMap) =>
-	'dragDisabled' in dataset && dataset.dragDisabled !== 'false';
-
-export const getDraggable = (evTarget: EventTarget | null) => {
-	if (!evTarget || !(evTarget instanceof HTMLElement)) return;
-
-	const dragRoleElm = getClosestDragRole(evTarget) as HTMLElement || undefined;
-	if (!dragRoleElm) return;
-
-	const {dragRole} = dragRoleElm.dataset;
-
-	if (dragRole === 'draggable') {
-		if (isDisabled(dragRoleElm.dataset)) return;
-
-		const hasGrip = Boolean(dragRoleElm.querySelector(GripSelector));
-
-		if (hasGrip) return;
-
-		return dragRoleElm;
-	}
-	else if (dragRole === 'grip') {
-		const draggable = getClosestDraggable(dragRoleElm) as HTMLElement;
-
-		if (!draggable) {
-			throw new Error(`A grip must be inside a draggable ${DraggableSelector}`);
-		}
-
-		if (draggable.dataset.dragDisabled === 'true') return;
-
-		return draggable;
-	}
-};

@@ -1,6 +1,8 @@
-import {Draggable, DraggableOptions} from './draggable';
+import {Draggable} from './draggable';
+import type {DraggableOptions} from './types';
 
 export * from './draggable';
+export type * from './types';
 
 const defaultOptions: DraggableOptions = {
 	padding: 0,

@@ -1,4 +1,4 @@
-import {Point} from '../src/internals';
+import type {Point} from '../src/types';
 
 export const translate = (x: number, y: number) => `translate(${x}px, ${y}px)`;
 

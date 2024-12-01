@@ -1,10 +1,8 @@
+import type {ActiveDrag, DragEventHandler, DraggableOptions, EventsObj} from './types';
 import {
 	createEventsObj,
-	EventsObj,
 	getDraggable,
 	moveBy,
-	DragEventHandler,
-	ActiveDrag,
 	createActiveDrag,
 	withinPadding,
 	isDisabled,
@@ -16,16 +14,6 @@ const MOUSE_UP = 'pointerup';
 
 const ctxElms = new WeakSet();
 const SameCtxErr = 'Context element already bound and cannot be bound twice. Destroy the previous one first.';
-
-export {type DragEventHandler} from './internals';
-
-export type DragRole = 'draggable' | 'grip';
-
-export type DraggableOptions = {
-	padding?: number
-	cornerPadding?: number
-	container?: boolean
-}
 
 export class Draggable {
 	public isEnabled = true;
