@@ -12,8 +12,8 @@ export type ActiveDrag = {
 	box: DOMRect
 	containerBox: DOMRect
 	axis?: DragAxis
-	offsetX: number
-	offsetY: number
+	// offsetX: number
+	// offsetY: number
 	startX: number
 	startY: number
 	moveX: number
@@ -35,8 +35,8 @@ export function createActiveDrag (
 		axis: dragAxis as DragAxis,
 		startX: !dragAxis || dragAxis === 'x' ? ev.clientX : 0,
 		startY: !dragAxis || dragAxis === 'y' ? ev.clientY : 0,
-		offsetX: ev.offsetX,
-		offsetY: ev.offsetY,
+		// offsetX: ev.offsetX,
+		// offsetY: ev.offsetY,
 		moveX: 0,
 		moveY: 0,
 		prevX: 0,
