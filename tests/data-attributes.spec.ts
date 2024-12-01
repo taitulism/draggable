@@ -188,19 +188,19 @@ describe('Data Attributes', () => {
 		});
 	});
 
-	describe('When moving a draggable element', () => {
-		it('it sets `data-drag-active="true"` while moving', () => {
+	describe('While moving a draggable element', () => {
+		it('sets an empty attribute `data-drag-active`', () => {
 			const drgInstance = draggable();
 
 			makeDraggable(drgElm);
 
-			expect(drgElm.dataset).not.to.haveOwnProperty('dragIsActive');
+			expect(drgElm.dataset).not.to.haveOwnProperty('dragActive');
 			simulateMouseDown(drgElm, [50, 50]);
-			expect(drgElm.dataset).to.haveOwnProperty('dragIsActive');
+			expect(drgElm.dataset).to.haveOwnProperty('dragActive');
 			simulateMouseMove(drgElm, [100, 100]);
-			expect(drgElm.dataset).to.haveOwnProperty('dragIsActive');
+			expect(drgElm.dataset).to.haveOwnProperty('dragActive');
 			simulateMouseUp(drgElm, [100, 100]);
-			expect(drgElm.dataset).not.to.haveOwnProperty('dragIsActive');
+			expect(drgElm.dataset).not.to.haveOwnProperty('dragActive');
 
 			drgInstance.destroy();
 		});

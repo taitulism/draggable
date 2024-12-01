@@ -45,7 +45,7 @@ export class Draggable {
 		this.events = createEventsObj();
 
 		if (this.activeDrag?.elm) {
-			delete this.activeDrag.elm.dataset.dragIsActive;
+			delete this.activeDrag.elm.dataset.dragActive;
 
 			// @ts-ignore
 			this.activeDrag.elm = undefined;
@@ -122,8 +122,7 @@ export class Draggable {
 		this.activeDrag = createActiveDrag(draggableElm, ev, containerElm);
 		this.contextElm!.style.userSelect = 'none';
 
-		// TODO: I don't like this name & value (dragActive = '' - key exist is enough)
-		draggableElm.dataset.dragIsActive = 'true';
+		draggableElm.dataset.dragActive = ''; // Key only
 
 		window.addEventListener(MOUSE_MOVE, this.onDragging);
 		window.addEventListener(MOUSE_UP, this.onDrop);
@@ -179,7 +178,7 @@ export class Draggable {
 		const {elm, moveX, moveY, prevX, prevY} = activeDrag;
 
 		elm.dataset.dragPosition = `${moveX},${moveY}`;
-		delete elm.dataset.dragIsActive;
+		delete elm.dataset.dragActive;
 
 		this.contextElm!.style.userSelect = '';
 		this.events.drop?.({ev, elm, relPos: [moveX || prevX, moveY || prevY]});
