@@ -166,23 +166,23 @@ describe('Data Attributes', () => {
 			makeDraggable(drgElm);
 
 			setAxis(drgElm, 'x');
-			simulateMouseDown(drgElm, [50, 50]);
-			simulateMouseMove(drgElm, [100, 100]);
-			simulateMouseUp(drgElm, [100, 100]);
-			expect(drgElm.style.transform).to.equal(translate(50, 0));
+			simulateMouseDown(drgElm, [0, 0]);
+			simulateMouseMove(drgElm, [15, 15]);
+			simulateMouseUp(drgElm, [15, 15]);
+			expect(drgElm.style.transform).to.equal(translate(15, 0));
 
 			// reset position
 			// TODO:test - switching axis after move fails
-			simulateMouseDown(drgElm, [100, 100]);
-			simulateMouseMove(drgElm, [50, 50]);
-			simulateMouseUp(drgElm, [50, 50]);
+			simulateMouseDown(drgElm, [15, 15]);
+			simulateMouseMove(drgElm, [0, 0]);
+			simulateMouseUp(drgElm, [0, 0]);
 			expect(drgElm.style.transform).to.equal(translate(0, 0));
 
 			setAxis(drgElm, 'y');
-			simulateMouseDown(drgElm, [50, 50]);
-			simulateMouseMove(drgElm, [100, 100]);
-			simulateMouseUp(drgElm, [100, 100]);
-			expect(drgElm.style.transform).to.equal(translate(0, 50));
+			simulateMouseDown(drgElm, [0, 0]);
+			simulateMouseMove(drgElm, [15, 15]);
+			simulateMouseUp(drgElm, [15, 15]);
+			expect(drgElm.style.transform).to.equal(translate(0, 15));
 
 			drgInstance.destroy();
 		});

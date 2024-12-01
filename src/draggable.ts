@@ -6,8 +6,8 @@ import {
 	DragEventHandler,
 	ActiveDrag,
 	createActiveDrag,
-	DragAxis,
 	withinPadding,
+	isDisabled,
 } from './internals';
 
 const MOUSE_DOWN = 'pointerdown';
@@ -24,6 +24,7 @@ export type DragRole = 'draggable' | 'grip';
 export type DraggableOptions = {
 	padding?: number
 	cornerPadding?: number
+	container?: boolean
 }
 
 export class Draggable {
@@ -57,6 +58,8 @@ export class Draggable {
 
 		if (this.activeDrag?.elm) {
 			delete this.activeDrag.elm.dataset.dragIsActive;
+
+			// @ts-ignore
 			this.activeDrag.elm = undefined;
 		}
 
@@ -118,37 +121,21 @@ export class Draggable {
 		const draggableElm = getDraggable(ev.target);
 		if (!draggableElm) return;
 
-		const {padding, cornerPadding} = this.opts;
+		const {padding, cornerPadding, container} = this.opts;
 
-		// padding
 		if (padding && withinPadding(draggableElm, padding, ev, false)) return;
 		if (cornerPadding && withinPadding(draggableElm, cornerPadding, ev, true)) return;
 
-		const {dragAxis, dragPosition} = draggableElm.dataset;
-		const activeDrag = createActiveDrag(draggableElm, dragAxis as DragAxis);
+		const containerElm = (
+			draggableElm.closest('[data-drag-container]') ||
+			(container !== false ? ev.currentTarget : document.body)
+		) as HTMLElement;
+
+		this.activeDrag = createActiveDrag(draggableElm, ev, containerElm);
+		this.contextElm!.style.userSelect = 'none';
 
 		// TODO: I don't like this name & value (dragActive = '' - key exist is enough)
 		draggableElm.dataset.dragIsActive = 'true';
-
-		if (dragPosition) {
-			const [x, y] = dragPosition.split(',');
-			activeDrag.prevX = parseInt(x, 10);
-			activeDrag.prevY = parseInt(y, 10);
-		}
-
-		if (activeDrag.axis === 'x') {
-			activeDrag.startX = ev.clientX;
-		}
-		else if (activeDrag.axis === 'y') {
-			activeDrag.startY = ev.clientY;
-		}
-		else {
-			activeDrag.startX = ev.clientX;
-			activeDrag.startY = ev.clientY;
-		}
-
-		this.activeDrag = activeDrag;
-		this.contextElm!.style.userSelect = 'none';
 
 		window.addEventListener(MOUSE_MOVE, this.onDragging);
 		window.addEventListener(MOUSE_UP, this.onDrop);
@@ -160,22 +147,40 @@ export class Draggable {
 	private onDragging = (ev: PointerEvent) => {
 		const evTarget = ev.target as HTMLElement;
 
-		if (
-			!this.isEnabled
-			|| 'dragDisabled' in evTarget.dataset && evTarget.dataset.dragDisabled !== 'false'
-		) {
-			return;
-		}
+		if (!this.isEnabled || isDisabled(evTarget.dataset)) return;
 
 		const {activeDrag} = this;
-		const {elm, axis, startX, startY, prevX, prevY} = activeDrag;
+		const {elm, box, containerBox, axis, startX, startY, prevX, prevY} = activeDrag;
 
-		activeDrag.moveX = !axis || axis === 'x' ? (ev.clientX - startX) + prevX : 0;
-		activeDrag.moveY = !axis || axis === 'y' ? (ev.clientY - startY) + prevY : 0;
+		const mouseMoveX = !axis || axis === 'x' ? (ev.clientX - startX) : 0;
+		const mouseMoveY = !axis || axis === 'y' ? (ev.clientY - startY) : 0;
 
-		moveBy(elm!, activeDrag.moveX, activeDrag.moveY);
+		let elmMoveX = mouseMoveX + prevX;
+		let elmMoveY = mouseMoveY + prevY;
 
-		this.events.dragging?.({ev, elm: elm!, relPos: [activeDrag.moveX, activeDrag.moveY]});
+		const elmX = box.x + mouseMoveX;
+		const elmY = box.y + mouseMoveY;
+
+		if (elmX < containerBox.x) {
+			elmMoveX += containerBox.x - elmX;
+		}
+		else if (elmX + box.width > containerBox.right) {
+			elmMoveX -= elmX + box.width - containerBox.right;
+		}
+
+		if (elmY < containerBox.y) {
+			elmMoveY += containerBox.y - elmY;
+		}
+		else if (elmY + box.height > containerBox.bottom) {
+			elmMoveY -= elmY + box.height - containerBox.bottom;
+		}
+
+		moveBy(elm, elmMoveX, elmMoveY);
+
+		activeDrag.moveX = elmMoveX;
+		activeDrag.moveY = elmMoveY;
+
+		this.events.dragging?.({ev, elm, relPos: [elmMoveX, elmMoveY]});
 	};
 
 	private onDrop = (ev: PointerEvent) => {
@@ -185,10 +190,10 @@ export class Draggable {
 		const {activeDrag} = this;
 		const {elm, moveX, moveY, prevX, prevY} = activeDrag;
 
-		elm!.dataset.dragPosition = (moveX || prevX) + ',' + (moveY || prevY);
-		delete elm!.dataset.dragIsActive;
+		elm.dataset.dragPosition = `${moveX},${moveY}`;
+		delete elm.dataset.dragIsActive;
 
 		this.contextElm!.style.userSelect = '';
-		this.events.drop?.({ev, elm: elm!, relPos: [moveX || prevX, moveY || prevY]});
+		this.events.drop?.({ev, elm, relPos: [moveX || prevX, moveY || prevY]});
 	};
 }

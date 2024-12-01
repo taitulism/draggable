@@ -8,8 +8,12 @@ export type DragEvent = {
 }
 
 export type ActiveDrag = {
-	elm?: HTMLElement
+	elm: HTMLElement
+	box: DOMRect
+	containerBox: DOMRect
 	axis?: DragAxis
+	// offsetX: number
+	// offsetY: number
 	startX: number
 	startY: number
 	moveX: number
@@ -18,17 +22,34 @@ export type ActiveDrag = {
 	prevY: number
 }
 
-export function createActiveDrag (elm: HTMLElement, axis?: DragAxis) {
-	return {
+export function createActiveDrag (
+	elm: HTMLElement,
+	ev: PointerEvent,
+	containerElm: HTMLElement,
+): ActiveDrag {
+	const {dragAxis, dragPosition} = elm.dataset;
+	const activeDrag: ActiveDrag = {
 		elm,
-		axis,
-		startX: 0,
-		startY: 0,
+		box: elm.getBoundingClientRect(),
+		containerBox: containerElm.getBoundingClientRect(),
+		axis: dragAxis as DragAxis,
+		startX: !dragAxis || dragAxis === 'x' ? ev.clientX : 0,
+		startY: !dragAxis || dragAxis === 'y' ? ev.clientY : 0,
+		// offsetX: ev.offsetX,
+		// offsetY: ev.offsetY,
 		moveX: 0,
 		moveY: 0,
 		prevX: 0,
 		prevY: 0,
 	};
+
+	if (dragPosition) {
+		const [x, y] = dragPosition.split(',');
+		activeDrag.prevX = parseInt(x, 10);
+		activeDrag.prevY = parseInt(y, 10);
+	}
+
+	return activeDrag;
 }
 
 export function withinPadding (
@@ -41,6 +62,7 @@ export function withinPadding (
 	const {clientX, clientY} = ev;
 
 	if (isCornerPad) { /* Corners */
+		// TODO: clientX - box.x... offsetX?
 		const topLeftX = clientX - box.x <= padding;
 		const topLeftY = clientY - box.y <= padding;
 
@@ -94,7 +116,7 @@ const DragRoleSelector = `${DraggableSelector}, ${GripSelector}`;
 const getClosestDragRole = (elm: HTMLElement) => elm.closest(DragRoleSelector);
 const getClosestDraggable = (elm: HTMLElement) => elm.closest(DraggableSelector);
 
-const isDisabled = (dataset: DOMStringMap) =>
+export const isDisabled = (dataset: DOMStringMap) =>
 	'dragDisabled' in dataset && dataset.dragDisabled !== 'false';
 
 export const getDraggable = (evTarget: EventTarget | null) => {

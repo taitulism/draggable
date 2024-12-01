@@ -47,28 +47,28 @@ describe('API', () => {
 		it('toggles draggability', () => {
 			expect(drgElm.style.transform).to.be.empty;
 			simulateMouseDown(drgElm, [0, 0]);
-			simulateMouseMove(drgElm, [150, 0]);
-			simulateMouseUp(drgElm, [150, 0]);
-			expect(drgElm.style.transform).to.equal(translate(150, 0));
+			simulateMouseMove(drgElm, [50, 0]);
+			simulateMouseUp(drgElm, [50, 0]);
+			expect(drgElm.style.transform).to.equal(translate(50, 0));
 
-			simulateMouseDown(drgElm, [150, 0]);
-			simulateMouseMove(drgElm, [300, 0]);
-			simulateMouseUp(drgElm, [300, 0]);
-			expect(drgElm.style.transform).to.equal(translate(300, 0));
+			simulateMouseDown(drgElm, [50, 0]);
+			simulateMouseMove(drgElm, [100, 0]);
+			simulateMouseUp(drgElm, [100, 0]);
+			expect(drgElm.style.transform).to.equal(translate(100, 0));
 
 			drgInstance.disable();
 
-			simulateMouseDown(drgElm, [300, 0]);
-			simulateMouseMove(drgElm, [450, 0]);
-			simulateMouseUp(drgElm, [450, 0]);
-			expect(drgElm.style.transform).to.equal(translate(300, 0));
+			simulateMouseDown(drgElm, [100, 0]);
+			simulateMouseMove(drgElm, [150, 0]);
+			simulateMouseUp(drgElm, [150, 0]);
+			expect(drgElm.style.transform).to.equal(translate(100, 0));
 
 			drgInstance.enable();
 
-			simulateMouseDown(drgElm, [300, 0]);
-			simulateMouseMove(drgElm, [450, 0]);
-			simulateMouseUp(drgElm, [450, 0]);
-			expect(drgElm.style.transform).to.equal(translate(450, 0));
+			simulateMouseDown(drgElm, [100, 0]);
+			simulateMouseMove(drgElm, [150, 0]);
+			simulateMouseUp(drgElm, [150, 0]);
+			expect(drgElm.style.transform).to.equal(translate(150, 0));
 		});
 
 		it('toggles draggability while dragging', () => {

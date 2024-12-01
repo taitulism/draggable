@@ -40,39 +40,34 @@
 			justify-content: space-between;
 		}
 
-		#grip-A {
+		.grip {
 			width: 50px;
 			height: 50px;
-			background-color: yellow;
 		}
 
-		#grip-B {
-			width: 50px;
-			height: 50px;
-			background-color: green;
-		}
+		#grip-A { background-color: yellow; }
+		#grip-B { background-color: green; }
 
 		#static {
 			width: 200px;
 			height: 200px;
 			border: 1px solid gray;
 		}
-
 	</style>
 </head>
 <body>
 	<button id="toggle-btn">Toggle</button>
-	<div id="the-container" class="container">
+	<div id="the-container" class="container" data-drag-container>
 		<div
 			id="drag-me"
 			class="drag-box"
 			data-drag-role="draggable"
-			data-drag-axis="y"
+			UNdata-drag-axis="x"
 			data-drag-disabled="false"
 		>
 			<div id="grips-container">
-				<div id="grip-a" Adata-drag-role="grip">A</div>
-				<div id="grip-b">B</div>
+				<div id="grip-a" class="grip" Adata-drag-role="grip">A</div>
+				<div id="grip-b" class="grip" >B</div>
 			</div><br />
 		</div>
 		<div id="static"></div>
