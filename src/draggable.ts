@@ -7,6 +7,7 @@ import {
 	pointerWithinPadding,
 	isDisabled,
 	drag,
+	DragzoneSelector,
 } from './internals';
 
 const MOUSE_DOWN = 'pointerdown';
@@ -114,13 +115,9 @@ export class Draggable {
 		const box = draggableElm.getBoundingClientRect();
 		if (pointerWithinPadding(box, ev, this.opts)) return;
 
-		const {container} = this.opts;
-		const containerElm = (
-			draggableElm.closest('[data-drag-container]') ||
-			(container !== false ? ev.currentTarget : document.body)
-		) as HTMLElement;
+		const dragzoneElm = (draggableElm.closest(DragzoneSelector) || document.body) as HTMLElement;
 
-		this.activeDrag = createActiveDrag(draggableElm, box, ev, containerElm);
+		this.activeDrag = createActiveDrag(draggableElm, box, ev, dragzoneElm);
 		this.contextElm!.style.userSelect = 'none';
 
 		draggableElm.dataset.dragActive = ''; // Key only

@@ -7,7 +7,6 @@ export type * from './types';
 const defaultOptions: DraggableOptions = {
 	padding: 0,
 	cornerPadding: 0,
-	container: true,
 };
 
 export const draggable = (

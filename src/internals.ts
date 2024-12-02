@@ -1,5 +1,6 @@
 import type {ActiveDrag, DragAxis, DraggableOptions, EventsObj} from './types';
 
+export const DragzoneSelector = '[data-drag-zone]';
 const DraggableSelector = '[data-drag-role="draggable"]';
 const GripSelector = '[data-drag-role="grip"]';
 const DragRoleSelector = `${DraggableSelector}, ${GripSelector}`;
@@ -83,13 +84,13 @@ export function createActiveDrag (
 	elm: HTMLElement,
 	box: DOMRect,
 	ev: PointerEvent,
-	containerElm: HTMLElement,
+	dragzoneElm: HTMLElement,
 ): ActiveDrag {
 	const {dragAxis, dragPosition} = elm.dataset;
 	const activeDrag: ActiveDrag = {
 		elm,
 		box,
-		containerBox: containerElm.getBoundingClientRect(),
+		dragzoneBox: dragzoneElm.getBoundingClientRect(),
 		axis: dragAxis as DragAxis,
 		mouseStartX: !dragAxis || dragAxis === 'x' ? ev.clientX : 0,
 		mouseStartY: !dragAxis || dragAxis === 'y' ? ev.clientY : 0,
@@ -109,7 +110,7 @@ export function createActiveDrag (
 }
 
 export function drag (activeDrag: ActiveDrag, ev: PointerEvent) {
-	const {box, containerBox, axis, mouseStartX, mouseStartY, prevX, prevY} = activeDrag;
+	const {box, dragzoneBox, axis, mouseStartX, mouseStartY, prevX, prevY} = activeDrag;
 
 	let elmMoveX = 0;
 	let elmMoveY = 0;
@@ -120,11 +121,11 @@ export function drag (activeDrag: ActiveDrag, ev: PointerEvent) {
 
 		elmMoveX = mouseMoveX + prevX;
 
-		if (elmX < containerBox.x) {
-			elmMoveX += containerBox.x - elmX;
+		if (elmX < dragzoneBox.x) {
+			elmMoveX += dragzoneBox.x - elmX;
 		}
-		else if (elmX + box.width > containerBox.right) {
-			elmMoveX -= elmX + box.width - containerBox.right;
+		else if (elmX + box.width > dragzoneBox.right) {
+			elmMoveX -= elmX + box.width - dragzoneBox.right;
 		}
 	}
 
@@ -134,11 +135,11 @@ export function drag (activeDrag: ActiveDrag, ev: PointerEvent) {
 
 		elmMoveY = mouseMoveY + prevY;
 
-		if (elmY < containerBox.y) {
-			elmMoveY += containerBox.y - elmY;
+		if (elmY < dragzoneBox.y) {
+			elmMoveY += dragzoneBox.y - elmY;
 		}
-		else if (elmY + box.height > containerBox.bottom) {
-			elmMoveY -= elmY + box.height - containerBox.bottom;
+		else if (elmY + box.height > dragzoneBox.bottom) {
+			elmMoveY -= elmY + box.height - dragzoneBox.bottom;
 		}
 	}
 

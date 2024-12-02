@@ -47,16 +47,11 @@ Things to consider:
 3. Each context is the boundary element to its draggable elements (by default).
 
 ### Boundary Element
->**TL;DR** The boundary element is set according to the following precedence order:
->1. The draggable element's closest parent with `data-drag-container` attribute.
->2. If none found - then the context element passed in at creation.
->3. If created with no context or `{container: false}` was used - then the `<body>`.
-
 To prevent users from dragging an element off-screen and being unable to retrieve it, a boundary element is always defined.
 
-By default, the context element acts as the movement container for its descendant draggable elements. However, if the `{container: false}` option is specified during initialization (see [Creation](#draggablecontextelement-options)), the `<body>` element will serve as the boundary.
+By default, the `<body>` element acts as the global movement container for all draggable elements. However, you can designate a different element as the boundary of its descendant draggable elements by adding the `data-drag-zone` attribute to it.
 
-Alternatively, you can designate a different element as the boundary by adding the `data-drag-container` attribute to it (see [data-drag-container](#data-attributes)).
+So a draggable element's dragging zone is its closest parent with the `data-drag-zone` attribute or the `<body>` element.
 
 
 ## Data Attributes
@@ -64,7 +59,7 @@ Using different data attributes you can control the dragging behavior.
 
 > To make an element "draggable" set its `data-drag-role` attribute to `"draggable"`.
 
-* `data-drag-container` - set this attribute (key only, no value) on the element you want to define as the boundary element of its descendant draggable elements (see [Boundary Element](#boundary-element)).
+* `data-drag-zone` - set this attribute (key only, no value) on the element you want to define as the boundary element of its descendant draggable elements (see [Boundary Element](#boundary-element)).
 * `data-drag-role` = `"draggable" | "grip"`
 	* `"draggable"` - Makes the element draggable.  
 	Can be used together with:
@@ -78,7 +73,7 @@ Using different data attributes you can control the dragging behavior.
 
 			Set this attribute when you need to toggle draggability of a draggable element.  
 			This toggles draggability of a single draggable element. If you want to disable all draggables in a context see [`.disable()`](#enable--disable) below.
-	* `"grip"` - The element becomes the handle of a draggable element. When used, users can only drag draggable elements by their grip element. Must be a descendant of a draggabl element elements (i.e. you cannot drag them outside of the container (throws an error when it's not).  
+	* `"grip"` - The element becomes the handle of its closest draggable element. When used, draggable elements can only be dragged when grabbed by their grip element. A grip must be a descendant of a draggable element (throws an error when it's not).  
 
 ### Example:
 ```html
@@ -121,7 +116,6 @@ Elements are moved around using CSS `translate(x, y)` which sets a relative posi
 * `options: DragOptions` - optional. The instance's configuration object, applied for all draggable elements under the context element:
 	* `padding: number` - Blocks drag-start if the draggable element was grabbed by its **edge** within this number of pixels. Default is `0`.
 	* `cornerPadding: number` - Blocks drag-start if the draggable element was grabbed by its **corner** within this number of pixels. Default is `0`.
-	* `container: boolean` - Pass `false` if you don't want the context element to be the boundary of its draggable elements. Default is `true`. See [Boundary Element](#boundary-element) for details.
 ```js
 draggable();             // -->  <body>
 draggable({padding: 8}); // -->  <body>

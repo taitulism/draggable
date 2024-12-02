@@ -5,7 +5,6 @@ export type Point = [number, number]
 export type DraggableOptions = {
 	padding?: number
 	cornerPadding?: number
-	container?: boolean
 }
 
 export type DragEvent = {
@@ -17,7 +16,7 @@ export type DragEvent = {
 export type ActiveDrag = {
 	elm: HTMLElement
 	box: DOMRect
-	containerBox: DOMRect
+	dragzoneBox: DOMRect
 	axis?: DragAxis
 	mouseStartX: number
 	mouseStartY: number
