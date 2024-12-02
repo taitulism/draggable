@@ -17,6 +17,9 @@ toggleBtn.addEventListener('click', () => {
 
 const d = draggable();
 
+// d.on('ing', ({relPos}) => {
+// 	console.log(relPos);
+// });
 
 // document.addEventListener('mousemove', (ev) => {
 // 	console.log(ev.x, ev.y);
