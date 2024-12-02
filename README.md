@@ -10,7 +10,7 @@ Makes elements draggable. Vanilla style.
 ```html
 <!-- HTML -->
 <body>
-	<div data-drag-role="draggable"></div>
+   <div data-drag-role="draggable"></div>
 </body>
 ```
 
@@ -78,17 +78,17 @@ Using different data attributes you can control the dragging behavior.
 ### Example:
 ```html
 <div
-	class="card"
-	data-drag-role="draggable"
-	data-drag-axis="x"
-	data-drag-disabled="false"
+   class="card"
+   data-drag-role="draggable"
+   data-drag-axis="x"
+   data-drag-disabled="false"
 >
-	<div class="card-title" data-drag-role="grip">
-		Grab here!
-	</div>
-	<div class="card-body">
-		Grab the title to move the card
-	</div>
+   <div class="card-title" data-drag-role="grip">
+      Grab here!
+   </div>
+   <div class="card-body">
+      Grab the title to move the card
+   </div>
 </div>
 ```
 
@@ -100,7 +100,7 @@ While dragging an element it is set with a "read-only" data attribute: `data-dra
 
 ```css
 [data-drag-active] {
-	background-color: yellow;
+   background-color: yellow;
 }
 ```
 
@@ -149,9 +149,9 @@ const doSomethingElse = () => {...}
 const stopDoingThing = () => {...}
 
 const d = draggables()
-	.on('drag-start', doSomething)     // <-- this is replaced
-	.on('drag-start', doSomethingElse) // <-- by  (same event)
-	.on('drop', stopDoingThing)
+   .on('drag-start', doSomething)     // <-- this is replaced
+   .on('drag-start', doSomethingElse) // <-- by  (same event)
+   .on('drop', stopDoingThing)
 
 d.off('drop');
 ```
@@ -164,11 +164,11 @@ The event handlers get called with a `DragEvent` object which holds 3 properties
 
 ```js
 draggables().on('dragging', (dragEv) => {
-	console.log(
-		dragEv.elm,       // e.g. <div data-drag-role="draggable">
-		dragEv.ev.target, // e.g. <div data-drag-role="grip">
-		dragEv.relPos     // e.g. [3, -8] (on 'drag-start' event it's always [0,0])
-	);
+   console.log(
+      dragEv.elm,       // e.g. <div data-drag-role="draggable">
+      dragEv.ev.target, // e.g. <div data-drag-role="grip">
+      dragEv.relPos     // e.g. [3, -8] (on 'drag-start' event it's always [0,0])
+   );
 });
 ```
 
