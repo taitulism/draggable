@@ -1,4 +1,4 @@
-import type {ActiveDrag, DragEventHandler, DraggableOptions, EventsObj} from './types';
+import type {ActiveDrag, DragEventHandler, DraggablesOptions, EventsObj} from './types';
 import {
 	createEventsObj,
 	getDraggable,
@@ -17,14 +17,14 @@ const MOUSE_UP = 'pointerup';
 const ctxElms = new WeakSet();
 const SameCtxErr = 'Context element already bound and cannot be bound twice. Destroy the previous one first.';
 
-export class Draggable {
+export class Draggables {
 	public isEnabled = true;
 	private contextElm?: HTMLElement;
-	private opts: DraggableOptions;
+	private opts: DraggablesOptions;
 	private activeDrag!: ActiveDrag;
 	private events: EventsObj = createEventsObj();
 
-	constructor (elm: HTMLElement, opts: DraggableOptions) {
+	constructor (elm: HTMLElement, opts: DraggablesOptions) {
 		if (ctxElms.has(elm)) throw new Error(SameCtxErr);
 
 		ctxElms.add(elm);

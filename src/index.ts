@@ -1,19 +1,19 @@
-import {Draggable} from './draggable';
-import type {DraggableOptions} from './types';
+import {Draggables} from './Draggables';
+import type {DraggablesOptions} from './types';
 
-export * from './draggable';
+export * from './Draggables';
 export type * from './types';
 
-const defaultOptions: DraggableOptions = {
+const defaultOptions: DraggablesOptions = {
 	padding: 0,
 	cornerPadding: 0,
 };
 
-export const draggable = (
-	elmOrOpts?: HTMLElement | DraggableOptions,
-	dragOptions?: DraggableOptions,
+export const draggables = (
+	elmOrOpts?: HTMLElement | DraggablesOptions,
+	dragOptions?: DraggablesOptions,
 ) => (
 	elmOrOpts instanceof HTMLElement
-		? new Draggable(elmOrOpts, dragOptions || defaultOptions)
-		: new Draggable(document.body, elmOrOpts || defaultOptions)
+		? new Draggables(elmOrOpts, dragOptions || defaultOptions)
+		: new Draggables(document.body, elmOrOpts || defaultOptions)
 );

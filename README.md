@@ -2,8 +2,8 @@
 ![ts](https://badgen.net/badge/Built%20With/TypeScript/blue)
 ![Build Status](https://github.com/taitulism/draggable/actions/workflows/ci.yml/badge.svg)
 
-draggable-elm
-=============
+draggables
+==========
 Makes elements draggable. Vanilla style.
 
 ## Basic Usage
@@ -16,9 +16,9 @@ Makes elements draggable. Vanilla style.
 
 ```js
 // js / ts
-import {draggable} from 'draggable-elm';
+import {draggables} from 'draggables';
 
-draggable(contextElm, options);
+draggables(contextElm, options);
 ```
 
 #### Section Links:
@@ -37,12 +37,12 @@ Default - `document.body`
 
 >NOTE: The context element is not necessarily a draggable element.
 
-At creation, passing an element to the `draggable(ctxElm)` function binds a *single* event listener to the passed in element. This starts listening to `pointerdown` events on draggable elements within that context element. If no element was passed in at creation the default context element will be the `<body>` element.
+At creation, passing an element to the `draggables(ctxElm)` function binds a *single* event listener to the passed in element. This starts listening to `pointerdown` events on draggable elements within that context element. If no element was passed in at creation the default context element will be the `<body>` element.
 
 Many times the context element would be the immediate parent of the draggable elements, the "board" of the "stickynotes". If you have more than one "board" you can either make a single context for all off them (a mutual ancestor or the `<body>`) or prefer to work with multiple instances/contexts.
 
 Things to consider:
-1. There's one `Draggable` instace per context element.
+1. There's one `Draggables` instace per context element.
 2. Each instance/context binds its own `pointerdown` event listener.
 3. Each context is the boundary element to its draggable elements (by default).
 
@@ -110,24 +110,24 @@ Elements are moved around using CSS `translate(x, y)` which sets a relative posi
 
 ## Instance API
 
-### `draggable(contextElement, options)`
+### `draggables(contextElement, options)`
 #### arguments
 * `contextElement: HTMLElement` - optional. See [Context Element](#context-element) section above.
-* `options: DragOptions` - optional. The instance's configuration object, applied for all draggable elements under the context element:
+* `options: DraggablesOptions` - optional. The instance's configuration object, applied for all draggable elements under the context element:
 	* `padding: number` - Blocks drag-start if the draggable element was grabbed by its **edge** within this number of pixels. Default is `0`.
 	* `cornerPadding: number` - Blocks drag-start if the draggable element was grabbed by its **corner** within this number of pixels. Default is `0`.
 ```js
-draggable();             // -->  <body>
-draggable({padding: 8}); // -->  <body>
-draggable(myElm);
-draggable(myElm, {padding: 8});
+draggables();             // -->  <body>
+draggables({padding: 8}); // -->  <body>
+draggables(myElm);
+draggables(myElm, {padding: 8});
 ```
 
 > The padding options are for dealing with draggable elements that are also resizable (by grabbing their corners/edges).
 
-Returns a `Draggable` instance:
+Returns a `Draggables` instance:
 ```js
-const dInstance = draggable();
+const dInstance = draggables();
 ```
 It has the following methods:
 
@@ -141,14 +141,14 @@ Start and stop listening to drag events:
 * **`'dragging'`** - dragging around, fires on `pointermove` (with `pointerdown`)
 * **`'drag-stop'`** - dragging stopped, fires on `pointerup`.
 
-A `Draggable` instance can only hold one event listener for each event (unlike a classic EventEmitter):
+A `Draggables` instance can only hold one event listener for each event (unlike a classic EventEmitter):
 
 ```js
 const doSomething = () => {...}
 const doSomethingElse = () => {...}
 const stopDoingThing = () => {...}
 
-const d = draggable()
+const d = draggables()
 	.on('drag-start', doSomething)     // <-- this is replaced
 	.on('drag-start', doSomethingElse) // <-- by  (same event)
 	.on('drop', stopDoingThing)
@@ -163,7 +163,7 @@ The event handlers get called with a `DragEvent` object which holds 3 properties
 * `relPos` - the draggable element's relative position (in pixels), that is, relative to its pre-drag position (type `[x: number, y: number]`)
 
 ```js
-draggable().on('dragging', (dragEv) => {
+draggables().on('dragging', (dragEv) => {
 	console.log(
 		dragEv.elm,       // e.g. <div data-drag-role="draggable">
 		dragEv.ev.target, // e.g. <div data-drag-role="grip">
@@ -176,4 +176,4 @@ draggable().on('dragging', (dragEv) => {
 For extra convenience, anything that contains `start`, `ing` or `stop`/`end`/`drop` will match its respective event. For example, you can use `dragging`/`moving`/`swiping` - all are aliases for the `pointermove` event.
 
 ### **.destroy()**
-Kills the `Draggable` instance for good, unbinds event listeners, releases element references. Once destroyed, an instance cannot be revived. Use it when the context element is removed from the DOM.
+Kills the `Draggables` instance for good, unbinds event listeners, releases element references. Once destroyed, an instance cannot be revived. Use it when the context element is removed from the DOM.

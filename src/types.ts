@@ -1,8 +1,7 @@
-// export type DragRole = 'draggable' | 'grip';
 export type DragAxis = 'x' | 'y'
 export type Point = [number, number]
 
-export type DraggableOptions = {
+export type DraggablesOptions = {
 	padding?: number
 	cornerPadding?: number
 }

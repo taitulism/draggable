@@ -1,5 +1,5 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
-import {draggable} from '../src';
+import {draggables} from '../src';
 import {
 	createContainerElm,
 	createTargetElm,
@@ -40,7 +40,7 @@ describe('Data Attributes', () => {
 
 	describe('An element with `data-drag-role="draggable"`', () => {
 		it('becomes draggable', () => {
-			const drgInstance = draggable();
+			const drgInstance = draggables();
 
 			simulateMouseDown(drgElm, [50, 50]);
 			simulateMouseMove(drgElm, [101, 80]);
@@ -58,7 +58,7 @@ describe('Data Attributes', () => {
 		});
 
 		it('also by its children', () => {
-			const drgInstance = draggable();
+			const drgInstance = draggables();
 			const child = addChild(drgElm);
 			makeDraggable(drgElm);
 
@@ -73,7 +73,7 @@ describe('Data Attributes', () => {
 
 	describe('An element with `data-drag-role="grip"`', () => {
 		it('becomes the closest draggable\'s grip', () => {
-			const drgInstance = draggable();
+			const drgInstance = draggables();
 
 			makeDraggable(drgElm);
 			const grip = addGrip(drgElm);
@@ -87,7 +87,7 @@ describe('Data Attributes', () => {
 		});
 
 		it('its children also function as grips', () => {
-			const drgInstance = draggable();
+			const drgInstance = draggables();
 
 			makeDraggable(drgElm);
 			const grip = addGrip(drgElm);
@@ -102,7 +102,7 @@ describe('Data Attributes', () => {
 		});
 
 		it('prevents dragging the closest draggable not via grip', () => {
-			const drgInstance = draggable();
+			const drgInstance = draggables();
 
 			makeDraggable(drgElm);
 			const grip = addGrip(drgElm);
@@ -130,7 +130,7 @@ describe('Data Attributes', () => {
 			const originalWindowOnError = window.onerror;
 
 			const promise = new Promise((resolve, reject) => {
-				const drgInstance = draggable();
+				const drgInstance = draggables();
 
 				// makeDraggable(drgElm);
 				const grip = addGrip(drgElm);
@@ -161,7 +161,7 @@ describe('Data Attributes', () => {
 
 	describe('An element with `data-drag-axis="x | y"`', () => {
 		it('makes the draggable element only move on that axis', () => {
-			const drgInstance = draggable();
+			const drgInstance = draggables();
 
 			makeDraggable(drgElm);
 
@@ -191,7 +191,7 @@ describe('Data Attributes', () => {
 
 	describe('While moving a draggable element', () => {
 		it('sets an empty attribute `data-drag-active`', () => {
-			const drgInstance = draggable();
+			const drgInstance = draggables();
 
 			makeDraggable(drgElm);
 

@@ -1,5 +1,5 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
-import {type Draggable, draggable} from '../src';
+import {type Draggables, draggables} from '../src';
 import {createContainerElm, createDraggableElm} from './dom-utils';
 import {
 	simulateMouseDown,
@@ -10,7 +10,7 @@ import {
 
 describe('API', () => {
 	let drgElm: HTMLElement;
-	let drgInstance: Draggable;
+	let drgInstance: Draggables;
 	let testContainerElm: HTMLElement;
 
 	beforeAll(() => {
@@ -21,7 +21,7 @@ describe('API', () => {
 	beforeEach(() => {
 		drgElm = createDraggableElm();
 		testContainerElm.appendChild(drgElm);
-		drgInstance = draggable();
+		drgInstance = draggables();
 	});
 
 	afterEach(() => {
@@ -87,7 +87,7 @@ describe('API', () => {
 
 	describe('.on', () => {
 		it('is chainable', () => {
-			drgInstance = draggable(drgElm);
+			drgInstance = draggables(drgElm);
 			expect(drgInstance.on('start', () => null)).to.deep.equal(drgInstance);
 		});
 	});

@@ -1,4 +1,4 @@
-import {draggable} from '../src';
+import {draggables} from '../src';
 
 // const wrapper = document.getElementById('the-container')!;
 // const drgElm = document.getElementById('drag-me')!;
@@ -15,7 +15,7 @@ toggleBtn.addEventListener('click', () => {
 // const gripHandle = document.getElementById('grips-container')!;
 // const gripHandle = document.getElementById('grip-a')!;
 
-const d = draggable();
+const d = draggables();
 
 // d.on('ing', ({relPos}) => {
 // 	console.log(relPos);

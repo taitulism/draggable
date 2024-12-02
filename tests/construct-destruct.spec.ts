@@ -1,5 +1,5 @@
 import {describe, it, expect, beforeAll, beforeEach, afterEach, afterAll} from 'vitest';
-import {type Draggable, draggable} from '../src';
+import {type Draggables, draggables} from '../src';
 import {createContainerElm, createDraggableElm} from './dom-utils';
 import {
 	simulateMouseDown,
@@ -8,7 +8,7 @@ import {
 	translate,
 } from './utils';
 
-describe('draggable', () => {
+describe('draggables', () => {
 	let drgElm: HTMLElement;
 	let drgElm2: HTMLElement;
 	let testContainerElm: HTMLElement;
@@ -35,19 +35,19 @@ describe('draggable', () => {
 	});
 
 	describe('Creation', () => {
-		it('is a function', () => expect(draggable).to.be.a('function'));
+		it('is a function', () => expect(draggables).to.be.a('function'));
 
-		it('returns a `Draggable` instance', () => {
-			const drgInstance = draggable();
+		it('returns a `Draggables` instance', () => {
+			const drgInstance = draggables();
 			const ctor = Object.getPrototypeOf(drgInstance).constructor;
 
-			expect(ctor.name).to.equal('Draggable');
+			expect(ctor.name).to.equal('Draggables');
 			drgInstance.destroy();
 		});
 
 		describe('with no arguments', () => {
 			it('enable all draggables under <body>', () => {
-				const drgInstance = draggable();
+				const drgInstance = draggables();
 
 				simulateMouseDown(drgElm, [0, 0]);
 				simulateMouseMove(drgElm, [100, 80]);
@@ -65,7 +65,7 @@ describe('draggable', () => {
 
 		describe('with an HTML element', () => {
 			it('enable all draggables under given element', () => {
-				const drgInstance = draggable(testContainerElm);
+				const drgInstance = draggables(testContainerElm);
 
 				simulateMouseDown(drgElm, [0, 0]);
 				simulateMouseMove(drgElm, [100, 80]);
@@ -84,20 +84,20 @@ describe('draggable', () => {
 		describe('When called again with the same context element', () => {
 			it('throws an error', () => {
 				// test default <body>
-				let drgInstance1: Draggable;
+				let drgInstance1: Draggables;
 				const badFn1 = () => {
-					drgInstance1 = draggable();
-					/* errInstance = */ draggable();
+					drgInstance1 = draggables();
+					/* errInstance = */ draggables();
 				};
 
 				expect(badFn1).to.throw('already bound and cannot be bound twice');
 				drgInstance1!.destroy();
 
 				// test given element
-				let drgInstance2: Draggable;
+				let drgInstance2: Draggables;
 				const badFn2 = () => {
-					drgInstance2 = draggable(testContainerElm);
-					/* errInstance = */ draggable(testContainerElm);
+					drgInstance2 = draggables(testContainerElm);
+					/* errInstance = */ draggables(testContainerElm);
 				};
 
 				expect(badFn2).to.throw('already bound and cannot be bound twice');
@@ -107,8 +107,8 @@ describe('draggable', () => {
 
 		describe('When one context element contains another', () => {
 			it('only triggers the inner one', () => {
-				const drgInstance1 = draggable();
-				const drgInstance2 = draggable(testContainerElm);
+				const drgInstance1 = draggables();
+				const drgInstance2 = draggables(testContainerElm);
 
 				let count1 = 0;
 				let count2 = 0;
@@ -133,10 +133,10 @@ describe('draggable', () => {
 	});
 
 	describe('.destroy()', () => {
-		let drgInstance: Draggable;
+		let drgInstance: Draggables;
 
 		beforeEach(() => {
-			drgInstance = draggable();
+			drgInstance = draggables();
 		});
 
 		afterEach(() => {

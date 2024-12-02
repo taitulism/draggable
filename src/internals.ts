@@ -1,4 +1,4 @@
-import type {ActiveDrag, DragAxis, DraggableOptions, EventsObj} from './types';
+import type {ActiveDrag, DragAxis, DraggablesOptions, EventsObj} from './types';
 
 export const DragzoneSelector = '[data-drag-zone]';
 const DraggableSelector = '[data-drag-role="draggable"]';
@@ -51,7 +51,7 @@ export const getDraggable = (evTarget: EventTarget | null) => {
 export function pointerWithinPadding (
 	box: DOMRect,
 	ev: PointerEvent,
-	opts: DraggableOptions,
+	opts: DraggablesOptions,
 ) {
 	const {clientX, clientY} = ev;
 	const {padding, cornerPadding} = opts;
