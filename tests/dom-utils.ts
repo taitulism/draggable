@@ -1,11 +1,27 @@
 import type {DragAxis} from '../src/types';
 
+/*
+          400
+  ┌────┬───────────────┐
+  │ 20 │				     │
+  ├────┼───────┐       │
+  │    │       │       │
+  │    │  100  │  280  │
+  │    │       │       │ 400
+  │    └───────┘       │
+  │              	     │
+  │      280     	     │
+  └────────────────────┘
+
+*/
+
 export function createContainerElm () {
 	const container = document.createElement('div');
 
 	container.id = 'test-dom-container';
-	container.style.height = '200px';
-	container.style.padding = '50px';
+	container.style.width = '400px';
+	container.style.height = '400px';
+	container.style.padding = '20px';
 
 	return container;
 }

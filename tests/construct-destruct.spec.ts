@@ -1,21 +1,19 @@
 import {describe, it, expect, beforeAll, beforeEach, afterEach, afterAll} from 'vitest';
 import {type Draggables, draggables} from '../src';
 import {createContainerElm, createDraggableElm} from './dom-utils';
-import {
-	simulateMouseDown,
-	simulateMouseMove,
-	simulateMouseUp,
-	translate,
-} from './utils';
+import {translate} from './utils';
+import {createMouseSimulator} from './mouse-simulator';
 
 describe('draggables', () => {
 	let drgElm: HTMLElement;
 	let drgElm2: HTMLElement;
 	let testContainerElm: HTMLElement;
+	let mouse: ReturnType<typeof createMouseSimulator>;
 
 	beforeAll(() => {
 		testContainerElm = createContainerElm();
 		document.body.appendChild(testContainerElm);
+		mouse = createMouseSimulator();
 	});
 
 	beforeEach(() => {
@@ -23,11 +21,13 @@ describe('draggables', () => {
 		drgElm2 = createDraggableElm();
 		testContainerElm.appendChild(drgElm);
 		document.body.appendChild(drgElm2);
+		mouse.moveToElm(drgElm);
 	});
 
 	afterEach(() => {
 		drgElm.remove();
 		drgElm2.remove();
+		mouse.reset();
 	});
 
 	afterAll(() => {
@@ -46,35 +46,31 @@ describe('draggables', () => {
 		});
 
 		describe('with no arguments', () => {
-			it('enable all draggables under <body>', () => {
+			it('enables all draggables under <body>', () => {
 				const drgInstance = draggables();
 
-				simulateMouseDown(drgElm, [0, 0]);
-				simulateMouseMove(drgElm, [100, 80]);
-				simulateMouseUp(drgElm, [100, 80]);
-				expect(drgElm.style.transform).to.equal(translate(100, 80));
+				mouse.down().move([8, 12]).up();
+				expect(drgElm.style.transform).to.equal(translate(8, 12));
 
-				simulateMouseDown(drgElm2, [10, 510]);
-				simulateMouseMove(drgElm2, [28, 580]);
-				simulateMouseUp(drgElm2, [28, 580]);
-				expect(drgElm2.style.transform).to.equal(translate(18, 70));
+				mouse.moveToElm(drgElm2);
+
+				mouse.down().move([9, 13]).up();
+				expect(drgElm2.style.transform).to.equal(translate(9, 13));
 
 				drgInstance.destroy();
 			});
 		});
 
 		describe('with an HTML element', () => {
-			it('enable all draggables under given element', () => {
+			it('enables all draggables under given element', () => {
 				const drgInstance = draggables(testContainerElm);
 
-				simulateMouseDown(drgElm, [0, 0]);
-				simulateMouseMove(drgElm, [100, 80]);
-				simulateMouseUp(drgElm, [100, 80]);
-				expect(drgElm.style.transform).to.equal(translate(100, 80));
+				mouse.down().move([8, 12]).up();
+				expect(drgElm.style.transform).to.equal(translate(8, 12));
 
-				simulateMouseDown(drgElm2, [10, 510]);
-				simulateMouseMove(drgElm2, [28, 580]);
-				simulateMouseUp(drgElm2, [28, 580]);
+				mouse.moveToElm(drgElm2);
+
+				mouse.down().move([8, 12]).up();
 				expect(drgElm2.style.transform).to.be.empty;
 
 				drgInstance.destroy();
@@ -120,8 +116,7 @@ describe('draggables', () => {
 					count2++;
 				});
 
-				simulateMouseDown(drgElm, [0, 0]);
-				simulateMouseUp(drgElm, [0, 0]);
+				mouse.down().up();
 
 				drgInstance1.destroy();
 				drgInstance2.destroy();
@@ -144,17 +139,13 @@ describe('draggables', () => {
 		});
 
 		it('disables dragging', () => {
-			simulateMouseDown(drgElm, [0, 0]);
-			simulateMouseMove(drgElm, [100, 80]);
-			simulateMouseUp(drgElm, [100, 80]);
-			expect(drgElm.style.transform).to.equal(translate(100, 80));
+			mouse.down().move([8, 12]).up();
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 
-			simulateMouseDown(drgElm, [100, 80]);
-			simulateMouseMove(drgElm, [124, 96]);
-			simulateMouseUp(drgElm, [124, 96]);
-			expect(drgElm.style.transform).to.equal(translate(100, 80));
+			mouse.down().move([9, 13]).up();
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
 		});
 
 		it('removes all listeners', () => {
@@ -173,30 +164,27 @@ describe('draggables', () => {
 			});
 
 			expect(grabs).to.equal(0);
-			simulateMouseDown(drgElm, [50, 50]);
+			mouse.down();
 			expect(grabs).to.equal(1);
 
 			expect(moves).to.equal(0);
-			simulateMouseMove(drgElm, [50, 50]);
+			mouse.move([8, 12]);
 			expect(moves).to.equal(1);
 
-			simulateMouseMove(drgElm, [150, 150]);
+			mouse.move([8, 12]);
 			expect(moves).to.equal(2);
 
 			expect(drops).to.equal(0);
-			simulateMouseUp(drgElm, [150, 150]);
+			mouse.up();
 			expect(drops).to.equal(1);
 
 			expect(moves).to.equal(2);
-			simulateMouseMove(drgElm, [160, 160]);
+			mouse.move([9, 13]);
 			expect(moves).to.equal(2);
 
 			drgInstance.destroy();
 
-			simulateMouseDown(drgElm, [160, 160]);
-			simulateMouseMove(drgElm, [160, 160]);
-			simulateMouseUp(drgElm, [160, 160]);
-
+			mouse.down().move([9, 13]).up();
 			expect(grabs).to.equal(1);
 			expect(moves).to.equal(2);
 			expect(drops).to.equal(1);

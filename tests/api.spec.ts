@@ -1,32 +1,32 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
 import {type Draggables, draggables} from '../src';
 import {createContainerElm, createDraggableElm} from './dom-utils';
-import {
-	simulateMouseDown,
-	simulateMouseMove,
-	simulateMouseUp,
-	translate,
-} from './utils';
+import {createMouseSimulator} from './mouse-simulator';
+import {translate} from './utils';
 
 describe('API', () => {
 	let drgElm: HTMLElement;
 	let drgInstance: Draggables;
 	let testContainerElm: HTMLElement;
+	let mouse: ReturnType<typeof createMouseSimulator>;
 
 	beforeAll(() => {
 		testContainerElm = createContainerElm();
 		document.body.appendChild(testContainerElm);
+		mouse = createMouseSimulator();
 	});
 
 	beforeEach(() => {
 		drgElm = createDraggableElm();
 		testContainerElm.appendChild(drgElm);
 		drgInstance = draggables();
+		mouse.moveToElm(drgElm);
 	});
 
 	afterEach(() => {
 		drgInstance.destroy();
 		drgElm.remove();
+		mouse.reset();
 	});
 
 	afterAll(() => {
@@ -46,42 +46,33 @@ describe('API', () => {
 
 		it('toggles draggability', () => {
 			expect(drgElm.style.transform).to.be.empty;
-			simulateMouseDown(drgElm, [0, 0]);
-			simulateMouseMove(drgElm, [50, 0]);
-			simulateMouseUp(drgElm, [50, 0]);
-			expect(drgElm.style.transform).to.equal(translate(50, 0));
+			mouse.down().move([10, 0]).up();
+			expect(drgElm.style.transform).to.equal(translate(10, 0));
 
-			simulateMouseDown(drgElm, [50, 0]);
-			simulateMouseMove(drgElm, [100, 0]);
-			simulateMouseUp(drgElm, [100, 0]);
-			expect(drgElm.style.transform).to.equal(translate(100, 0));
+			mouse.down().move([12, 0]).up();
+			expect(drgElm.style.transform).to.equal(translate(22, 0));
 
 			drgInstance.disable();
 
-			simulateMouseDown(drgElm, [100, 0]);
-			simulateMouseMove(drgElm, [150, 0]);
-			simulateMouseUp(drgElm, [150, 0]);
-			expect(drgElm.style.transform).to.equal(translate(100, 0));
+			mouse.down().move([13, 0]).up();
+			expect(drgElm.style.transform).to.equal(translate(22, 0));
 
 			drgInstance.enable();
 
-			simulateMouseDown(drgElm, [100, 0]);
-			simulateMouseMove(drgElm, [150, 0]);
-			simulateMouseUp(drgElm, [150, 0]);
-			expect(drgElm.style.transform).to.equal(translate(150, 0));
+			mouse.down().move([13, 0]).up();
+			expect(drgElm.style.transform).to.equal(translate(35, 0));
 		});
 
 		it('toggles draggability while dragging', () => {
 			expect(drgElm.style.transform).to.be.empty;
-			simulateMouseDown(drgElm, [0, 0]);
-			simulateMouseMove(drgElm, [100, 0]);
-			expect(drgElm.style.transform).to.equal(translate(100, 0));
+			mouse.down().move([10, 0]);
+			expect(drgElm.style.transform).to.equal(translate(10, 0));
 
 			drgInstance.disable();
 
-			simulateMouseMove(drgElm, [200, 0]);
-			expect(drgElm.style.transform).to.equal(translate(100, 0));
-			simulateMouseUp(drgElm, [200, 0]);
+			mouse.move([12, 0]);
+			expect(drgElm.style.transform).to.equal(translate(10, 0));
+			mouse.up();
 		});
 	});
 

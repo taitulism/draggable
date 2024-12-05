@@ -1,5 +1,7 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
 import {draggables} from '../src';
+import {translate} from './utils';
+import {createMouseSimulator} from './mouse-simulator';
 import {
 	createContainerElm,
 	createTargetElm,
@@ -9,29 +11,27 @@ import {
 	addChild,
 	addGripChild,
 } from './dom-utils';
-import {
-	simulateMouseDown,
-	simulateMouseMove,
-	simulateMouseUp,
-	translate,
-} from './utils';
 
 describe('Data Attributes', () => {
 	let drgElm: HTMLElement;
 	let testContainerElm: HTMLElement;
+	let mouse: ReturnType<typeof createMouseSimulator>;
 
 	beforeAll(() => {
 		testContainerElm = createContainerElm();
 		document.body.appendChild(testContainerElm);
+		mouse = createMouseSimulator();
 	});
 
 	beforeEach(() => {
 		drgElm = createTargetElm();
 		testContainerElm.appendChild(drgElm);
+		mouse.moveToElm(drgElm);
 	});
 
 	afterEach(() => {
 		drgElm.remove();
+		mouse.reset();
 	});
 
 	afterAll(() => {
@@ -42,17 +42,17 @@ describe('Data Attributes', () => {
 		it('becomes draggable', () => {
 			const drgInstance = draggables();
 
-			simulateMouseDown(drgElm, [50, 50]);
-			simulateMouseMove(drgElm, [101, 80]);
-			simulateMouseUp(drgElm, [101, 80]);
+			mouse.down();
+			mouse.move([8, 12]);
+			mouse.up();
 			expect(drgElm.style.transform).to.be.empty;
 
 			makeDraggable(drgElm);
 
-			simulateMouseDown(drgElm, [50, 50]);
-			simulateMouseMove(drgElm, [101, 80]);
-			simulateMouseUp(drgElm, [101, 80]);
-			expect(drgElm.style.transform).to.equal(translate(51, 30));
+			mouse.down();
+			mouse.move([8, 12]);
+			mouse.up();
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 		});
@@ -61,11 +61,10 @@ describe('Data Attributes', () => {
 			const drgInstance = draggables();
 			const child = addChild(drgElm);
 			makeDraggable(drgElm);
+			mouse.moveToElm(child);
 
-			simulateMouseDown(child, [30, 25]);
-			simulateMouseMove(child, [51, 50]);
-			simulateMouseUp(child, [51, 80]);
-			expect(drgElm.style.transform).to.equal(translate(21, 25));
+			mouse.down().move([8, 12]).up();
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 		});
@@ -77,11 +76,10 @@ describe('Data Attributes', () => {
 
 			makeDraggable(drgElm);
 			const grip = addGrip(drgElm);
+			mouse.moveToElm(grip);
 
-			simulateMouseDown(grip, [62, 62]);
-			simulateMouseMove(grip, [70, 80]);
-			simulateMouseUp(grip, [70, 80]);
-			expect(drgElm.style.transform).to.equal(translate(8, 18));
+			mouse.down().move([8, 12]).up();
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 		});
@@ -92,11 +90,10 @@ describe('Data Attributes', () => {
 			makeDraggable(drgElm);
 			const grip = addGrip(drgElm);
 			const gripChild = addGripChild(grip);
+			mouse.moveToElm(gripChild);
 
-			simulateMouseDown(gripChild, [62, 62]);
-			simulateMouseMove(gripChild, [70, 80]);
-			simulateMouseUp(gripChild, [70, 80]);
-			expect(drgElm.style.transform).to.equal(translate(8, 18));
+			mouse.down().move([8, 12]).up();
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 		});
@@ -108,20 +105,16 @@ describe('Data Attributes', () => {
 			const grip = addGrip(drgElm);
 			const child = addChild(drgElm);
 
-			simulateMouseDown(drgElm, [50, 50]);
-			simulateMouseMove(drgElm, [70, 80]);
-			simulateMouseUp(drgElm, [70, 80]);
+			mouse.down().move([8, 12]).up();
 			expect(drgElm.style.transform).to.be.empty;
 
-			simulateMouseDown(child, [62, 62]);
-			simulateMouseMove(child, [70, 80]);
-			simulateMouseUp(child, [70, 80]);
+			mouse.moveToElm(child);
+			mouse.down().move([8, 12]).up();
 			expect(drgElm.style.transform).to.be.empty;
 
-			simulateMouseDown(grip, [62, 62]);
-			simulateMouseMove(grip, [70, 80]);
-			simulateMouseUp(grip, [70, 80]);
-			expect(drgElm.style.transform).to.equal(translate(8, 18));
+			mouse.moveToElm(grip);
+			mouse.down().move([8, 12]).up();
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 		});
@@ -141,7 +134,7 @@ describe('Data Attributes', () => {
 					errMsg = message;
 					try {
 						expect(errMsg).to.include('must be inside a draggable');
-						simulateMouseUp(grip, [62, 62]);
+						mouse.up();
 						drgInstance.destroy();
 						window.onerror = originalWindowOnError;
 						resolve(true);
@@ -151,7 +144,8 @@ describe('Data Attributes', () => {
 					}
 				};
 
-				simulateMouseDown(grip, [62, 62]);
+				mouse.moveToElm(grip);
+				mouse.down().move([8, 12]);
 				expect(true).to.be.false;
 			});
 
@@ -166,24 +160,18 @@ describe('Data Attributes', () => {
 			makeDraggable(drgElm);
 
 			setAxis(drgElm, 'x');
-			simulateMouseDown(drgElm, [0, 0]);
-			simulateMouseMove(drgElm, [15, 15]);
-			simulateMouseUp(drgElm, [15, 15]);
-			expect(drgElm.style.transform).to.equal(translate(15, 0));
+			mouse.down().move([8, 12]).up();
+			expect(drgElm.style.transform).to.equal(translate(8, 0));
 
 			// TODO:test - switching axis after move fails (no reset position)
 
 			// reset position
-			simulateMouseDown(drgElm, [15, 15]);
-			simulateMouseMove(drgElm, [0, 0]);
-			simulateMouseUp(drgElm, [0, 0]);
+			mouse.down().move([-8, -12]).up();
 			expect(drgElm.style.transform).to.equal(translate(0, 0));
 
 			setAxis(drgElm, 'y');
-			simulateMouseDown(drgElm, [0, 0]);
-			simulateMouseMove(drgElm, [15, 15]);
-			simulateMouseUp(drgElm, [15, 15]);
-			expect(drgElm.style.transform).to.equal(translate(0, 15));
+			mouse.down().move([8, 12]).up();
+			expect(drgElm.style.transform).to.equal(translate(0, 12));
 
 			drgInstance.destroy();
 		});
@@ -196,11 +184,11 @@ describe('Data Attributes', () => {
 			makeDraggable(drgElm);
 
 			expect(drgElm.dataset).not.to.haveOwnProperty('dragActive');
-			simulateMouseDown(drgElm, [50, 50]);
+			mouse.down();
 			expect(drgElm.dataset).to.haveOwnProperty('dragActive');
-			simulateMouseMove(drgElm, [100, 100]);
+			mouse.move([8, 12]);
 			expect(drgElm.dataset).to.haveOwnProperty('dragActive');
-			simulateMouseUp(drgElm, [100, 100]);
+			mouse.up();
 			expect(drgElm.dataset).not.to.haveOwnProperty('dragActive');
 
 			drgInstance.destroy();

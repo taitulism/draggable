@@ -1,31 +1,31 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
 import {type Draggables, draggables} from '../src';
 import {createContainerElm, createDraggableElm} from './dom-utils';
-import {
-	simulateMouseDown,
-	simulateMouseMove,
-	simulateMouseUp,
-} from './utils';
+import {createMouseSimulator} from './mouse-simulator';
 
 describe('Events', () => {
 	let drgElm: HTMLElement;
 	let drgInstance: Draggables;
 	let testContainerElm: HTMLElement;
+	let mouse: ReturnType<typeof createMouseSimulator>;
 
 	beforeAll(() => {
 		testContainerElm = createContainerElm();
 		document.body.appendChild(testContainerElm);
+		mouse = createMouseSimulator();
 	});
 
 	beforeEach(() => {
 		drgElm = createDraggableElm();
 		testContainerElm.appendChild(drgElm);
 		drgInstance = draggables();
+		mouse.moveToElm(drgElm);
 	});
 
 	afterEach(() => {
 		drgInstance.destroy();
 		drgElm.remove();
+		mouse.reset();
 	});
 
 	afterAll(() => {
@@ -41,9 +41,9 @@ describe('Events', () => {
 			});
 
 			expect(fired).to.be.false;
-			simulateMouseDown(drgElm, [0, 0]);
+			mouse.down();
 			expect(fired).to.be.true;
-			simulateMouseUp(drgElm, [0, 0]);
+			mouse.up();
 		});
 
 		it('emits `dragging` event', () => {
@@ -53,13 +53,13 @@ describe('Events', () => {
 				fired = true;
 			});
 
-			simulateMouseDown(drgElm, [0, 0]);
+			mouse.down();
 
 			expect(fired).to.be.false;
-			simulateMouseMove(drgElm, [15, 15]);
+			mouse.move([15, 15]);
 			expect(fired).to.be.true;
 
-			simulateMouseUp(drgElm, [15, 15]);
+			mouse.up();
 		});
 
 		it('emits `drag-end` event', () => {
@@ -69,14 +69,14 @@ describe('Events', () => {
 				fired = true;
 			});
 
-			simulateMouseDown(drgElm, [0, 0]);
+			mouse.down();
 
 			expect(fired).to.be.false;
-			simulateMouseUp(drgElm, [0, 0]);
+			mouse.up();
 			expect(fired).to.be.true;
 		});
 
-		it('passed DragEvent object to all event handlers', () => {
+		it('passes `DragEvent` object to all event handlers', () => {
 			let count = 0;
 
 			// TODO:test use spy because errors inside handlers are uncaught
@@ -90,19 +90,18 @@ describe('Events', () => {
 				count++;
 				expect(dragEv.elm).toBe(drgElm);
 				expect(dragEv.ev).to.be.instanceOf(Event);
-				expect(dragEv.relPos).to.deep.equal([15, 15]);
+				expect(dragEv.relPos).to.deep.equal([9, 13]);
 			});
 			drgInstance.on('drag-end', (dragEv) => {
 				count++;
 				expect(dragEv.elm).toBe(drgElm);
 				expect(dragEv.ev).to.be.instanceOf(Event);
-				expect(dragEv.relPos).to.deep.equal([15, 15]);
+				expect(dragEv.relPos).to.deep.equal([9, 13]);
 			});
 
-			simulateMouseDown(drgElm, [0, 0]);
-			simulateMouseMove(drgElm, [15, 15]);
-			simulateMouseUp(drgElm, [15, 15]);
-
+			mouse.down();
+			mouse.move([9, 13]);
+			mouse.up();
 			expect(count).to.equal(3);
 		});
 	});
@@ -114,27 +113,26 @@ describe('Events', () => {
 			drgInstance.on('drag-start', () => count++);
 
 			expect(count).to.equal(0);
-			simulateMouseDown(drgElm, [0, 0]);
+			mouse.down();
 			expect(count).to.equal(1);
 
-			simulateMouseMove(drgElm, [15, 15]);
-			simulateMouseUp(drgElm, [15, 15]);
+			mouse.move([8, 12]);
+			mouse.up();
 
 			expect(count).to.equal(1);
-			simulateMouseDown(drgElm, [15, 15]);
+			mouse.down();
 			expect(count).to.equal(2);
 
-			simulateMouseMove(drgElm, [30, 30]);
-			simulateMouseUp(drgElm, [30, 30]);
+			mouse.move([9, 13]);
+			mouse.up();
 
 			drgInstance.off('drag-start');
 
 			expect(count).to.equal(2);
-			simulateMouseDown(drgElm, [30, 30]);
+			mouse.down();
 			expect(count).to.equal(2);
 
-			simulateMouseMove(drgElm, [45, 45]);
-			simulateMouseUp(drgElm, [45, 45]);
+			mouse.move([17, 25]).up();
 		});
 
 		it('stops emitting `dragging` events', () => {
@@ -142,25 +140,25 @@ describe('Events', () => {
 
 			drgInstance.on('dragging', () => count++);
 
-			simulateMouseDown(drgElm, [0, 0]);
+			mouse.down();
 			expect(count).to.equal(0);
-			simulateMouseMove(drgElm, [15, 15]);
+			mouse.move([8, 12]);
 			expect(count).to.equal(1);
-			simulateMouseUp(drgElm, [15, 15]);
+			mouse.up();
 
-			simulateMouseDown(drgElm, [15, 15]);
+			mouse.down();
 			expect(count).to.equal(1);
-			simulateMouseMove(drgElm, [30, 30]);
+			mouse.move([9, 13]);
 			expect(count).to.equal(2);
-			simulateMouseUp(drgElm, [30, 30]);
+			mouse.up();
 
 			drgInstance.off('dragging');
 
-			simulateMouseDown(drgElm, [30, 30]);
+			mouse.down();
 			expect(count).to.equal(2);
-			simulateMouseMove(drgElm, [45, 45]);
+			mouse.move([17, 25]);
 			expect(count).to.equal(2);
-			simulateMouseUp(drgElm, [45, 45]);
+			mouse.up();
 		});
 
 		it('stops emitting `drag-end`s event', () => {
@@ -168,27 +166,27 @@ describe('Events', () => {
 
 			drgInstance.on('drag-end', () => count++);
 
-			simulateMouseDown(drgElm, [0, 0]);
-			simulateMouseMove(drgElm, [15, 15]);
+			mouse.down();
+			mouse.move([10, 10]);
 
 			expect(count).to.equal(0);
-			simulateMouseUp(drgElm, [15, 15]);
+			mouse.up();
 			expect(count).to.equal(1);
 
-			simulateMouseDown(drgElm, [0, 0]);
-			simulateMouseMove(drgElm, [15, 15]);
+			mouse.down();
+			mouse.move([10, 10]);
 
 			expect(count).to.equal(1);
-			simulateMouseUp(drgElm, [0, 0]);
+			mouse.up();
 			expect(count).to.equal(2);
 
 			drgInstance.off('drag-end');
 
-			simulateMouseDown(drgElm, [0, 0]);
-			simulateMouseMove(drgElm, [15, 15]);
+			mouse.down();
+			mouse.move([10, 10]);
 
 			expect(count).to.equal(2);
-			simulateMouseUp(drgElm, [0, 0]);
+			mouse.up();
 			expect(count).to.equal(2);
 		});
 	});

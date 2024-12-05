@@ -1,90 +1,110 @@
 import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
 import {type Draggables, draggables} from '../src';
 import {createContainerElm, createDraggableElm} from './dom-utils';
-import {
-	simulateMouseDown,
-	simulateMouseMove,
-	simulateMouseUp,
-	translate,
-} from './utils';
+import {translate} from './utils';
+import {createMouseSimulator} from './mouse-simulator';
 
 describe('Dragging Around', () => {
 	let drgElm: HTMLElement;
 	let drgInstance: Draggables;
 	let testContainerElm: HTMLElement;
+	let mouse: ReturnType<typeof createMouseSimulator>;
 
 	beforeAll(() => {
 		testContainerElm = createContainerElm();
 		document.body.appendChild(testContainerElm);
+		mouse = createMouseSimulator();
 	});
 
 	beforeEach(() => {
 		drgElm = createDraggableElm();
 		testContainerElm.appendChild(drgElm);
 		drgInstance = draggables();
+		mouse.moveToElm(drgElm);
 	});
 
 	afterEach(() => {
 		drgInstance.destroy();
 		drgElm.remove();
+		mouse.reset();
 	});
 
 	afterAll(() => {
 		testContainerElm.remove();
 	});
 
-	it('moves the elm on the X axis', () => {
-		simulateMouseDown(drgElm, [0, 0]);
-		expect(drgElm.style.transform).to.be.empty;
+	describe('Basic Dragging', () => {
+		it('moves the elm on the X axis', () => {
+			mouse.down();
+			expect(drgElm.style.transform).to.be.empty;
 
-		simulateMouseMove(drgElm, [150, 0]);
-		expect(drgElm.style.transform).to.equal(translate(150, 0));
+			mouse.move([8, 0]);
+			expect(drgElm.style.transform).to.equal(translate(8, 0));
 
-		simulateMouseUp(drgElm, [150, 0]);
-		expect(drgElm.style.transform).to.equal(translate(150, 0));
+			mouse.up();
+			expect(drgElm.style.transform).to.equal(translate(8, 0));
 
-		simulateMouseDown(drgElm, [150, 0]);
-		expect(drgElm.style.transform).to.equal(translate(150, 0));
+			mouse.down();
+			expect(drgElm.style.transform).to.equal(translate(8, 0));
 
-		simulateMouseMove(drgElm, [0, 0]);
-		simulateMouseUp(drgElm, [0, 0]);
-		expect(drgElm.style.transform).to.equal(translate(0, 0));
+			mouse.move([-8, 0]);
+			expect(drgElm.style.transform).to.equal(translate(0, 0));
+
+			mouse.up();
+			expect(drgElm.style.transform).to.equal(translate(0, 0));
+		});
+
+		it('moves the elm on the Y axis', () => {
+			mouse.down();
+			expect(drgElm.style.transform).to.be.empty;
+
+			mouse.move([0, 12]);
+			expect(drgElm.style.transform).to.equal(translate(0, 12));
+
+			mouse.up();
+			expect(drgElm.style.transform).to.equal(translate(0, 12));
+
+			mouse.down();
+			expect(drgElm.style.transform).to.equal(translate(0, 12));
+
+			mouse.move([0, -12]);
+			expect(drgElm.style.transform).to.equal(translate(0, 0));
+
+			mouse.up();
+			expect(drgElm.style.transform).to.equal(translate(0, 0));
+		});
+
+		it('moves the elm freely on both axes', () => {
+			mouse.down();
+			expect(drgElm.style.transform).to.be.empty;
+
+			mouse.move([8, 12]);
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
+
+			mouse.up();
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
+
+			mouse.down();
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
+
+			mouse.move([-8, -12]);
+			expect(drgElm.style.transform).to.equal(translate(0, 0));
+
+			mouse.up();
+			expect(drgElm.style.transform).to.equal(translate(0, 0));
+		});
 	});
 
-	it('moves the elm on the Y axis', () => {
-		simulateMouseDown(drgElm, [0, 0]);
-		expect(drgElm.style.transform).to.be.empty;
+	describe('Sequential Dragging', () => {
+		it('continues from the last position', () => {
+			mouse.down().move([8, 12]).up();
+			expect(drgElm.style.transform).to.equal(translate(8, 12));
 
-		simulateMouseMove(drgElm, [0, 150]);
-		expect(drgElm.style.transform).to.equal(translate(0, 150));
+			mouse.move([33, 33]);
 
-		simulateMouseUp(drgElm, [0, 150]);
-		expect(drgElm.style.transform).to.equal(translate(0, 150));
-
-		simulateMouseDown(drgElm, [0, 150]);
-		expect(drgElm.style.transform).to.equal(translate(0, 150));
-
-		simulateMouseMove(drgElm, [0, 0]);
-		simulateMouseUp(drgElm, [0, 0]);
-		expect(drgElm.style.transform).to.equal(translate(0, 0));
-	});
-
-	it('moves the elm freely on both axes', () => {
-		simulateMouseDown(drgElm, [0, 0]);
-		expect(drgElm.style.transform).to.be.empty;
-
-		simulateMouseMove(drgElm, [150, 150]);
-		expect(drgElm.style.transform).to.equal(translate(150, 150));
-
-		simulateMouseUp(drgElm, [150, 150]);
-		expect(drgElm.style.transform).to.equal(translate(150, 150));
-
-		simulateMouseDown(drgElm, [150, 150]);
-		expect(drgElm.style.transform).to.equal(translate(150, 150));
-
-		simulateMouseMove(drgElm, [0, 0]);
-		simulateMouseUp(drgElm, [0, 0]);
-		expect(drgElm.style.transform).to.equal(translate(0, 0));
+			mouse.down().move([-13, -18]).up();
+			expect(drgElm.style.transform).to.equal(translate(-5, -6));
+		});
 	});
 
 	// TODO:test - add checks against initial box
