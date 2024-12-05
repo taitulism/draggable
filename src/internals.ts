@@ -18,8 +18,7 @@ export const createEventsObj = (): EventsObj => ({
 });
 
 export const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
-	const translate = `translate(${x}px, ${y}px)`;
-	elm.style.transform = translate;
+	elm.style.translate = `${x}px ${y}px`;
 };
 
 export const getDraggable = (evTarget: EventTarget | null) => {

@@ -45,33 +45,33 @@ describe('API', () => {
 		});
 
 		it('toggles draggability', () => {
-			expect(drgElm.style.transform).to.be.empty;
+			expect(drgElm.style.translate).to.be.empty;
 			mouse.down().move([10, 0]).up();
-			expect(drgElm.style.transform).to.equal(translate(10, 0));
+			expect(drgElm.style.translate).to.equal(translate(10, 0));
 
 			mouse.down().move([12, 0]).up();
-			expect(drgElm.style.transform).to.equal(translate(22, 0));
+			expect(drgElm.style.translate).to.equal(translate(22, 0));
 
 			drgInstance.disable();
 
 			mouse.down().move([13, 0]).up();
-			expect(drgElm.style.transform).to.equal(translate(22, 0));
+			expect(drgElm.style.translate).to.equal(translate(22, 0));
 
 			drgInstance.enable();
 
 			mouse.down().move([13, 0]).up();
-			expect(drgElm.style.transform).to.equal(translate(35, 0));
+			expect(drgElm.style.translate).to.equal(translate(35, 0));
 		});
 
 		it('toggles draggability while dragging', () => {
-			expect(drgElm.style.transform).to.be.empty;
+			expect(drgElm.style.translate).to.be.empty;
 			mouse.down().move([10, 0]);
-			expect(drgElm.style.transform).to.equal(translate(10, 0));
+			expect(drgElm.style.translate).to.equal(translate(10, 0));
 
 			drgInstance.disable();
 
 			mouse.move([12, 0]);
-			expect(drgElm.style.transform).to.equal(translate(10, 0));
+			expect(drgElm.style.translate).to.equal(translate(10, 0));
 			mouse.up();
 		});
 	});

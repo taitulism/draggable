@@ -50,12 +50,12 @@ describe('draggables', () => {
 				const drgInstance = draggables();
 
 				mouse.down().move([8, 12]).up();
-				expect(drgElm.style.transform).to.equal(translate(8, 12));
+				expect(drgElm.style.translate).to.equal(translate(8, 12));
 
 				mouse.moveToElm(drgElm2);
 
 				mouse.down().move([9, 13]).up();
-				expect(drgElm2.style.transform).to.equal(translate(9, 13));
+				expect(drgElm2.style.translate).to.equal(translate(9, 13));
 
 				drgInstance.destroy();
 			});
@@ -66,12 +66,12 @@ describe('draggables', () => {
 				const drgInstance = draggables(testContainerElm);
 
 				mouse.down().move([8, 12]).up();
-				expect(drgElm.style.transform).to.equal(translate(8, 12));
+				expect(drgElm.style.translate).to.equal(translate(8, 12));
 
 				mouse.moveToElm(drgElm2);
 
 				mouse.down().move([8, 12]).up();
-				expect(drgElm2.style.transform).to.be.empty;
+				expect(drgElm2.style.translate).to.be.empty;
 
 				drgInstance.destroy();
 			});
@@ -140,12 +140,12 @@ describe('draggables', () => {
 
 		it('disables dragging', () => {
 			mouse.down().move([8, 12]).up();
-			expect(drgElm.style.transform).to.equal(translate(8, 12));
+			expect(drgElm.style.translate).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 
 			mouse.down().move([9, 13]).up();
-			expect(drgElm.style.transform).to.equal(translate(8, 12));
+			expect(drgElm.style.translate).to.equal(translate(8, 12));
 		});
 
 		it('removes all listeners', () => {

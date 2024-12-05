@@ -45,14 +45,14 @@ describe('Data Attributes', () => {
 			mouse.down();
 			mouse.move([8, 12]);
 			mouse.up();
-			expect(drgElm.style.transform).to.be.empty;
+			expect(drgElm.style.translate).to.be.empty;
 
 			makeDraggable(drgElm);
 
 			mouse.down();
 			mouse.move([8, 12]);
 			mouse.up();
-			expect(drgElm.style.transform).to.equal(translate(8, 12));
+			expect(drgElm.style.translate).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 		});
@@ -64,7 +64,7 @@ describe('Data Attributes', () => {
 			mouse.moveToElm(child);
 
 			mouse.down().move([8, 12]).up();
-			expect(drgElm.style.transform).to.equal(translate(8, 12));
+			expect(drgElm.style.translate).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 		});
@@ -79,7 +79,7 @@ describe('Data Attributes', () => {
 			mouse.moveToElm(grip);
 
 			mouse.down().move([8, 12]).up();
-			expect(drgElm.style.transform).to.equal(translate(8, 12));
+			expect(drgElm.style.translate).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 		});
@@ -93,7 +93,7 @@ describe('Data Attributes', () => {
 			mouse.moveToElm(gripChild);
 
 			mouse.down().move([8, 12]).up();
-			expect(drgElm.style.transform).to.equal(translate(8, 12));
+			expect(drgElm.style.translate).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 		});
@@ -106,15 +106,15 @@ describe('Data Attributes', () => {
 			const child = addChild(drgElm);
 
 			mouse.down().move([8, 12]).up();
-			expect(drgElm.style.transform).to.be.empty;
+			expect(drgElm.style.translate).to.be.empty;
 
 			mouse.moveToElm(child);
 			mouse.down().move([8, 12]).up();
-			expect(drgElm.style.transform).to.be.empty;
+			expect(drgElm.style.translate).to.be.empty;
 
 			mouse.moveToElm(grip);
 			mouse.down().move([8, 12]).up();
-			expect(drgElm.style.transform).to.equal(translate(8, 12));
+			expect(drgElm.style.translate).to.equal(translate(8, 12));
 
 			drgInstance.destroy();
 		});
@@ -161,17 +161,17 @@ describe('Data Attributes', () => {
 
 			setAxis(drgElm, 'x');
 			mouse.down().move([8, 12]).up();
-			expect(drgElm.style.transform).to.equal(translate(8, 0));
+			expect(drgElm.style.translate).to.equal(translate(8, 0));
 
 			// TODO:test - switching axis after move fails (no reset position)
 
 			// reset position
 			mouse.down().move([-8, -12]).up();
-			expect(drgElm.style.transform).to.equal(translate(0, 0));
+			expect(drgElm.style.translate).to.equal(translate(0, 0));
 
 			setAxis(drgElm, 'y');
 			mouse.down().move([8, 12]).up();
-			expect(drgElm.style.transform).to.equal(translate(0, 12));
+			expect(drgElm.style.translate).to.equal(translate(0, 12));
 
 			drgInstance.destroy();
 		});
