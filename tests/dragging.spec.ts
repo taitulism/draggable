@@ -93,21 +93,61 @@ describe('Dragging Around', () => {
 			mouse.up();
 			expect(drgElm.style.translate).to.equal(translate(0, 0));
 		});
-	});
 
-	describe('Sequential Dragging', () => {
-		it('continues from the last position', () => {
-			mouse.down().move([8, 12]).up();
-			expect(drgElm.style.translate).to.equal(translate(8, 12));
+		it('only moves when supposed to', () => {
+			mouse.move([10, 10]);
+			expect(drgElm.style.translate).to.be.empty;
+			mouse.down();
+			expect(drgElm.style.translate).to.be.empty;
+			mouse.move([10, 10]);
+			expect(drgElm.style.translate).to.equal(translate(10, 10));
+			mouse.up();
 
-			mouse.move([33, 33]);
-
-			mouse.down().move([-13, -18]).up();
-			expect(drgElm.style.translate).to.equal(translate(-5, -6));
+			mouse.move([11, 11]);
+			expect(drgElm.style.translate).to.equal(translate(10, 10));
 		});
 	});
 
-	// TODO:test - add checks against initial box
-	// 	const newBox = drgElm.getBoundingClientRect();
-	// 	expect(newBox.left).to.equal(75 + 7);
+	describe('Sequential Dragging', () => {
+		it('different grabbing points', () => {
+			mouse.down().move([8, 12]).up();
+			expect(drgElm.style.translate).to.equal(translate(8, 12));
+
+			mouse.move([30, 30]);
+
+			mouse.down().move([-13, -18]).up();
+			expect(drgElm.style.translate).to.equal(translate(-5, -6));
+
+			mouse.move([-15, -15]);
+
+			mouse.down().move([45, 16]).up();
+			expect(drgElm.style.translate).to.equal(translate(40, 10));
+
+			mouse.move([-10, -10]);
+
+			mouse.down().move([10, 40]).up();
+			expect(drgElm.style.translate).to.equal(translate(50, 50));
+		});
+
+		it('continous dragging', () => {
+			mouse.down();
+
+			mouse.move([10, 10]);
+			expect(drgElm.style.translate).to.equal(translate(10, 10));
+
+			mouse.move([10, -10]);
+			expect(drgElm.style.translate).to.equal(translate(20, 0));
+
+			mouse.move([20, 20]);
+			expect(drgElm.style.translate).to.equal(translate(40, 20));
+
+			mouse.move([-20, 20]);
+			expect(drgElm.style.translate).to.equal(translate(20, 40));
+
+			mouse.move([-20, -40]);
+			expect(drgElm.style.translate).to.equal(translate(0, 0));
+
+			mouse.up();
+		});
+	});
 });
