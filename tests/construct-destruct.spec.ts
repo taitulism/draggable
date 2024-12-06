@@ -125,6 +125,161 @@ describe('draggables', () => {
 				expect(count2).to.equal(1);
 			});
 		});
+
+		describe('Option: `padding` blocks dragging when grabbed within padding', () => {
+			it('top side', () => {
+				const drgInstance = draggables({padding: 8});
+
+				mouse.down([50, 4]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([50, 8]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([50, 9]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(11, 11));
+
+				drgInstance.destroy();
+			});
+
+			it('left side', () => {
+				const drgInstance = draggables({padding: 8});
+
+				mouse.down([4, 50]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([8, 50]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([9, 50]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(11, 11));
+
+				drgInstance.destroy();
+			});
+
+			it('right side', () => {
+				const drgInstance = draggables({padding: 8});
+
+				mouse.down([4, 50]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([8, 50]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([9, 50]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(11, 11));
+
+				drgInstance.destroy();
+			});
+
+			it('bottom side', () => {
+				const drgInstance = draggables({padding: 8});
+
+				mouse.down([50, 4]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([50, 8]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([50, 9]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(11, 11));
+
+				drgInstance.destroy();
+			});
+		});
+
+		describe('Option: `cornerPadding` blocks dragging when grabbed by a corner', () => {
+			it('top-left corner', () => {
+				const drgInstance = draggables({cornerPadding: 8});
+
+				mouse.down([4, 4]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([8, 8]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([9, 8]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(11, 11));
+				mouse.moveToElm(drgElm);
+
+				mouse.down([8, 9]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(22, 22));
+				drgInstance.destroy();
+			});
+
+			it('top-right corner', () => {
+				const drgInstance = draggables({cornerPadding: 8});
+
+				mouse.down([96, 4]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([92, 8]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([91, 8]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(11, 11));
+				mouse.moveToElm(drgElm);
+
+				mouse.down([92, 9]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(22, 22));
+
+				drgInstance.destroy();
+			});
+
+			it('bottom-left corner', () => {
+				const drgInstance = draggables({cornerPadding: 8});
+
+				mouse.down([4, 96]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([8, 92]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([8, 91]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(11, 11));
+				mouse.moveToElm(drgElm);
+
+				mouse.down([9, 92]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(22, 22));
+
+				drgInstance.destroy();
+			});
+
+			it('bottom-right corner', () => {
+				const drgInstance = draggables({cornerPadding: 8});
+
+				mouse.down([96, 96]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([92, 92]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.be.empty;
+				mouse.moveToElm(drgElm);
+
+				mouse.down([91, 92]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(11, 11));
+				mouse.moveToElm(drgElm);
+
+				mouse.down([92, 91]).move([11, 11]).up();
+				expect(drgElm.style.translate).to.equal(translate(22, 22));
+
+				drgInstance.destroy();
+			});
+		});
 	});
 
 	describe('.destroy()', () => {

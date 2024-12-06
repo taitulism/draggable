@@ -59,9 +59,14 @@ export function createMouseSimulator () {
 			simulateMouseMove(elm, currentPosition);
 		},
 
-		down () {
+		down (offset?: Point) {
 			if (isDown) throw new Error('Mouse is already down');
 			isDown = true;
+
+			if (offset) {
+				currentPosition[0] += offset[0];
+				currentPosition[1] += offset[1];
+			}
 
 			const elm = getElmFromPoint(currentPosition);
 			simulateMouseDown(elm, currentPosition);
