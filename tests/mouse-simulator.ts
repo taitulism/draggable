@@ -1,16 +1,12 @@
 import type {Point} from '../src/types';
 
+const getElmFromPoint = (p: Point) => document.elementFromPoint(...p) as HTMLElement;
+
 const createEvent = (type: string, props: PointerEventInit = {}) => {
 	const event = new window.Event(type, {bubbles: true});
 	Object.assign(event, props);
 	return event;
 };
-
-function getElmFromPoint (p: Point) {
-	const elm = document.elementFromPoint(...p) as HTMLElement;
-	if (!elm) throw new Error('No element in current position');
-	return elm;
-}
 
 function simulateMouseDown (elm: HTMLElement, point: Point) {
 	const [x, y] = point;
@@ -50,13 +46,17 @@ export function createMouseSimulator () {
 	let isDown = false;
 
 	return {
+		get currentPosition () {
+			return currentPosition;
+		},
 		moveToElm (elm: HTMLElement) {
-			if (!document.contains(elm)) return;
+			if (!document.contains(elm)) throw new Error('Element is not in DOM');
 
 			const {x, y} = elm.getBoundingClientRect();
 			currentPosition = [x, y];
 
 			simulateMouseMove(elm, currentPosition);
+			return this;
 		},
 
 		down (offset?: Point) {
@@ -69,12 +69,14 @@ export function createMouseSimulator () {
 			}
 
 			const elm = getElmFromPoint(currentPosition);
+			if (!elm) throw new Error('No element in current position');
+
 			simulateMouseDown(elm, currentPosition);
 			return this;
 		},
 
 		move (point: Point) {
-			const elm = getElmFromPoint(currentPosition);
+			const elm = getElmFromPoint(currentPosition) || document.documentElement;
 			const [x, y] = currentPosition;
 
 			currentPosition = [x + point[0], y + point[1]];
@@ -87,7 +89,8 @@ export function createMouseSimulator () {
 			if (!isDown) throw new Error('Mouse is not down');
 			isDown = false;
 
-			const elm = getElmFromPoint(currentPosition);
+			const elm = getElmFromPoint(currentPosition) || document.documentElement;
+
 			simulateMouseUp(elm, currentPosition);
 			return this;
 		},

@@ -22,6 +22,7 @@ export function createContainerElm () {
 	container.style.width = '400px';
 	container.style.height = '400px';
 	container.style.padding = '20px';
+	container.style.boxSizing = 'border-box';
 
 	return container;
 }
