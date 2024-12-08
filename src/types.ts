@@ -2,12 +2,6 @@ export type DragAxis = 'x' | 'y'
 export type DragEventName = 'grab' | 'dragStart' | 'dragging' | 'dragEnd'
 export type Point = [number, number]
 
-// export const eventNameAliases = {
-// 	'drag-start': 'grab',
-// 	'dragging': 'dragging',
-// 	'drag-end': 'drop',
-// } as const;
-
 export type DraggablesOptions = {
 	padding?: number
 	cornerPadding?: number
