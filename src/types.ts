@@ -1,5 +1,5 @@
 export type DragAxis = 'x' | 'y'
-export type DragEventName = 'dragStart' | 'dragging' | 'dragEnd'
+export type DragEventName = 'grab' | 'dragStart' | 'dragging' | 'dragEnd'
 export type Point = [number, number]
 
 // export const eventNameAliases = {
@@ -20,6 +20,7 @@ export type DragEventWrapper = {
 }
 
 export type ActiveDrag = {
+	hasStarted: boolean
 	elm: HTMLElement
 	// dragzoneElm: HTMLElement
 	box: DOMRect

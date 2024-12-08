@@ -12,9 +12,10 @@ export const isDisabled = (dataset: DOMStringMap) =>
 	'dragDisabled' in dataset && dataset.dragDisabled !== 'false';
 
 export const createEventsObj = (): EventsObj => ({
-	'dragStart': undefined,
-	'dragging': undefined,
-	'dragEnd': undefined,
+	grab: undefined,
+	dragStart: undefined,
+	dragging: undefined,
+	dragEnd: undefined,
 });
 
 export const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
@@ -87,6 +88,7 @@ export function createActiveDrag (
 ): ActiveDrag {
 	const {dragAxis, dragPosition} = elm.dataset;
 	const activeDrag: ActiveDrag = {
+		hasStarted: false,
 		elm,
 		box,
 		// dragzoneElm: dragzoneElm.getBoundingClientRect(),

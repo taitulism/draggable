@@ -109,10 +109,10 @@ describe('draggables', () => {
 				let count1 = 0;
 				let count2 = 0;
 
-				drgInstance1.on('dragStart', () => {
+				drgInstance1.on('grab', () => {
 					count1++;
 				});
-				drgInstance2.on('dragStart', () => {
+				drgInstance2.on('grab', () => {
 					count2++;
 				});
 
@@ -305,16 +305,17 @@ describe('draggables', () => {
 
 		it('removes all listeners', () => {
 			let grabs = 0;
+			let starts = 0;
 			let moves = 0;
 			let drops = 0;
 
-			drgInstance.on('dragStart', () => {
+			drgInstance.on('grab', () => {
 				grabs++;
-			});
-			drgInstance.on('dragging', () => {
+			}).on('dragStart', () => {
+				starts++;
+			}).on('dragging', () => {
 				moves++;
-			});
-			drgInstance.on('dragEnd', () => {
+			}).on('dragEnd', () => {
 				drops++;
 			});
 
@@ -322,26 +323,34 @@ describe('draggables', () => {
 			mouse.down();
 			expect(grabs).to.equal(1);
 
+			expect(starts).to.equal(0);
+			mouse.move([2, 2]);
+			expect(starts).to.equal(1);
+
 			expect(moves).to.equal(0);
-			mouse.move([8, 12]);
+			mouse.move([2, 2]);
 			expect(moves).to.equal(1);
 
-			mouse.move([8, 12]);
-			expect(moves).to.equal(2);
+			mouse.move([2, 2]);
+			mouse.move([2, 2]);
+			mouse.move([2, 2]);
+			expect(starts).to.equal(1);
+			expect(moves).to.equal(4);
 
 			expect(drops).to.equal(0);
 			mouse.up();
 			expect(drops).to.equal(1);
 
-			expect(moves).to.equal(2);
-			mouse.move([9, 13]);
-			expect(moves).to.equal(2);
+			expect(moves).to.equal(4);
+			mouse.move([2, 2]);
+			expect(moves).to.equal(4);
 
 			drgInstance.destroy();
 
-			mouse.down().move([9, 13]).up();
+			mouse.down().move([2, 2]).up();
 			expect(grabs).to.equal(1);
-			expect(moves).to.equal(2);
+			expect(starts).to.equal(1);
+			expect(moves).to.equal(4);
 			expect(drops).to.equal(1);
 		});
 	});
