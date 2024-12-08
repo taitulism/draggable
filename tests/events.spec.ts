@@ -36,7 +36,7 @@ describe('Events', () => {
 		it('emits `drag-start` event', () => {
 			let fired = false;
 
-			drgInstance.on('drag-start', () => {
+			drgInstance.on('dragStart', () => {
 				fired = true;
 			});
 
@@ -65,7 +65,7 @@ describe('Events', () => {
 		it('emits `drag-end` event', () => {
 			let fired = false;
 
-			drgInstance.on('drag-end', () => {
+			drgInstance.on('dragEnd', () => {
 				fired = true;
 			});
 
@@ -76,11 +76,11 @@ describe('Events', () => {
 			expect(fired).to.be.true;
 		});
 
-		it('passes `DragEvent` object to all event handlers', () => {
+		it('passes `DragEventWrapper` object to all event handlers', () => {
 			let count = 0;
 
 			// TODO:test use spy because errors inside handlers are uncaught
-			drgInstance.on('drag-start', (dragEv) => {
+			drgInstance.on('dragStart', (dragEv) => {
 				count++;
 				expect(dragEv.elm).toBe(drgElm);
 				expect(dragEv.ev).to.be.instanceOf(Event);
@@ -92,7 +92,7 @@ describe('Events', () => {
 				expect(dragEv.ev).to.be.instanceOf(Event);
 				expect(dragEv.relPos).to.deep.equal([9, 13]);
 			});
-			drgInstance.on('drag-end', (dragEv) => {
+			drgInstance.on('dragEnd', (dragEv) => {
 				count++;
 				expect(dragEv.elm).toBe(drgElm);
 				expect(dragEv.ev).to.be.instanceOf(Event);
@@ -107,10 +107,10 @@ describe('Events', () => {
 	});
 
 	describe('.off()', () => {
-		it('stops emitting `drag-start` events', () => {
+		it('stops emitting `dragStart` events', () => {
 			let count = 0;
 
-			drgInstance.on('drag-start', () => count++);
+			drgInstance.on('dragStart', () => count++);
 
 			expect(count).to.equal(0);
 			mouse.down();
@@ -126,7 +126,7 @@ describe('Events', () => {
 			mouse.move([9, 13]);
 			mouse.up();
 
-			drgInstance.off('drag-start');
+			drgInstance.off('dragStart');
 
 			expect(count).to.equal(2);
 			mouse.down();
@@ -161,10 +161,10 @@ describe('Events', () => {
 			mouse.up();
 		});
 
-		it('stops emitting `drag-end`s event', () => {
+		it('stops emitting `dragEnd`s event', () => {
 			let count = 0;
 
-			drgInstance.on('drag-end', () => count++);
+			drgInstance.on('dragEnd', () => count++);
 
 			mouse.down();
 			mouse.move([10, 10]);
@@ -180,7 +180,7 @@ describe('Events', () => {
 			mouse.up();
 			expect(count).to.equal(2);
 
-			drgInstance.off('drag-end');
+			drgInstance.off('dragEnd');
 
 			mouse.down();
 			mouse.move([10, 10]);

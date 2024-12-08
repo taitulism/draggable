@@ -109,10 +109,10 @@ describe('draggables', () => {
 				let count1 = 0;
 				let count2 = 0;
 
-				drgInstance1.on('start', () => {
+				drgInstance1.on('dragStart', () => {
 					count1++;
 				});
-				drgInstance2.on('start', () => {
+				drgInstance2.on('dragStart', () => {
 					count2++;
 				});
 
@@ -308,13 +308,13 @@ describe('draggables', () => {
 			let moves = 0;
 			let drops = 0;
 
-			drgInstance.on('start', () => {
+			drgInstance.on('dragStart', () => {
 				grabs++;
 			});
-			drgInstance.on('ing', () => {
+			drgInstance.on('dragging', () => {
 				moves++;
 			});
-			drgInstance.on('drop', () => {
+			drgInstance.on('dragEnd', () => {
 				drops++;
 			});
 
