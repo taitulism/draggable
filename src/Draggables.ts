@@ -1,4 +1,4 @@
-import type {ActiveDrag, DragEventHandler, DraggablesOptions, EventsObj} from './types';
+import type {ActiveDrag, DragEventHandler, DragEventName, DraggablesOptions, EventsObj} from './types';
 import {
 	createEventsObj,
 	getDraggable,
@@ -64,45 +64,15 @@ export class Draggables {
 		this.isEnabled = false;
 	}
 
-	public on (eventName: string, callback: DragEventHandler) {
-		const lowerEventName = eventName.toLowerCase();
-
-		if (lowerEventName.includes('start')) {
-			this.events.grab = callback;
-		}
-		else if (lowerEventName.includes('ing')) {
-			this.events.dragging = callback;
-		}
-		else if (
-			// TODO: improve
-			lowerEventName.includes('end') ||
-			lowerEventName.includes('stop') ||
-			lowerEventName.includes('drop')
-		) {
-			this.events.drop = callback;
-		}
-
+	public on (eventName: DragEventName, callback: DragEventHandler) {
+		if (!(eventName in this.events)) throw new Error('No such event name');
+		this.events[eventName] = callback;
 		return this;
 	}
 
-	public off (eventName: string) {
-		const lowerEventName = eventName.toLowerCase();
-
-		if (lowerEventName.includes('start')) {
-			this.events.grab = undefined;
-		}
-		else if (lowerEventName.includes('ing')) {
-			this.events.dragging = undefined;
-		}
-		else if (
-			// TODO: improve
-			lowerEventName.includes('end') ||
-			lowerEventName.includes('stop') ||
-			lowerEventName.includes('drop')
-		) {
-			this.events.drop = undefined;
-		}
-
+	public off (eventName: DragEventName) {
+		if (!(eventName in this.events)) throw new Error('No such event name');
+		this.events[eventName] = undefined;
 		return this;
 	}
 
@@ -134,8 +104,8 @@ export class Draggables {
 
 		if (!this.isEnabled || isDisabled(evTarget.dataset)) return;
 
-		const {activeDrag} = this;
-		const {elm} = activeDrag;
+		const {activeDrag, events} = this;
+		const {hasStarted, elm} = activeDrag;
 		const [elmMoveX, elmMoveY] = drag(activeDrag, ev);
 
 		moveBy(elm, elmMoveX, elmMoveY);
@@ -143,7 +113,18 @@ export class Draggables {
 		activeDrag.moveX = elmMoveX;
 		activeDrag.moveY = elmMoveY;
 
-		this.events.dragging?.({ev, elm, relPos: [elmMoveX, elmMoveY]});
+		// threshold
+		// const movedX = Math.abs(ev.clientX - activeDrag.mouseStartX);
+		// const movedY = Math.abs(ev.clientY - activeDrag.mouseStartY);
+		if (!hasStarted) {
+			// && movedX + movedY < 20
+			activeDrag.hasStarted = true;
+			events.dragStart?.({ev, elm, relPos: [elmMoveX, elmMoveY]});
+			// return;
+		}
+		else {
+			events.dragging?.({ev, elm, relPos: [elmMoveX, elmMoveY]});
+		}
 	};
 
 	private onDrop = (ev: PointerEvent) => {
@@ -157,6 +138,6 @@ export class Draggables {
 		delete elm.dataset.dragActive;
 
 		this.contextElm!.style.userSelect = '';
-		this.events.drop?.({ev, elm, relPos: [moveX || prevX, moveY || prevY]});
+		this.events.dragEnd?.({ev, elm, relPos: [moveX || prevX, moveY || prevY]});
 	};
 }

@@ -17,11 +17,10 @@ toggleBtn.addEventListener('click', () => {
 
 const d = draggables();
 
-// d.on('start', ({ev, relPos}) => {
-// console.log(ev.target);
-// console.log(ev.clientX, ev.clientY);
-// console.log(document.elementFromPoint(ev.clientX, ev.clientY));
-// });
+d.on('grab', () => console.log('grabbed'))
+	.on('dragStart', () => console.log('dragStart'))
+	.on('dragging', () => console.log('dragging'))
+	.on('dragEnd', () => console.log('droped'));
 
 // document.addEventListener('mousemove', (ev) => {
 // 	console.log(ev.x, ev.y);

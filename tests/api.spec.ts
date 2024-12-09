@@ -78,8 +78,15 @@ describe('API', () => {
 
 	describe('.on', () => {
 		it('is chainable', () => {
-			drgInstance = draggables(drgElm);
-			expect(drgInstance.on('start', () => null)).to.deep.equal(drgInstance);
+			expect(drgInstance.on('dragStart', () => null)).to.deep.equal(drgInstance);
+			drgInstance.off('dragStart');
+		});
+	});
+
+	describe('.off', () => {
+		it('is chainable', () => {
+			drgInstance.on('dragStart', () => null);
+			expect(drgInstance.off('dragStart')).to.deep.equal(drgInstance);
 		});
 	});
 });

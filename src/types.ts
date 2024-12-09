@@ -1,4 +1,5 @@
 export type DragAxis = 'x' | 'y'
+export type DragEventName = 'grab' | 'dragStart' | 'dragging' | 'dragEnd'
 export type Point = [number, number]
 
 export type DraggablesOptions = {
@@ -6,14 +7,16 @@ export type DraggablesOptions = {
 	cornerPadding?: number
 }
 
-export type DragEvent = {
+export type DragEventWrapper = {
 	ev: PointerEvent
 	elm: HTMLElement
 	relPos: Point
 }
 
 export type ActiveDrag = {
+	hasStarted: boolean
 	elm: HTMLElement
+	// dragzoneElm: HTMLElement
 	box: DOMRect
 	dragzoneBox: DOMRect
 	axis?: DragAxis
@@ -25,9 +28,7 @@ export type ActiveDrag = {
 	prevY: number
 }
 
-export type DragEventHandler = (dragEvent: DragEvent) => void
+export type DragEventHandler = (dragEvent: DragEventWrapper) => void
 export type EventsObj = {
-	grab: DragEventHandler | undefined
-	drop: DragEventHandler | undefined
-	dragging: DragEventHandler | undefined
+	[key in DragEventName]: DragEventHandler | undefined
 };
