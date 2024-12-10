@@ -1,4 +1,4 @@
-import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect} from 'vitest';
+import {beforeAll, beforeEach, afterEach, afterAll, describe, it, expect, vi} from 'vitest';
 import {type Draggables, draggables} from '../src';
 import {createContainerElm, createDraggableElm} from './dom-utils';
 import {createMouseSimulator} from './mouse-simulator';
@@ -84,36 +84,28 @@ describe('Events', () => {
 		});
 
 		it('passes `DragEventWrapper` object to all event handlers', () => {
-			let count = 0;
+			const spy = vi.fn();
 
-			// TODO:test use spy because errors inside handlers are uncaught
-			drgInstance.on('grab', (dragEv) => {
-				count++;
-				expect(dragEv.elm).toBe(drgElm);
-				expect(dragEv.ev).to.be.instanceOf(Event);
-				expect(dragEv.relPos).to.deep.equal([0, 0]);
-			});
-			drgInstance.on('dragStart', (dragEv) => {
-				count++;
-				expect(dragEv.elm).toBe(drgElm);
-				expect(dragEv.ev).to.be.instanceOf(Event);
-				expect(dragEv.relPos).to.deep.equal([2, 2]);
-			});
-			drgInstance.on('dragging', (dragEv) => {
-				count++;
-				expect(dragEv.elm).toBe(drgElm);
-				expect(dragEv.ev).to.be.instanceOf(Event);
-				expect(dragEv.relPos).to.deep.equal([9, 10]);
-			});
-			drgInstance.on('dragEnd', (dragEv) => {
-				count++;
-				expect(dragEv.elm).toBe(drgElm);
-				expect(dragEv.ev).to.be.instanceOf(Event);
-				expect(dragEv.relPos).to.deep.equal([9, 10]);
-			});
+			drgInstance.on('grab', spy);
+			drgInstance.on('dragStart', spy);
+			drgInstance.on('dragging', spy);
+			drgInstance.on('dragEnd', spy);
 
 			mouse.down().move([2, 2]).move([7, 8]).up();
-			expect(count).to.equal(4);
+
+			expect(spy).to.toHaveBeenCalledTimes(4);
+			expect(spy.mock.calls[0][0].elm).toBe(drgElm);
+			expect(spy.mock.calls[1][0].elm).toBe(drgElm);
+			expect(spy.mock.calls[2][0].elm).toBe(drgElm);
+			expect(spy.mock.calls[3][0].elm).toBe(drgElm);
+			expect(spy.mock.calls[0][0].ev).to.be.instanceOf(Event);
+			expect(spy.mock.calls[1][0].ev).to.be.instanceOf(Event);
+			expect(spy.mock.calls[2][0].ev).to.be.instanceOf(Event);
+			expect(spy.mock.calls[3][0].ev).to.be.instanceOf(Event);
+			expect(spy.mock.calls[0][0].relPos).to.deep.equal([0, 0]);
+			expect(spy.mock.calls[1][0].relPos).to.deep.equal([2, 2]);
+			expect(spy.mock.calls[2][0].relPos).to.deep.equal([9, 10]);
+			expect(spy.mock.calls[3][0].relPos).to.deep.equal([9, 10]);
 		});
 	});
 

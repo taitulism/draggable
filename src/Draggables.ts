@@ -41,7 +41,7 @@ export class Draggables {
 		if (this.contextElm) {
 			ctxElms.delete(this.contextElm);
 			this.contextElm.removeEventListener(MOUSE_DOWN, this.onDragStart);
-			this.contextElm = undefined; // TODO:test - see destroy spec
+			this.contextElm = undefined;
 		}
 
 		this.events = createEventsObj();

@@ -114,8 +114,8 @@ export function createActiveDrag (
 export function drag (activeDrag: ActiveDrag, ev: PointerEvent) {
 	const {box, dragzoneBox, axis, mouseStartX, mouseStartY, prevX, prevY} = activeDrag;
 
-	let elmMoveX = 0;
-	let elmMoveY = 0;
+	let elmMoveX = prevX;
+	let elmMoveY = prevY;
 
 	if (!axis || axis === 'x') {
 		const mouseMoveX = ev.clientX - mouseStartX;
