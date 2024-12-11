@@ -20,12 +20,12 @@ export default {
 			output: [{
 				banner,
 				format: 'es',
-				entryFileNames: 'pkg-name.js',
+				entryFileNames: 'draggables.js',
 			}, {
 				banner,
 				format: 'iife',
-				entryFileNames: 'pkg-name.browser.js',
-				name: 'pkgName',
+				entryFileNames: 'draggables.browser.js',
+				name: pkg.name,
 				plugins: [terser({
 					compress: {
 						keep_classnames: true,

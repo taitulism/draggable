@@ -1,12 +1,17 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![ts](https://badgen.net/badge/Built%20With/TypeScript/blue)
-![Build Status](https://github.com/taitulism/draggable/actions/workflows/ci.yml/badge.svg)
+![Build Status](https://github.com/taitulism/draggables/actions/workflows/ci.yml/badge.svg)
 
 draggables
 ==========
-Makes elements draggable. Vanilla style.
+Draggable elements.
 
 ## Basic Usage
+
+```sh
+$ npm install draggables
+```
+
 ```html
 <!-- HTML -->
 <body>
@@ -26,7 +31,7 @@ draggables(contextElm, options);
 * [Boundary Element](#boundary-element)
 * [Data Attributes](#data-attributes)
 * Instance API:
-	* [Creation](#draggablecontextelement-options)
+	* [Creation](#draggablescontextelement-options)
 	* [Enable / Disable](#enable--disable)
 	* [Events](#oneventname-callback--offeventname)
 	* [Destruction](#destroy)
