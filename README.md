@@ -1,8 +1,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/taitulism/draggable.svg?branch=develop)](https://travis-ci.org/taitulism/draggable)
 
+DEPRECATED
+==========
+This package has been replaced by a modern alternative.  
+See [draggables](https://www.npmjs.com/package/draggables) on npm.
+
+
 draggable-elm
-=============
+-------------
 Makes elements draggable. Vanilla style.
 
 ```js
