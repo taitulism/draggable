@@ -5,9 +5,8 @@
 	"license": "MIT",
 	"type": "module",
 	"main": "./src/index.ts",
-	"browser": "./dist/browser/draggables.min.js",
-	"module": "./dist/esm/draggables.esm.js",
-	"types": "./dist/esm/draggables.esm.d.ts",
+	"browser": "./dist/draggables.browser.js",
+	"module": "./dist/draggables.js",
 	"files": [
 		"dist",
 		"src"
