@@ -248,4 +248,20 @@ describe('Dragging Around', () => {
 			delete testContainerElm.dataset.dragZone;
 		});
 	});
+
+	describe('Other Cases', () => {
+		it('regular click before drag doesn\'t reset position', () => {
+			// move away
+			mouse.down().move([50, 50]).up();
+
+			// click
+			mouse.down().up();
+
+			// drag
+			mouse.down().move([10, 10]);
+			expect(drgElm.style.translate).to.equal(translate(60, 60));
+
+			mouse.up();
+		});
+	});
 });

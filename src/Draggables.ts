@@ -2,7 +2,7 @@ import type {ActiveDrag, DragEventHandler, DragEventName, DraggablesOptions, Eve
 import {
 	createEventsObj,
 	getDraggable,
-	moveBy,
+	moveElm,
 	createActiveDrag,
 	pointerWithinPadding,
 	isDisabled,
@@ -31,6 +31,7 @@ export class Draggables {
 
 		this.opts = opts;
 		this.contextElm = elm;
+
 		elm.addEventListener(MOUSE_DOWN, this.onDragStart);
 	}
 
@@ -105,10 +106,12 @@ export class Draggables {
 		if (!this.isEnabled || isDisabled(evTarget.dataset)) return;
 
 		const {activeDrag, events} = this;
-		const {hasStarted, elm} = activeDrag;
-		const [elmMoveX, elmMoveY] = drag(activeDrag, ev);
+		const {hasStarted, elm, prevX, prevY} = activeDrag;
+		const [moveFromPrevX, moveFromPrevY] = drag(activeDrag, ev);
+		const elmMoveX = moveFromPrevX + prevX;
+		const elmMoveY = moveFromPrevY + prevY;
 
-		moveBy(elm, elmMoveX, elmMoveY);
+		moveElm(elm, elmMoveX, elmMoveY);
 
 		activeDrag.moveX = elmMoveX;
 		activeDrag.moveY = elmMoveY;
@@ -133,11 +136,13 @@ export class Draggables {
 
 		const {activeDrag} = this;
 		const {elm, moveX, moveY, prevX, prevY} = activeDrag;
+		const elmMoveX = moveX || prevX;
+		const elmMoveY = moveY || prevY;
 
-		elm.dataset.dragPosition = `${moveX},${moveY}`;
+		elm.dataset.dragPosition = `${elmMoveX},${elmMoveY}`;
 		delete elm.dataset.dragActive;
 
 		this.contextElm!.style.userSelect = '';
-		this.events.dragEnd?.({ev, elm, relPos: [moveX || prevX, moveY || prevY]});
+		this.events.dragEnd?.({ev, elm, relPos: [elmMoveX, elmMoveY]});
 	};
 }

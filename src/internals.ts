@@ -18,7 +18,7 @@ export const createEventsObj = (): EventsObj => ({
 	dragEnd: undefined,
 });
 
-export const moveBy = (elm: HTMLElement, x = 0, y = 0) => {
+export const moveElm = (elm: HTMLElement, x = 0, y = 0) => {
 	elm.style.translate = `${x}px ${y}px`;
 };
 
@@ -112,22 +112,22 @@ export function createActiveDrag (
 }
 
 export function drag (activeDrag: ActiveDrag, ev: PointerEvent) {
-	const {box, dragzoneBox, axis, mouseStartX, mouseStartY, prevX, prevY} = activeDrag;
+	const {box, dragzoneBox, axis, mouseStartX, mouseStartY} = activeDrag;
 
-	let elmMoveX = prevX;
-	let elmMoveY = prevY;
+	let moveFromPrevX = 0;
+	let moveFromPrevY = 0;
 
 	if (!axis || axis === 'x') {
 		const mouseMoveX = ev.clientX - mouseStartX;
 		const elmX = box.x + mouseMoveX;
 
-		elmMoveX = mouseMoveX + prevX;
+		moveFromPrevX = mouseMoveX;
 
 		if (elmX < dragzoneBox.x) {
-			elmMoveX += dragzoneBox.x - elmX;
+			moveFromPrevX += dragzoneBox.x - elmX;
 		}
 		else if (elmX + box.width > dragzoneBox.right) {
-			elmMoveX -= elmX + box.width - dragzoneBox.right;
+			moveFromPrevX -= elmX + box.width - dragzoneBox.right;
 		}
 	}
 
@@ -135,15 +135,15 @@ export function drag (activeDrag: ActiveDrag, ev: PointerEvent) {
 		const mouseMoveY = ev.clientY - mouseStartY;
 		const elmY = box.y + mouseMoveY;
 
-		elmMoveY = mouseMoveY + prevY;
+		moveFromPrevY = mouseMoveY;
 
 		if (elmY < dragzoneBox.y) {
-			elmMoveY += dragzoneBox.y - elmY;
+			moveFromPrevY += dragzoneBox.y - elmY;
 		}
 		else if (elmY + box.height > dragzoneBox.bottom) {
-			elmMoveY -= elmY + box.height - dragzoneBox.bottom;
+			moveFromPrevY -= elmY + box.height - dragzoneBox.bottom;
 		}
 	}
 
-	return [elmMoveX, elmMoveY];
+	return [moveFromPrevX, moveFromPrevY];
 }
